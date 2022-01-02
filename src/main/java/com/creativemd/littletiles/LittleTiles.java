@@ -59,7 +59,7 @@ public class LittleTiles {
 	public static LittleTilesServer proxy;
 	
 	public static final String modid = "littletiles";
-	public static final String version = "1.1.0";
+	public static final String version = "GRADLETOKEN_VERSION";
 	
 	public static int maxNewTiles = 512;
 	
