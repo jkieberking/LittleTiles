@@ -1,7 +1,7 @@
 // Add your dependencies here
 
 dependencies {
-    compile("com.github.GTNewHorizons:CreativeCore:unified-build-script-SNAPSHOT:dev")
+    compile("com.github.GTNewHorizons:CreativeCore:master-SNAPSHOT:dev")
 
     compileOnly("com.github.GTNewHorizons:CodeChickenLib:master-SNAPSHOT:dev") {
         transitive = false
