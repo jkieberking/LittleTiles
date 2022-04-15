@@ -50,25 +50,18 @@ public class TileEntityLittleTiles extends TileEntity{
 		return tiles;
 	}
 	
-	@SideOnly(Side.CLIENT)
 	public ArrayList<LittleTile> customRenderingTiles = new ArrayList<>();
 	
-	@SideOnly(Side.CLIENT)
 	public boolean needsRenderingUpdate;
 	
-	@SideOnly(Side.CLIENT)
 	public int lightValue;
 	
-	@SideOnly(Side.CLIENT)
 	public ArrayList<LittleBlockVertex> lastRendered;
 	
-	@SideOnly(Side.CLIENT)
 	public boolean isRendering;
 	
-	@SideOnly(Side.CLIENT)
 	public boolean needFullRenderUpdate;
 	
-	@SideOnly(Side.CLIENT)
 	public void markFullRenderUpdate()
 	{
 		this.needFullRenderUpdate = true;
