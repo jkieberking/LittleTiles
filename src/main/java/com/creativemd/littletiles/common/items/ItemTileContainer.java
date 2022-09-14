@@ -31,12 +31,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class ItemTileContainer extends Item implements IGuiCreator{
-	
+
+
 	public ItemTileContainer()
 	{
 		setCreativeTab(CreativeTabs.tabTools);
+        setMaxStackSize(1);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced)
@@ -45,14 +47,14 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 		list.add("can be used to provide");
 		list.add("needed materials");
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     protected String getIconString()
     {
         return LittleTiles.modid + ":LTContainer";
     }
-	
+
 	public static void saveMap(ItemStack stack, ArrayList<BlockEntry> map)
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
@@ -69,7 +71,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 		nbt.setInteger("count", i+1);
 		stack.stackTagCompound = nbt;
 	}
-	
+
 	public static ArrayList<BlockEntry> loadMap(EntityPlayer player)
 	{
 		ArrayList<BlockEntry> mainList = new ArrayList<BlockEntry>();
@@ -82,7 +84,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 		}
 		return mainList;
 	}
-			
+
 	public static void mergeMap(ArrayList<BlockEntry> mainMap, ArrayList<BlockEntry> newMap)
 	{
 		if(newMap == null)
@@ -97,7 +99,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 				mainMap.add(entry);
 		}
 	}
-	
+
 	public static ArrayList<BlockEntry> loadMap(ItemStack stack)
 	{
 		ArrayList<BlockEntry> mainMap = new ArrayList<BlockEntry>();
@@ -113,7 +115,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 		}
 		return mainMap;
 	}
-	
+
 	public static boolean drainBlock(EntityPlayer player, Block block, int meta, float ammount)
 	{
 		ArrayList<BlockEntry> mainList = loadMap(player);
@@ -142,7 +144,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 		}
 		return false;
 	}
-	
+
 	public static boolean drainBlock(ItemStack stack, Block block, int meta, float ammount)
 	{
 		BlockEntry entry = new BlockEntry(block, meta, 0);
@@ -161,7 +163,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 		}
 		return false;
 	}
-	
+
 	public static boolean addBlock(EntityPlayer player, Block block, int meta, float ammount)
 	{
 		if(player.capabilities.isCreativeMode)
@@ -176,10 +178,10 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 		}
 		return false;
 	}
-	
+
 	public static void addBlock(ItemStack stack, Block block, int meta, float ammount)
 	{
-		
+
 		BlockEntry entry = new BlockEntry(block, meta, ammount);
 		ArrayList<BlockEntry> stackMap = loadMap(stack);
 		if(stackMap.contains(entry))
@@ -199,7 +201,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 	public SubContainer getContainer(EntityPlayer player, ItemStack stack, World world, int x, int y, int z) {
 		return new SubContainerTileContainer(player, stack, player.inventory.currentItem);
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -210,24 +212,24 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 		}
 		return stack;
 	}
-	
+
 	public static class BlockEntry {
 		public Block block;
 		public int meta;
 		public float value;
-		
+
 		public BlockEntry(Block block, int meta, float value)
 		{
 			this.block = block;
 			this.meta = meta;
 			this.value = value;
 		}
-		
+
 		public ItemStack getItemStack()
 		{
 			return new ItemStack(block, 1, meta);
 		}
-		
+
 		@Override
 		public boolean equals(Object object)
 		{
