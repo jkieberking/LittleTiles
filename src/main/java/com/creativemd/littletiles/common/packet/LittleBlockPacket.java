@@ -1,19 +1,5 @@
 package com.creativemd.littletiles.common.packet;
 
-import java.util.ArrayList;
-
-import org.lwjgl.util.Color;
-
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.WorldUtils;
@@ -25,16 +11,23 @@ import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.LittleTileBlock;
 import com.creativemd.littletiles.common.utils.LittleTileBlockColored;
-import com.creativemd.littletiles.common.utils.LittleTileTileEntity;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.utils.TileList;
-
-import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
 
 public class LittleBlockPacket extends CreativeCorePacket{
-	
+
 	public int x;
 	public int y;
 	public int z;
@@ -42,17 +35,17 @@ public class LittleBlockPacket extends CreativeCorePacket{
 	public Vec3 look;
 	public int action;
 	public NBTTagCompound nbt;
-	
+
 	public LittleBlockPacket()
 	{
-		
+
 	}
-	
+
 	public LittleBlockPacket(int x, int y, int z, EntityPlayer player, int action)
 	{
 		this(x, y, z, player, action, new NBTTagCompound());
 	}
-	
+
 	public LittleBlockPacket(int x, int y, int z, EntityPlayer player, int action, NBTTagCompound nbt)
 	{
 		this.x = x;
@@ -65,7 +58,7 @@ public class LittleBlockPacket extends CreativeCorePacket{
 		this.look = pos.addVector(look.xCoord * d0, look.yCoord * d0, look.zCoord * d0);
 		this.nbt = nbt;
 	}
-	
+
 	@Override
 	public void writeBytes(ByteBuf buf) {
 		buf.writeInt(x);
@@ -76,24 +69,24 @@ public class LittleBlockPacket extends CreativeCorePacket{
 		buf.writeInt(action);
 		writeNBT(buf, nbt);
 	}
-	
+
 	@Override
 	public void readBytes(ByteBuf buf) {
 		x = buf.readInt();
 		y = buf.readInt();
 		z = buf.readInt();
 		pos = readVec3(buf);
-		look = readVec3(buf);		
+		look = readVec3(buf);
 		action = buf.readInt();
 		nbt = readNBT(buf);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
-		
+
 	}
-	
+
 	@Override
 	public void executeServer(EntityPlayer player) {
 		TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
@@ -133,7 +126,7 @@ public class LittleBlockPacket extends CreativeCorePacket{
 								box = te.loadedTile.boundingBoxes.get(0).shrink(direction);
 							else
 								box = te.loadedTile.boundingBoxes.get(0).expand(direction);
-							
+
 							if(box.isBoxInsideBlock() && box.isValidBox() && te.isSpaceForLittleTile(box.getBox(), te.loadedTile))
 							{
 								float ammount = te.loadedTile.boundingBoxes.get(0).getSize().getPercentVolume()-box.getSize().getPercentVolume();
@@ -146,7 +139,7 @@ public class LittleBlockPacket extends CreativeCorePacket{
 									if(ItemTileContainer.drainBlock(player, ((LittleTileBlock)te.loadedTile).block, ((LittleTileBlock)te.loadedTile).meta, -ammount))
 										success = true;
 								}
-								
+
 								if(player.capabilities.isCreativeMode || success)
 								{
 									te.loadedTile.boundingBoxes.set(0, box);
@@ -155,7 +148,7 @@ public class LittleBlockPacket extends CreativeCorePacket{
 								}
 							}
 						}
-					
+
 					}catch(Exception e){
 						System.out.println("Failed to use saw!");
 						e.printStackTrace();
@@ -168,7 +161,7 @@ public class LittleBlockPacket extends CreativeCorePacket{
 						{
 							int color = nbt.getInteger("color");
 							LittleTile currentTile = te.loadedTile;
-							
+
 							int index = te.getTiles().indexOf(currentTile);
 							if(player.isSneaking())
 							{
@@ -177,9 +170,9 @@ public class LittleBlockPacket extends CreativeCorePacket{
 									color = ((LittleTileBlockColored) currentTile).color;
 								ItemColorTube.setColor(player.getCurrentEquippedItem(), color);
 							}else{
-								
+
 								LittleTile newTile = LittleTileBlockColored.setColor((LittleTileBlock) currentTile, color);
-								
+
 								if(newTile != null)
 									te.getTiles().set(index, newTile);
 								te.update();
@@ -211,7 +204,7 @@ public class LittleBlockPacket extends CreativeCorePacket{
 								}
 							}
 						}
-						
+
 						if(LittleTiles.maxNewTiles >= newTiles.size() - 1)
 						{
 							te.removeTile(oldTile);
@@ -226,5 +219,5 @@ public class LittleBlockPacket extends CreativeCorePacket{
 			}
 		}
 	}
-	
+
 }

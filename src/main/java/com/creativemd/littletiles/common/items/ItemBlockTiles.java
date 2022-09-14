@@ -1,8 +1,5 @@
 package com.creativemd.littletiles.common.items;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.creativecore.common.utils.HashMapList;
@@ -16,8 +13,8 @@ import com.creativemd.littletiles.common.packet.LittlePlacePacket;
 import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.utils.LittleTile;
-import com.creativemd.littletiles.common.utils.LittleTileBlock;
 import com.creativemd.littletiles.common.utils.LittleTile.LittleTilePosition;
+import com.creativemd.littletiles.common.utils.LittleTileBlock;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.littletiles.common.utils.PlacementHelper;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
@@ -25,13 +22,12 @@ import com.creativemd.littletiles.common.utils.small.LittleTileCoord;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 import com.creativemd.littletiles.common.utils.small.LittleTileVec;
 import com.creativemd.littletiles.utils.PreviewTile;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.block.Block.SoundType;
+import net.minecraft.block.BlockAir;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -45,8 +41,10 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent.Pre;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRenderer{
 
@@ -54,7 +52,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		super(block);
 		hasSubtypes = true;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getItemStackDisplayName(ItemStack stack)
@@ -67,7 +65,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		}
 		return result;
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getUnlocalizedName(ItemStack stack)
@@ -79,30 +77,30 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		}
         return super.getUnlocalizedName(stack);
     }
-	
+
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float offsetX, float offsetY, float offsetZ)
     {
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			return false;
-		
+
 		PlacementHelper helper = PlacementHelper.getInstance(player);
-		
+
 		MovingObjectPosition moving = Minecraft.getMinecraft().objectMouseOver;
 		if(PreviewRenderer.markedHit != null)
 			moving = PreviewRenderer.markedHit;
-		
+
 		//LittleTileSize size = helper.size;
 		//size.rotateSize(PreviewRenderer.direction);
 		//size.rotateSize(PreviewRenderer.direction2);
 		//Vec3 center = helper.getCenterPos(size);
-		
+
 		x = moving.blockX;
 		y = moving.blockY;
 		z = moving.blockZ;
-		
+
 		side = moving.sideHit;
-		
+
 		if(PreviewRenderer.markedHit == null)
 		{
 			if(!helper.canBePlacedInside(x, y, z, moving.hitVec, ForgeDirection.getOrientation(side)))
@@ -111,27 +109,27 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		        {
 		            --y;
 		        }
-		
+
 		        if (side == 1)
 		        {
 		            ++y;
 		        }
-		
+
 		        if (side == 2)
 		        {
 		            --z;
 		        }
-		
+
 		        if (side == 3)
 		        {
 		            ++z;
 		        }
-		
+
 		        if (side == 4)
 		        {
 		            --x;
 		        }
-		
+
 		        if (side == 5)
 		        {
 		            ++x;
@@ -154,47 +152,47 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
         {
         	if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
     			PacketHandler.sendPacketToServer(new LittlePlacePacket(stack, player.getPosition(1.0F), moving.hitVec, x, y, z, side, PreviewRenderer.markedHit != null)); //, RotationUtils.getIndex(PreviewRenderer.direction), RotationUtils.getIndex(PreviewRenderer.direction2)));
-    		
+
             if(placeBlockAt(player, stack, world, player.getPosition(1.0F), moving.hitVec, helper, x, y, z, side, PreviewRenderer.markedHit != null)) //, PreviewRenderer.direction, PreviewRenderer.direction2);
 	            PreviewRenderer.markedHit = null;
-            
+
             return true;
         }
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconregister)
     {
-        
+
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public void getSubItems(Item stack, CreativeTabs tab, List list)
     {
-        
+
     }
 
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public boolean func_150936_a(World world, int x, int y, int z, int side, EntityPlayer player, ItemStack stack)
     {
 		Block block = world.getBlock(x, y, z);
-		
+
 		Minecraft mc = Minecraft.getMinecraft();
-		
+
 		MovingObjectPosition moving = Minecraft.getMinecraft().objectMouseOver;
 		if(PreviewRenderer.markedHit != null)
 			moving = PreviewRenderer.markedHit;
-		
+
 		x = moving.blockX;
 		y = moving.blockY;
 		z = moving.blockZ;
-		
-		
-		
+
+
+
         if (block == Blocks.snow_layer)
         {
             side = 1;
@@ -237,7 +235,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
         //helper.posZ = z;
         return block.isReplaceable(world, x, y, z) || PlacementHelper.getInstance(player).canBePlacedInsideBlock(x, y, z);
     }
-	
+
 	public static HashMapList<ChunkCoordinates, PreviewTile> getSplittedTiles(ArrayList<PreviewTile> tiles, int x, int y, int z)
 	{
 		HashMapList<ChunkCoordinates, PreviewTile> splitted = new HashMapList<ChunkCoordinates, PreviewTile>();
@@ -247,7 +245,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		}
 		return splitted;
 	}
-	
+
 	public static boolean canPlaceTiles(World world, HashMapList<ChunkCoordinates, PreviewTile> splitted, ArrayList<ChunkCoordinates> coordsToCheck)
 	{
 		for (int i = 0; i < coordsToCheck.size(); i++) {
@@ -255,7 +253,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 			TileEntity mainTile = world.getTileEntity(coord.posX, coord.posY, coord.posZ);
 			if(mainTile instanceof TileEntityLittleTiles)
 			{
-				
+
 				ArrayList<PreviewTile> tiles = splitted.getValues(coord);
 				if(tiles != null)
 				{
@@ -268,22 +266,22 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		}
 		return true;
 	}
-	
+
 	public static boolean placeTiles(World world, EntityPlayer player, ArrayList<PreviewTile> previews, LittleStructure structure, int x, int y, int z, ItemStack stack, ArrayList<LittleTile> unplaceableTiles)
 	{
 		//if(!(world.getBlock(x, y, z) instanceof BlockTile))
 			//if (!world.setBlock(x, y, z, LittleTiles.blockTile, 0, 3))
 				//return false;
-		
+
 		HashMapList<ChunkCoordinates, PreviewTile> splitted = getSplittedTiles(previews, x, y, z);
 		if(splitted == null)
 			return false;
-		
+
 		/*int counting = 0;
 		for (int i = 0; i < splitted.size(); i++) {
 			counting += splitted.getValues(i).size();
 		}
-		
+
 		System.out.println("Created " + counting + " of " + previews.size() + " tiles");*/
 		ArrayList<ChunkCoordinates> coordsToCheck = null;
 		if(structure != null)
@@ -298,7 +296,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		{
 			LittleTilePosition pos = null;
 			//LittleTileCoord pos = null;
-			
+
 			for (int i = 0; i < splitted.size(); i++) {
 				ChunkCoordinates coord = splitted.getKey(i);
 				ArrayList<PreviewTile> placeTiles = splitted.getValues(i);
@@ -314,13 +312,13 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 				{
 					if(!(world.getBlock(coord.posX, coord.posY, coord.posZ) instanceof BlockTile) && world.getBlock(coord.posX, coord.posY, coord.posZ).getMaterial().isReplaceable())
 						world.setBlock(coord.posX, coord.posY, coord.posZ, LittleTiles.blockTile, 0, 3);
-					
+
 					TileEntity te = world.getTileEntity(coord.posX, coord.posY, coord.posZ);
 					if(te instanceof TileEntityLittleTiles)
 					{
 						//int tiles = 0;
 						TileEntityLittleTiles teLT = (TileEntityLittleTiles) te;
-						
+
 						for (int j = 0; j < placeTiles.size(); j++) {
 							LittleTile LT = placeTiles.get(j).placeTile(player, stack, teLT, structure, unplaceableTiles);
 							if(LT != null)
@@ -341,7 +339,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 								}
 							}
 						}
-						
+
 						if(structure != null)
 							teLT.combineTiles(structure);
 					}
@@ -356,11 +354,11 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		}
 		return false;
 	}
-	
+
 	public boolean placeBlockAt(EntityPlayer player, ItemStack stack, World world, Vec3 playerPos, Vec3 hitVec, PlacementHelper helper, int x, int y, int z, int side, boolean customPlacement) //, ForgeDirection direction, ForgeDirection direction2)
     {
 		ArrayList<PreviewTile> previews = helper.getPreviewTiles(stack, x, y, z, playerPos, hitVec, ForgeDirection.getOrientation(side), customPlacement, true); //, direction, direction2);
-		
+
 		LittleStructure structure = null;
 		if(stack.getItem() instanceof ILittleTile)
 		{
@@ -368,24 +366,24 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		}else if(Block.getBlockFromItem(stack.getItem()) instanceof ILittleTile){
 			structure = ((ILittleTile)Block.getBlockFromItem(stack.getItem())).getLittleStructure(stack);
 		}
-		
+
 		if(structure != null)
 		{
 			structure.dropStack = stack.copy();
 			structure.setTiles(new ArrayList<LittleTile>());
 		}
 		//System.out.println("Creating " + previews.size() + " tiles");
-		
+
 		ArrayList<LittleTile> unplaceableTiles = new ArrayList<LittleTile>();
 		if(placeTiles(world, player, previews, structure, x, y, z, stack, unplaceableTiles))
-		{			
+		{
 			if(!player.capabilities.isCreativeMode)
 			{
 				player.inventory.mainInventory[player.inventory.currentItem].stackSize--;
 				if(player.inventory.mainInventory[player.inventory.currentItem].stackSize == 0)
 					player.inventory.mainInventory[player.inventory.currentItem] = null;
 			}
-			
+
 			if(!world.isRemote)
 			{
 				for (int j = 0; j < unplaceableTiles.size(); j++) {
@@ -393,13 +391,13 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 						WorldUtils.dropItem(world, unplaceableTiles.get(j).getDrops(), x, y, z);
 				}
 			}
-			
+
 			/*TileEntity tileEntity = world.getTileEntity(x, y, z);
 			if(tileEntity instanceof TileEntityLittleTiles)
 			{
 				for (int i = 0; i < previews.size(); i++) {
 					PreviewTile tile = previews.get(i);
-					
+
 				}
 			}*/
 			return true;
@@ -413,7 +411,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 		previews.add(LittleTilePreview.getPreviewFromNBT(stack.stackTagCompound));
 		return previews;
 	}
-	
+
 	@Override
 	public void rotateLittlePreview(ItemStack stack, ForgeDirection direction) {
 		LittleTilePreview.rotatePreview(stack.stackTagCompound, direction);

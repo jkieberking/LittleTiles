@@ -2,32 +2,8 @@ package com.creativemd.littletiles.client.render;
 
 import com.creativemd.creativecore.client.rendering.ExtendedRenderBlocks;
 import com.creativemd.littletiles.client.render.LittleBlockVertex.LittleVertex;
-
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAnvil;
-import net.minecraft.block.BlockBeacon;
-import net.minecraft.block.BlockBrewingStand;
-import net.minecraft.block.BlockCauldron;
-import net.minecraft.block.BlockCocoa;
-import net.minecraft.block.BlockDoublePlant;
-import net.minecraft.block.BlockDragonEgg;
-import net.minecraft.block.BlockEndPortalFrame;
-import net.minecraft.block.BlockFence;
-import net.minecraft.block.BlockFenceGate;
-import net.minecraft.block.BlockFire;
-import net.minecraft.block.BlockFlowerPot;
-import net.minecraft.block.BlockGrass;
-import net.minecraft.block.BlockHopper;
-import net.minecraft.block.BlockPane;
-import net.minecraft.block.BlockRailBase;
-import net.minecraft.block.BlockRedstoneComparator;
-import net.minecraft.block.BlockRedstoneDiode;
-import net.minecraft.block.BlockRedstoneRepeater;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.block.BlockWall;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.block.*;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.src.FMLRenderAccessLibrary;
@@ -39,7 +15,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 		super(renderer);
 		//aoBrightnessXYNN = renderer.aoBrightnessXYNN
 	}
-	
+
 	@Override
 	public boolean renderBlockByRenderType(Block p_147805_1_, int p_147805_2_, int p_147805_3_, int p_147805_4_)
     {
@@ -102,7 +78,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             }
         }
     }
-	
+
 	/*@Override
 	public boolean renderStandardBlock(Block p_147784_1_, int p_147784_2_, int p_147784_3_, int p_147784_4_)
     {
@@ -123,7 +99,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         return Minecraft.isAmbientOcclusionEnabled() && p_147784_1_.getLightValue() == 0 ? (this.partialRenderBounds ? this.renderStandardBlockWithAmbientOcclusionPartial(p_147784_1_, p_147784_2_, p_147784_3_, p_147784_4_, f, f1, f2) : this.renderStandardBlockWithAmbientOcclusion(p_147784_1_, p_147784_2_, p_147784_3_, p_147784_4_, f, f1, f2)) : this.renderStandardBlockWithColorMultiplier(p_147784_1_, p_147784_2_, p_147784_3_, p_147784_4_, f, f1, f2);
     }*/
-	
+
 	@Override
 	public boolean renderStandardBlockWithAmbientOcclusion(Block p_147751_1_, int p_147751_2_, int p_147751_3_, int p_147751_4_, float p_147751_5_, float p_147751_6_, float p_147751_7_)
     {
@@ -914,7 +890,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         this.enableAO = false;
         return flag;
     }
-	
+
 	@Override
 	public boolean renderStandardBlockWithAmbientOcclusionPartial(Block p_147808_1_, int p_147808_2_, int p_147808_3_, int p_147808_4_, float p_147808_5_, float p_147808_6_, float p_147808_7_)
     {
@@ -1745,9 +1721,9 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         this.enableAO = false;
         return flag;
     }
-	
+
 	public LittleBlockVertex blockVertex = null;
-	
+
 	/**
      * Renders the given texture to the bottom face of the block. Args: block, x, y, z, texture
      */
@@ -1832,7 +1808,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             d11 = x + this.renderMaxX;
             d12 = x + this.renderMinX;
         }
-        
+
         LittleVertex vertex = new LittleVertex();
         vertex.coords = new double[][]{
         		new double[]{d11, d13, d15, d8, d10},
@@ -1840,18 +1816,18 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
                 new double[]{d12, d13, d14, d7, d9},
                 new double[]{d12, d13, d15, d4, d6}
         };
-        
+
         if (this.enableAO)
         {
         	blockVertex.enableAO = true;
         	 vertex.colorRedTopLeft = colorRedTopLeft;
              vertex.colorGreenTopLeft = colorGreenTopLeft;
              vertex.colorBlueTopLeft = colorBlueTopLeft;
-             
+
              vertex.colorRedBottomLeft = colorRedBottomLeft;
              vertex.colorGreenBottomLeft = colorGreenBottomLeft;
              vertex.colorBlueBottomLeft = colorBlueBottomLeft;
-             
+
              vertex.colorRedBottomRight = colorRedBottomRight;
              vertex.colorGreenBottomRight = colorGreenBottomRight;
              vertex.colorBlueBottomRight = colorBlueBottomRight;
@@ -1859,7 +1835,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
              vertex.colorRedTopRight = colorRedTopRight;
              vertex.colorGreenTopRight = colorGreenTopRight;
              vertex.colorBlueTopRight = colorBlueTopRight;
-             
+
              vertex.brightnessTopLeft = brightnessTopLeft;
              vertex.brightnessBottomLeft = brightnessBottomLeft;
              vertex.brightnessBottomRight = brightnessBottomRight;
@@ -1964,18 +1940,18 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         	new double[]{d11, d13, d14, d3, d5},
         	new double[]{d11, d13, d15, d8, d10}
         };
-        
+
         if (this.enableAO)
         {
         	blockVertex.enableAO = true;
         	 vertex.colorRedTopLeft = colorRedTopLeft;
              vertex.colorGreenTopLeft = colorGreenTopLeft;
              vertex.colorBlueTopLeft = colorBlueTopLeft;
-             
+
              vertex.colorRedBottomLeft = colorRedBottomLeft;
              vertex.colorGreenBottomLeft = colorGreenBottomLeft;
              vertex.colorBlueBottomLeft = colorBlueBottomLeft;
-             
+
              vertex.colorRedBottomRight = colorRedBottomRight;
              vertex.colorGreenBottomRight = colorGreenBottomRight;
              vertex.colorBlueBottomRight = colorBlueBottomRight;
@@ -1983,13 +1959,13 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
              vertex.colorRedTopRight = colorRedTopRight;
              vertex.colorGreenTopRight = colorGreenTopRight;
              vertex.colorBlueTopRight = colorBlueTopRight;
-             
+
              vertex.brightnessTopLeft = brightnessTopLeft;
              vertex.brightnessBottomLeft = brightnessBottomLeft;
              vertex.brightnessBottomRight = brightnessBottomRight;
              vertex.brightnessTopRight = brightnessTopRight;
         }
-        
+
         blockVertex.YPos = vertex;
     }
 
@@ -2092,7 +2068,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             d11 = x + this.renderMaxX;
             d12 = x + this.renderMinX;
         }
-        
+
         LittleVertex vertex = new LittleVertex();
         vertex.coords = new double[][]{
         	new double[]{d11, d14, d15, d7, d9},
@@ -2100,18 +2076,18 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         	new double[]{d12, d13, d15, d8, d10},
         	new double[]{d11, d13, d15, d4, d6}
         };
-        
+
         if (this.enableAO)
         {
         	blockVertex.enableAO = true;
         	 vertex.colorRedTopLeft = colorRedTopLeft;
              vertex.colorGreenTopLeft = colorGreenTopLeft;
              vertex.colorBlueTopLeft = colorBlueTopLeft;
-             
+
              vertex.colorRedBottomLeft = colorRedBottomLeft;
              vertex.colorGreenBottomLeft = colorGreenBottomLeft;
              vertex.colorBlueBottomLeft = colorBlueBottomLeft;
-             
+
              vertex.colorRedBottomRight = colorRedBottomRight;
              vertex.colorGreenBottomRight = colorGreenBottomRight;
              vertex.colorBlueBottomRight = colorBlueBottomRight;
@@ -2119,13 +2095,13 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
              vertex.colorRedTopRight = colorRedTopRight;
              vertex.colorGreenTopRight = colorGreenTopRight;
              vertex.colorBlueTopRight = colorBlueTopRight;
-             
+
              vertex.brightnessTopLeft = brightnessTopLeft;
              vertex.brightnessBottomLeft = brightnessBottomLeft;
              vertex.brightnessBottomRight = brightnessBottomRight;
              vertex.brightnessTopRight = brightnessTopRight;
         }
-        
+
         blockVertex.ZNeg = vertex;
     }
 
@@ -2221,7 +2197,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             d11 = x + this.renderMaxX;
             d12 = x + this.renderMinX;
         }
-        
+
         LittleVertex vertex = new LittleVertex();
         vertex.coords = new double[][]{
         	new double[]{d11, d14, d15, d3, d5},
@@ -2229,18 +2205,18 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         	new double[]{d12, d13, d15, d4, d6},
         	new double[]{d12, d14, d15, d7, d9}
         };
-        
+
         if (this.enableAO)
         {
         	blockVertex.enableAO = true;
         	 vertex.colorRedTopLeft = colorRedTopLeft;
              vertex.colorGreenTopLeft = colorGreenTopLeft;
              vertex.colorBlueTopLeft = colorBlueTopLeft;
-             
+
              vertex.colorRedBottomLeft = colorRedBottomLeft;
              vertex.colorGreenBottomLeft = colorGreenBottomLeft;
              vertex.colorBlueBottomLeft = colorBlueBottomLeft;
-             
+
              vertex.colorRedBottomRight = colorRedBottomRight;
              vertex.colorGreenBottomRight = colorGreenBottomRight;
              vertex.colorBlueBottomRight = colorBlueBottomRight;
@@ -2248,13 +2224,13 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
              vertex.colorRedTopRight = colorRedTopRight;
              vertex.colorGreenTopRight = colorGreenTopRight;
              vertex.colorBlueTopRight = colorBlueTopRight;
-             
+
              vertex.brightnessTopLeft = brightnessTopLeft;
              vertex.brightnessBottomLeft = brightnessBottomLeft;
              vertex.brightnessBottomRight = brightnessBottomRight;
              vertex.brightnessTopRight = brightnessTopRight;
         }
-        
+
         blockVertex.ZPos = vertex;
     }
 
@@ -2350,7 +2326,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             d14 = z + this.renderMaxZ;
             d15 = z + this.renderMinZ;
         }
-        
+
         LittleVertex vertex = new LittleVertex();
         vertex.coords = new double[][]{
         	new double[]{d11, d13, d15, d7, d9},
@@ -2358,18 +2334,18 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         	new double[]{d11, d12, d14, d8, d10},
         	new double[]{d11, d12, d15, d4, d6}
         };
-        
+
         if (this.enableAO)
         {
         	blockVertex.enableAO = true;
         	 vertex.colorRedTopLeft = colorRedTopLeft;
              vertex.colorGreenTopLeft = colorGreenTopLeft;
              vertex.colorBlueTopLeft = colorBlueTopLeft;
-             
+
              vertex.colorRedBottomLeft = colorRedBottomLeft;
              vertex.colorGreenBottomLeft = colorGreenBottomLeft;
              vertex.colorBlueBottomLeft = colorBlueBottomLeft;
-             
+
              vertex.colorRedBottomRight = colorRedBottomRight;
              vertex.colorGreenBottomRight = colorGreenBottomRight;
              vertex.colorBlueBottomRight = colorBlueBottomRight;
@@ -2377,13 +2353,13 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
              vertex.colorRedTopRight = colorRedTopRight;
              vertex.colorGreenTopRight = colorGreenTopRight;
              vertex.colorBlueTopRight = colorBlueTopRight;
-             
+
              vertex.brightnessTopLeft = brightnessTopLeft;
              vertex.brightnessBottomLeft = brightnessBottomLeft;
              vertex.brightnessBottomRight = brightnessBottomRight;
              vertex.brightnessTopRight = brightnessTopRight;
         }
-        
+
         blockVertex.XNeg = vertex;
     }
 
@@ -2486,7 +2462,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             d14 = z + this.renderMaxZ;
             d15 = z + this.renderMinZ;
         }
-        
+
         LittleVertex vertex = new LittleVertex();
         vertex.coords = new double[][]{
         	new double[]{d11, d12, d15, d8, d10},
@@ -2494,18 +2470,18 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         	new double[]{d11, d13, d14, d7, d9},
         	new double[]{d11, d13, d15, d3, d5}
         };
-        
+
         if (this.enableAO)
         {
         	blockVertex.enableAO = true;
         	 vertex.colorRedTopLeft = colorRedTopLeft;
              vertex.colorGreenTopLeft = colorGreenTopLeft;
              vertex.colorBlueTopLeft = colorBlueTopLeft;
-             
+
              vertex.colorRedBottomLeft = colorRedBottomLeft;
              vertex.colorGreenBottomLeft = colorGreenBottomLeft;
              vertex.colorBlueBottomLeft = colorBlueBottomLeft;
-             
+
              vertex.colorRedBottomRight = colorRedBottomRight;
              vertex.colorGreenBottomRight = colorGreenBottomRight;
              vertex.colorBlueBottomRight = colorBlueBottomRight;
@@ -2513,13 +2489,13 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
              vertex.colorRedTopRight = colorRedTopRight;
              vertex.colorGreenTopRight = colorGreenTopRight;
              vertex.colorBlueTopRight = colorBlueTopRight;
-             
+
              vertex.brightnessTopLeft = brightnessTopLeft;
              vertex.brightnessBottomLeft = brightnessBottomLeft;
              vertex.brightnessBottomRight = brightnessBottomRight;
              vertex.brightnessTopRight = brightnessTopRight;
         }
-        
+
         blockVertex.XPos = vertex;
     }
 

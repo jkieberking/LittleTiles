@@ -1,29 +1,27 @@
 package com.creativemd.littletiles.utils;
 
-import java.util.ArrayList;
-
-import org.lwjgl.opengl.GL11;
-
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 import com.creativemd.littletiles.common.utils.small.LittleTileVec;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 public abstract class BoxShiftHandler extends ShiftHandler{
-	
+
 	public ArrayList<LittleTileBox> boxes = new ArrayList<LittleTileBox>();
-	
+
 	public void init(World world, int x, int y, int z)
 	{
 		boxes = getBoxes(world, x, y, z);
 	}
-	
+
 	public abstract ArrayList<LittleTileBox> getBoxes(World world, int x, int y, int z);
-	
+
 	@Override
 	public void handleRendering(Minecraft mc, double x, double y, double z) {
 		for (int i = 0; i < boxes.size(); i++) {
@@ -38,8 +36,8 @@ public abstract class BoxShiftHandler extends ShiftHandler{
 			RenderHelper3D.renderBlock(cubeX, cubeY, cubeZ, size.getPosX(), size.getPosY(), size.getPosZ(), 0, 0, 0, 1, 1, 0.5, (Math.sin(System.nanoTime()/200000000D)+1.5)*0.2D);
 			GL11.glPopMatrix();
 		}
-		
-		
+
+
 	}
 
 	@Override

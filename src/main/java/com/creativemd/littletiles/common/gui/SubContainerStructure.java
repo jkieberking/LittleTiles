@@ -1,18 +1,15 @@
 package com.creativemd.littletiles.common.gui;
 
 import com.creativemd.creativecore.common.container.SubContainer;
-import com.creativemd.creativecore.common.utils.WorldUtils;
-import com.creativemd.littletiles.LittleTiles;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SubContainerStructure extends SubContainer{
-	
+
 	public ItemStack stack;
 	public int index;
-	
+
 	public SubContainerStructure(EntityPlayer player, ItemStack stack) {
 		super(player);
 		this.stack = stack;
@@ -21,7 +18,7 @@ public class SubContainerStructure extends SubContainer{
 
 	@Override
 	public void createControls() {
-		
+
 	}
 
 	@Override
@@ -40,7 +37,7 @@ public class SubContainerStructure extends SubContainer{
 			//closeLayer(null);
 		}
 	}
-	
-	
+
+
 
 }

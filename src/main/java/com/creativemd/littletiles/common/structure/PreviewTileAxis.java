@@ -1,8 +1,5 @@
 package com.creativemd.littletiles.common.structure;
 
-import java.util.ArrayList;
-
-import com.creativemd.creativecore.common.utils.HashMapList;
 import com.creativemd.creativecore.common.utils.RotationUtils.Axis;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.utils.LittleTile;
@@ -10,14 +7,14 @@ import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.small.LittleTileVec;
 import com.creativemd.littletiles.utils.PreviewTile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 
+import java.util.ArrayList;
+
 public class PreviewTileAxis extends PreviewTile{
-	
+
 	public static Vec3 red = Vec3.createVectorHelper(1, 0, 0);
 	public Axis axis;
 
@@ -25,25 +22,25 @@ public class PreviewTileAxis extends PreviewTile{
 		super(box, preview);
 		this.axis = axis;
 	}
-	
+
 	@Override
 	public Vec3 getPreviewColor()
 	{
 		return red;
 	}
-	
+
 	@Override
 	public boolean needsCollisionTest()
 	{
 		return false;
 	}
-	
+
 	@Override
 	public PreviewTile copy()
 	{
 		return new PreviewTileAxis(box.copy(), null, axis);
 	}
-	
+
 	@Override
 	public LittleTileBox getPreviewBox()
 	{
@@ -69,7 +66,7 @@ public class PreviewTileAxis extends PreviewTile{
 		}
 		return preview;
 	}
-	
+
 	@Override
 	public LittleTile placeTile(EntityPlayer player, ItemStack stack, TileEntityLittleTiles teLT, LittleStructure structure, ArrayList<LittleTile> unplaceableTiles)
 	{
@@ -82,7 +79,7 @@ public class PreviewTileAxis extends PreviewTile{
 		}
 		return null;
 	}
-	
+
 	/*@Override
 	public boolean split(HashMapList<ChunkCoordinates, PreviewTile> tiles, int x, int y, int z)
 	{

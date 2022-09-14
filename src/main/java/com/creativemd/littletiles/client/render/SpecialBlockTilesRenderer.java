@@ -1,49 +1,35 @@
 package com.creativemd.littletiles.client.render;
 
-import java.util.ArrayList;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.Color;
-import org.omg.CORBA.REBIND;
-
 import com.creativemd.creativecore.client.block.BlockRenderHelper;
-import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.littletiles.client.LittleTilesClient;
-import com.creativemd.littletiles.common.blocks.BlockTile;
-import com.creativemd.littletiles.common.items.ItemBlockTiles;
-import com.creativemd.littletiles.common.items.ItemRecipe;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
-import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.small.LittleTileVec;
-
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
 public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler, IItemRenderer{
-	
+
 	/**Used for renderInventoryBlock*/
 	public ItemStack currentRenderedStack = null;
-	
+
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelId,
 			RenderBlocks renderer) {
@@ -52,7 +38,7 @@ public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer impleme
 			if(tile != null)
 				renderLittleTileInventory(tile, renderer, false);
 		}catch(Exception e){
-			
+
 		}*/
 	}
 
@@ -65,11 +51,11 @@ public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer impleme
 			TileEntityLittleTiles little = (TileEntityLittleTiles) tileEntity;
 			//long time = System.currentTimeMillis();
 			//System.out.println("Rendering " + little.tiles.size() + " tiles!");
-			
+
 			LittleBlockRenderHelper.renderBlock(world, x, y, z, block, modelId, renderer, little);
 			//System.out.println("Rendered " + little.tiles.size() + " tiles! " + (System.currentTimeMillis()-time) + " ms");
 		}
-			
+
 			/*for (int i = 0; i < little.tiles.size(); i++) {
 				ArrayList<CubeObject> cubes = little.tiles.get(i).getRenderingCubes();
 				//BlockTile.currentlyRenderedTile = little.tiles.get(i);
@@ -97,8 +83,8 @@ public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer impleme
 					RenderHelper3D.renderBlocks.lockBlockBounds = false;
 				}
 			}
-			
-			
+
+
 		}
 		*/
 		return true;
@@ -140,13 +126,13 @@ public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer impleme
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glColor4d(1, 1, 1, 1);
-			
-			
+
+
 			if(type == ItemRenderType.INVENTORY)
 			{
 				if(((ITilesRenderer)item.getItem()).hasBackground(item))
 					RenderItem.getInstance().renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, item, 0, 0);
-	            
+
 				GL11.glTranslatef(7.5F, 7.5F, 10);
 				GL11.glScalef(10F, 10F, 10F);
 				GL11.glScalef(1.0F, 1.0F, -1F);
@@ -156,9 +142,9 @@ public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer impleme
 				GL11.glTranslatef(0.5F, 0.5F, 0);
 			}
 			mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-			
+
 			ArrayList<CubeObject> cubes = ((ITilesRenderer)item.getItem()).getRenderingCubes(item);
-			
+
 			Vec3 size = CubeObject.getSizeOfCubes(cubes);
 			double largestSide = Math.max(size.xCoord, Math.max(size.yCoord, size.zCoord));
 			if(largestSide > 1)
@@ -170,7 +156,7 @@ public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer impleme
 			BlockRenderHelper.renderInventoryCubes((RenderBlocks) data[0], cubes, Block.getBlockFromItem(item.getItem()), item.getItemDamage());
 			//ArrayList<LittleTile> tiles = ItemRecipe.loadTiles(Minecraft.getMinecraft().theWorld, item);
 			/*for (int i = 0; i < tiles.size(); i++) {
-				
+
 				//renderLittleTileInventory(tiles.get(i), (RenderBlocks) data[0], true);
 				GL11.glRotatef(270.0F, 0.0F, 1.0F, 0.0F);
 			}*/

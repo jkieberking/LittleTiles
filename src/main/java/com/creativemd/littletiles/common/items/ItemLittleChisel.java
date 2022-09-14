@@ -1,8 +1,5 @@
 package com.creativemd.littletiles.common.items;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.gui.IGuiCreator;
 import com.creativemd.creativecore.common.gui.SubGui;
@@ -10,10 +7,6 @@ import com.creativemd.creativecore.core.CreativeCore;
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.gui.SubContainerChisel;
 import com.creativemd.littletiles.common.gui.SubGuiChisel;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
-import com.creativemd.littletiles.common.utils.LittleTile;
-import com.creativemd.littletiles.common.utils.small.LittleTileVec;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
@@ -22,18 +15,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class ItemLittleChisel extends Item implements IGuiCreator{
-	
+
 	public ItemLittleChisel(){
 		setCreativeTab(CreativeTabs.tabTools);
 		hasSubtypes = true;
 		setMaxStackSize(1);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     protected String getIconString()
@@ -46,20 +40,20 @@ public class ItemLittleChisel extends Item implements IGuiCreator{
 	{
 		if(stack.stackTagCompound == null)
 			stack.stackTagCompound = new NBTTagCompound();
-		
+
 		if(stack.stackTagCompound.hasKey("x1"))
 			list.add("1: x=" + stack.stackTagCompound.getInteger("x1") + ",y=" + stack.stackTagCompound.getInteger("y1")+ ",z=" + stack.stackTagCompound.getInteger("z1"));
 		else
 			list.add("1: undefinded");
-		
+
 		if(stack.stackTagCompound.hasKey("x2"))
 			list.add("2: x=" + stack.stackTagCompound.getInteger("x2") + ",y=" + stack.stackTagCompound.getInteger("y2")+ ",z=" + stack.stackTagCompound.getInteger("z2"));
 		else
 			list.add("2: undefinded");
-		
+
 		list.add("creative mode only");
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
@@ -72,13 +66,13 @@ public class ItemLittleChisel extends Item implements IGuiCreator{
 		}
         return stack;
     }
-	
+
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
 		if(stack.stackTagCompound == null)
 			stack.stackTagCompound = new NBTTagCompound();
-		
+
 		if(!world.isRemote)
 		{
 			if(player.isSneaking())
@@ -96,7 +90,7 @@ public class ItemLittleChisel extends Item implements IGuiCreator{
 		}
 		return true;
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public SubGui getGui(EntityPlayer player, ItemStack stack, World world, int x, int y, int z) {

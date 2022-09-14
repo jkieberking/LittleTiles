@@ -1,55 +1,43 @@
 package com.creativemd.littletiles.common.utils;
 
-import java.util.ArrayList;
-
-import org.lwjgl.util.Color;
-
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.littletiles.LittleTiles;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockGrass;
-import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.ColorizerFoliage;
-import net.minecraft.world.IBlockAccess;
+
+import java.util.ArrayList;
 
 public class LittleTileBlockColored extends LittleTileBlock{
-	
+
 	public int color;
-	
+
 	public LittleTileBlockColored(Block block, int meta, Vec3 color)
 	{
 		super(block, meta);
 		this.color = ColorUtils.RGBToInt(color);
 	}
-	
+
 	public LittleTileBlockColored()
 	{
 		super();
 	}
-	
+
 	@Override
 	public void updatePacket(NBTTagCompound nbt)
 	{
 		super.updatePacket(nbt);
 		nbt.setInteger("color", color);
 	}
-	
+
 	@Override
 	public void receivePacket(NBTTagCompound nbt, NetworkManager net)
 	{
 		super.receivePacket(nbt, net);
 		color = nbt.getInteger("color");
 	}
-	
+
 	@Override
 	public ArrayList<CubeObject> getRenderingCubes() {
 		ArrayList<CubeObject> cubes = super.getRenderingCubes();
@@ -59,7 +47,7 @@ public class LittleTileBlockColored extends LittleTileBlock{
 		}
 		return cubes;
 	}
-	
+
 	@Override
 	public void copyExtra(LittleTile tile) {
 		super.copyExtra(tile);
@@ -69,7 +57,7 @@ public class LittleTileBlockColored extends LittleTileBlock{
 			thisTile.color = color;
 		}
 	}
-	
+
 	@Override
 	public void saveTileExtra(NBTTagCompound nbt) {
 		super.saveTileExtra(nbt);
@@ -81,7 +69,7 @@ public class LittleTileBlockColored extends LittleTileBlock{
 		super.loadTileExtra(nbt);
 		color = nbt.getInteger("color");
 	}
-	
+
 	@Override
 	public boolean canBeCombined(LittleTile tile) {
 		if(tile instanceof LittleTileBlockColored && super.canBeCombined(tile))
@@ -92,7 +80,7 @@ public class LittleTileBlockColored extends LittleTileBlock{
 		}
 		return false;
 	}
-	
+
 	public static LittleTileBlock setColor(LittleTileBlock tile, int color)
 	{
 		if(color == ColorUtils.WHITE)
@@ -108,7 +96,7 @@ public class LittleTileBlockColored extends LittleTileBlock{
 		}
 		return null;
 	}
-	
+
 	public static LittleTileBlock removeColor(LittleTileBlock tile)
 	{
 		if(tile instanceof LittleTileBlockColored)
@@ -119,5 +107,5 @@ public class LittleTileBlockColored extends LittleTileBlock{
 		}
 		return null;
 	}
-	
+
 }

@@ -1,14 +1,13 @@
 package com.creativemd.littletiles.common.packet;
 
-import java.util.ArrayList;
-
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.items.ItemBlockTiles;
-import com.creativemd.littletiles.common.items.ItemMultiTiles;
-import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.PlacementHelper;
-
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -16,21 +15,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S2FPacketSetSlot;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class LittlePlacePacket extends CreativeCorePacket{
-	
+
 	public LittlePlacePacket()
 	{
-		
+
 	}
-	
+
 	public LittlePlacePacket(ItemStack stack, Vec3 playerPos, Vec3 hitVec, int x, int y, int z, int side, boolean customPlacement) //, int direction, int direction2)
 	{
 		this.stack = stack;
@@ -44,7 +36,7 @@ public class LittlePlacePacket extends CreativeCorePacket{
 		//this.direction = direction;
 		//this.direction2 = direction2;
 	}
-	
+
 	public ItemStack stack;
 	public Vec3 hitVec;
 	public Vec3 playerPos;
@@ -55,7 +47,7 @@ public class LittlePlacePacket extends CreativeCorePacket{
 	public boolean customPlacement;
 	//public int direction;
 	//public int direction2;
-	
+
 	@Override
 	public void writeBytes(ByteBuf buf) {
 		ByteBufUtils.writeItemStack(buf, stack);
@@ -87,7 +79,7 @@ public class LittlePlacePacket extends CreativeCorePacket{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
-		
+
 	}
 
 	@Override
@@ -96,13 +88,13 @@ public class LittlePlacePacket extends CreativeCorePacket{
 		{
 			PlacementHelper helper = PlacementHelper.getInstance(player); //new PlacementHelper(player, x, y, z);
 			//helper.side = side;
-			
+
 			((ItemBlockTiles)Item.getItemFromBlock(LittleTiles.blockTile)).placeBlockAt(player, stack, player.worldObj, playerPos, hitVec, helper, x, y, z, side, customPlacement); //, ForgeDirection.getOrientation(direction), ForgeDirection.getOrientation(direction2));
-			
+
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
 			Slot slot = playerMP.openContainer.getSlotFromInventory(playerMP.inventory, playerMP.inventory.currentItem);
 			playerMP.playerNetServerHandler.sendPacket(new S2FPacketSetSlot(playerMP.openContainer.windowId, slot.slotNumber, playerMP.inventory.getCurrentItem()));
-			
+
 		}
 	}
 

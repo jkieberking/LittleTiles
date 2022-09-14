@@ -1,15 +1,11 @@
 package com.creativemd.littletiles.client.render;
 
-import java.util.ArrayList;
-
 import com.creativemd.creativecore.client.block.BlockRenderHelper;
 import com.creativemd.creativecore.client.block.IBlockAccessFake;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.utils.LittleTile;
-import com.creativemd.littletiles.common.utils.LittleTileBlock;
 import com.creativemd.littletiles.utils.TileList;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -17,20 +13,22 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.chunk.Chunk;
 
+import java.util.ArrayList;
+
 public class LittleBlockRenderHelper {
-	
+
 	public static LittleThreadedRenderer renderBlocks = new LittleThreadedRenderer(RenderBlocks.getInstance());
-	
+
 	public static IBlockAccessFake fake = null;
-	
+
 	public static void renderBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer, TileEntityLittleTiles te)
 	{
 		te.isRendering = true;
 		int lightValue = Minecraft.getMinecraft().theWorld.getBlockLightValue(x, y, z);
 		boolean needThread = false;
-		
+
 		Chunk chunk = Minecraft.getMinecraft().theWorld.getChunkFromBlockCoords(x, z);
-		
+
 		TileList<LittleTile> tiles = te.getTiles();
 		for (int i = 0; i < tiles.size(); i++) {
 			LittleTile tile = tiles.get(i);
@@ -42,8 +40,8 @@ public class LittleBlockRenderHelper {
 			if(tile.canBlockBeThreaded())
 				needThread = true;
 			else
-				BlockRenderHelper.renderCubes(world, cubes, x, y, z, block, renderer, null);				
-			
+				BlockRenderHelper.renderCubes(world, cubes, x, y, z, block, renderer, null);
+
 		}
 		if(needThread)
 		{
@@ -66,5 +64,5 @@ public class LittleBlockRenderHelper {
 		te.lightValue = lightValue;
 		te.isRendering = false;
 	}
-	
+
 }

@@ -1,52 +1,43 @@
 package com.creativemd.littletiles.common.utils;
 
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-
-import io.netty.buffer.Unpooled;
-
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
-import com.creativemd.littletiles.common.utils.small.LittleTileSize;
-
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
 
 public class LittleTileTileEntity extends LittleTileBlock{
-	
+
 	public LittleTileTileEntity()
 	{
 		super();
 	}
-	
+
 	public LittleTileTileEntity(Block block, int meta, TileEntity tileEntity)
 	{
 		super(block, meta);
 		this.tileEntity = tileEntity;
 	}
-	
+
 	public boolean firstSended = false;
-	
+
 	public TileEntity tileEntity;
-	
+
 	/**All information the client needs*/
 	@Override
 	public void updatePacket(NBTTagCompound nbt)
@@ -86,7 +77,7 @@ public class LittleTileTileEntity extends LittleTileBlock{
 			}
 		}
 	}
-	
+
 	/**Should apply all information from sendToCLient**/
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -102,8 +93,8 @@ public class LittleTileTileEntity extends LittleTileBlock{
 				tileEntity.onDataPacket(net, new S35PacketUpdateTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, meta, tileNBT));
 		}
 	}
-	
-	
+
+
 	@Override
 	public void loadTileExtra(NBTTagCompound nbt)
 	{
@@ -120,7 +111,7 @@ public class LittleTileTileEntity extends LittleTileBlock{
 				//setInValid();
 		}
 	}
-	
+
 	@Override
 	public void saveTileExtra(NBTTagCompound nbt)
 	{
@@ -132,7 +123,7 @@ public class LittleTileTileEntity extends LittleTileBlock{
 			nbt.setTag("tileEntity", tileNBT);
 		}
 	}
-	
+
 	@Override
 	public void updateEntity()
 	{
@@ -143,7 +134,7 @@ public class LittleTileTileEntity extends LittleTileBlock{
 			tileEntity.updateEntity();
 		}
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderTick(double x, double y, double z, float partialTickTime) {
@@ -160,18 +151,18 @@ public class LittleTileTileEntity extends LittleTileBlock{
 	            double posX = (double)te.xCoord - TileEntityRendererDispatcher.staticPlayerX;
 	            double posY = (double)te.yCoord - TileEntityRendererDispatcher.staticPlayerY;
 	            double posZ = (double)te.zCoord - TileEntityRendererDispatcher.staticPlayerZ;
-	            
+
 	            posX += cornerVec.getPosX() - 0.5;
 	            posY += cornerVec.getPosY() - 0.5;
 	            posZ += cornerVec.getPosZ() - 0.5;
-	            
+
 	            tileEntity.blockMetadata = meta;
-	            
+
 	            TileEntityRendererDispatcher.instance.renderTileEntityAt(tileEntity, posX, posY, posZ, partialTickTime);
 	        }
 		}
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public double getMaxRenderDistanceSquared()
@@ -180,7 +171,7 @@ public class LittleTileTileEntity extends LittleTileBlock{
 			return tileEntity.getMaxRenderDistanceSquared();
 		return super.getMaxRenderDistanceSquared();
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox()
@@ -189,7 +180,7 @@ public class LittleTileTileEntity extends LittleTileBlock{
 			return tileEntity.getRenderBoundingBox().getOffsetBoundingBox(cornerVec.getPosX(), cornerVec.getPosY(), cornerVec.getPosZ());
 		return super.getRenderBoundingBox();
     }
-	
+
 	@Override
 	public void copyExtra(LittleTile tile) {
 		super.copyExtra(tile);
@@ -199,7 +190,7 @@ public class LittleTileTileEntity extends LittleTileBlock{
 			thisTile.tileEntity = tileEntity;
 		}
 	}
-	
+
 	public boolean loadTileEntity()
 	{
 		if(tileEntity != null && tileEntity.getWorldObj() != null)
@@ -213,12 +204,12 @@ public class LittleTileTileEntity extends LittleTileBlock{
 		}
 		return false;
 	}
-	
+
 	@Override
 	protected boolean canSawResize(ForgeDirection direction, EntityPlayer player) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean canBeCombined(LittleTile tile) {
 		if(super.canBeCombined(tile))

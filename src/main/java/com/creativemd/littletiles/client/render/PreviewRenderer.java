@@ -1,9 +1,5 @@
 package com.creativemd.littletiles.client.render;
 
-import java.util.ArrayList;
-
-import org.lwjgl.opengl.GL11;
-
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.utils.CubeObject;
@@ -12,11 +8,9 @@ import com.creativemd.littletiles.common.packet.LittleFlipPacket;
 import com.creativemd.littletiles.common.packet.LittleRotatePacket;
 import com.creativemd.littletiles.common.utils.PlacementHelper;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
-import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 import com.creativemd.littletiles.common.utils.small.LittleTileVec;
 import com.creativemd.littletiles.utils.PreviewTile;
 import com.creativemd.littletiles.utils.ShiftHandler;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -25,23 +19,24 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.world.World;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
 public class PreviewRenderer {
-	
+
 	public static Minecraft mc = Minecraft.getMinecraft();
-	
+
 	//public static ForgeDirection direction = ForgeDirection.UP;
 	//public static ForgeDirection direction2 = ForgeDirection.EAST;
-	
+
 	/*public static void updateVertical()
 	{
 		if(direction == ForgeDirection.UNKNOWN)
@@ -51,7 +46,7 @@ public class PreviewRenderer {
 		else
 			direction = ForgeDirection.UNKNOWN;
 	}
-	
+
 	public static void updateHorizontal()
 	{
 		if(direction2 == ForgeDirection.WEST || direction2 == ForgeDirection.EAST)
@@ -59,16 +54,16 @@ public class PreviewRenderer {
 		else
 			direction2 = ForgeDirection.EAST;
 	}*/
-	
+
 	public void processKey(ForgeDirection direction)
 	{
 		LittleRotatePacket packet = new LittleRotatePacket(direction);
 		packet.executeClient(mc.thePlayer);
 		PacketHandler.sendPacketToServer(packet);
 	}
-	
+
 	public static MovingObjectPosition markedHit = null;
-	
+
 	public static void moveMarkedHit(ForgeDirection direction)
 	{
 		int posX = (int) markedHit.hitVec.xCoord;
@@ -106,7 +101,7 @@ public class PreviewRenderer {
 		if(posZ != (int) markedHit.hitVec.zCoord)
 			markedHit.blockZ += ((int) markedHit.hitVec.zCoord) - posZ;
 	}
-	
+
 	@SubscribeEvent
 	public void tick(RenderHandEvent event)
 	{
@@ -146,23 +141,23 @@ public class PreviewRenderer {
 				}else if(!GameSettings.isKeyDown(LittleTilesClient.flip)){
 					LittleTilesClient.pressedFlip = false;
 				}
-				
+
 				MovingObjectPosition look = mc.objectMouseOver;
 				if(markedHit != null)
 					look = markedHit;
-				
+
 				if(look != null && look.typeOfHit == MovingObjectType.BLOCK && mc.thePlayer.getHeldItem() != null)
 				{
 					PlacementHelper helper = PlacementHelper.getInstance(mc.thePlayer);
-					
+
 					int posX = look.blockX;
 					int posY = look.blockY;
 					int posZ = look.blockZ;
-					
+
 					double x = (double)posX - TileEntityRendererDispatcher.staticPlayerX;
 					double y = (double)posY - TileEntityRendererDispatcher.staticPlayerY;
 					double z = (double)posZ - TileEntityRendererDispatcher.staticPlayerZ;
-					
+
 					ForgeDirection side = ForgeDirection.getOrientation(look.sideHit);
 					if(!helper.canBePlacedInside(posX, posY, posZ, look.hitVec, side))
 					{
@@ -190,16 +185,16 @@ public class PreviewRenderer {
 							break;
 						}
 					}
-					
+
 					if(GameSettings.isKeyDown(LittleTilesClient.mark) && !LittleTilesClient.pressedMark)
 					{
 						LittleTilesClient.pressedMark = true;
 						if(markedHit == null)
-						{							
-							
+						{
+
 							LittleTileVec vec = helper.getHitVec(look.hitVec, look.blockX, look.blockY, look.blockZ, side, false, false);
 							Vec3 hitVec = Vec3.createVectorHelper(vec.getPosX(), vec.getPosY(), vec.getPosZ());
-							
+
 							int newX = look.blockX;
 							int newY = look.blockY;
 							int newZ = look.blockZ;
@@ -238,10 +233,10 @@ public class PreviewRenderer {
 					}else if(!GameSettings.isKeyDown(LittleTilesClient.mark)){
 						LittleTilesClient.pressedMark = false;
 					}
-					
+
 					//direction = ForgeDirection.UP;
 					//direction2 = ForgeDirection.EAST;
-					
+
 					//Rotate Block
 		            if(GameSettings.isKeyDown(LittleTilesClient.up) && !LittleTilesClient.pressedUp)
 		            {
@@ -252,7 +247,7 @@ public class PreviewRenderer {
 		            		processKey(ForgeDirection.UP);
 		            }else if(!GameSettings.isKeyDown(LittleTilesClient.up))
 		            	LittleTilesClient.pressedUp = false;
-		            
+
 		            if(GameSettings.isKeyDown(LittleTilesClient.down) && !LittleTilesClient.pressedDown)
 		            {
 		            	LittleTilesClient.pressedDown = true;
@@ -262,7 +257,7 @@ public class PreviewRenderer {
 		            		processKey(ForgeDirection.DOWN);
 		            }else if(!GameSettings.isKeyDown(LittleTilesClient.down))
 		            	LittleTilesClient.pressedDown = false;
-		            
+
 		            if(GameSettings.isKeyDown(LittleTilesClient.right) && !LittleTilesClient.pressedRight)
 		            {
 		            	LittleTilesClient.pressedRight = true;
@@ -272,7 +267,7 @@ public class PreviewRenderer {
 		            		processKey(ForgeDirection.SOUTH);
 		            }else if(!GameSettings.isKeyDown(LittleTilesClient.right))
 		            	LittleTilesClient.pressedRight = false;
-		            
+
 		            if(GameSettings.isKeyDown(LittleTilesClient.left) && !LittleTilesClient.pressedLeft)
 		            {
 		            	LittleTilesClient.pressedLeft = true;
@@ -282,18 +277,18 @@ public class PreviewRenderer {
 		            		processKey(ForgeDirection.NORTH);
 		            }else if(!GameSettings.isKeyDown(LittleTilesClient.left))
 		            	LittleTilesClient.pressedLeft = false;
-		            
+
 					GL11.glEnable(GL11.GL_BLEND);
 		            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
 		            GL11.glLineWidth(2.0F);
 		            GL11.glDisable(GL11.GL_TEXTURE_2D);
 		            GL11.glDepthMask(false);
-		            
+
 		            ArrayList<PreviewTile> previews = null;
-		            
+
 		            previews = helper.getPreviewTiles(mc.thePlayer.getHeldItem(), look, markedHit != null); //, direction, direction2);
-		            
+
 		            for (int i = 0; i < previews.size(); i++) {
 						GL11.glPushMatrix();
 						PreviewTile preview = previews.get(i);
@@ -318,22 +313,22 @@ public class PreviewRenderer {
 						RenderHelper3D.renderBlock(cubeX, cubeY, cubeZ, size.xCoord, size.yCoord, size.zCoord, 0, 0, 0, color.xCoord, color.yCoord, color.zCoord, Math.sin(System.nanoTime()/200000000D)*0.2+0.5);
 						GL11.glPopMatrix();
 					}
-		            
+
 		            if(markedHit == null && mc.thePlayer.isSneaking())
 		            {
 		            	ArrayList<ShiftHandler> shifthandlers = new ArrayList<ShiftHandler>();
-		            	
-		            	 for (int i = 0; i < previews.size(); i++) 
+
+		            	 for (int i = 0; i < previews.size(); i++)
 		            		 if(previews.get(i).preview != null)
 		            			 shifthandlers.addAll(previews.get(i).preview.shifthandlers);
-		            	 
+
 		            	 for (int i = 0; i < shifthandlers.size(); i++) {
 		            		//GL11.glPushMatrix();
 							shifthandlers.get(i).handleRendering(mc, x, y, z);
 							//GL11.glPopMatrix();
 						}
 		            }
-		            
+
 		            GL11.glDepthMask(true);
 		            GL11.glEnable(GL11.GL_TEXTURE_2D);
 		            GL11.glDisable(GL11.GL_BLEND);

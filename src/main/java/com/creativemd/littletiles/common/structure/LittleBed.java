@@ -1,15 +1,11 @@
 package com.creativemd.littletiles.common.structure;
 
-import java.util.Iterator;
-
 import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.littletiles.common.utils.LittleTile;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -19,32 +15,32 @@ public class LittleBed extends LittleStructure{
 	@Override
 	protected void loadFromNBTExtra(NBTTagCompound nbt) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected void writeToNBTExtra(NBTTagCompound nbt) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void createControls(SubGui gui, LittleStructure structure) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public LittleStructure parseStructure(SubGui gui) {
 		return new LittleBed();
 	}
-	
+
 	@Override
 	public boolean isBed(IBlockAccess world, int x, int y, int z, EntityLivingBase player)
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(World world, LittleTile tile, int x, int y, int z, EntityPlayer player, int side, float moveX, float moveY, float moveZ)
 	{

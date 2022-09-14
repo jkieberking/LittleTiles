@@ -1,18 +1,14 @@
 package com.creativemd.littletiles.common.gui;
 
-import java.util.ArrayList;
-
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.gui.event.container.SlotChangeEvent;
 import com.creativemd.creativecore.common.utils.WorldUtils;
 import com.creativemd.littletiles.common.blocks.ILittleTile;
 import com.creativemd.littletiles.common.items.ItemTileContainer;
 import com.creativemd.littletiles.common.items.ItemTileContainer.BlockEntry;
-import com.creativemd.littletiles.common.utils.LittleTileBlock;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.littletiles.common.utils.PlacementHelper;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,28 +17,30 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.ArrayList;
+
 public class SubContainerTileContainer extends SubContainer{
-	
+
 	public InventoryBasic basic = new InventoryBasic("basic", false, 1);
 	public ItemStack stack;
 	public int index;
-	
+
 	public SubContainerTileContainer(EntityPlayer player, ItemStack stack, int index) {
 		super(player);
 		this.stack = stack;
 		this.index = index;
 	}
-	
+
 	@CustomEventSubscribe
 	public void onSlotChange(SlotChangeEvent event)
 	{
-		ItemStack slot = basic.getStackInSlot(0); 
+		ItemStack slot = basic.getStackInSlot(0);
 		if(slot != null)
 		{
 			Block block = Block.getBlockFromItem(slot.getItem());
 			if((!(block instanceof BlockAir) && SubContainerHammer.isBlockValid(block)) || PlacementHelper.isLittleBlock(slot) || slot.getItem() instanceof ItemTileContainer)
 			{
-				
+
 				if(PlacementHelper.isLittleBlock(slot))
 				{
 					float ammount = slot.stackSize;
@@ -61,12 +59,12 @@ public class SubContainerTileContainer extends SubContainer{
 								Block block2 = Block.getBlockFromName(tiles.get(i).nbt.getString("block"));
 								if(block2 != null && !(block2 instanceof BlockAir))
 								{
-										
+
 									ItemTileContainer.addBlock(stack, block2, tiles.get(i).nbt.getInteger("meta"), ammount*tiles.get(i).size.getPercentVolume());
 								}
 							}
 						}
-						
+
 					}
 				}else if(slot.getItem() instanceof ItemTileContainer){
 					ArrayList<BlockEntry> map = ItemTileContainer.loadMap(slot);
@@ -76,7 +74,7 @@ public class SubContainerTileContainer extends SubContainer{
 					ItemTileContainer.saveMap(slot, new ArrayList<BlockEntry>());
 				}else
 					ItemTileContainer.addBlock(stack, block, slot.getItemDamage(), basic.getStackInSlot(0).stackSize);
-				
+
 				NBTTagCompound nbt = stack.stackTagCompound;
 				nbt.setBoolean("needUpdate", true);
 				sendUpdate(nbt);
@@ -91,7 +89,7 @@ public class SubContainerTileContainer extends SubContainer{
 		addSlotToContainer(new Slot(basic, 0, 150, 35));
 		addPlayerSlotsToContainer(player);
 	}
-	
+
 	@Override
 	public void onGuiClosed()
 	{
@@ -122,7 +120,7 @@ public class SubContainerTileContainer extends SubContainer{
 				}
 			}
 			ItemTileContainer.saveMap(stack, entries);
-			
+
 
 			NBTTagCompound nbt2 = stack.stackTagCompound;
 			nbt2.setBoolean("needUpdate", true);

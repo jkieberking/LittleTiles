@@ -16,7 +16,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class LittleTilesClient extends LittleTilesServer {
