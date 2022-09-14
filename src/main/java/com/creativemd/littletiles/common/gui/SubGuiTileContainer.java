@@ -41,8 +41,8 @@ public class SubGuiTileContainer extends SubGui{
 
 	@Override
 	public void createControls() {
-		ArrayList<String> lines = new ArrayList<String>();
-		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+		ArrayList<String> lines = new ArrayList<>();
+		ArrayList<ItemStack> stacks = new ArrayList<>();
 		if(stack.stackTagCompound == null)
 			stack.stackTagCompound = new NBTTagCompound();
 		ArrayList<BlockEntry> map = ItemTileContainer.loadMap(stack);

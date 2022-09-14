@@ -80,13 +80,13 @@ public class LittleTileBlock extends LittleTile{
 
 	@Override
 	public ArrayList<CubeObject> getRenderingCubes() {
-		ArrayList<CubeObject> cubes = new ArrayList<CubeObject>();
-		for (int i = 0; i < boundingBoxes.size(); i++) {
-			CubeObject cube = boundingBoxes.get(i).getCube();
-			cube.block = block;
-			cube.meta = meta;
-			cubes.add(cube);
-		}
+		ArrayList<CubeObject> cubes = new ArrayList<>();
+        for (com.creativemd.littletiles.common.utils.small.LittleTileBox boundingBox : boundingBoxes) {
+            CubeObject cube = boundingBox.getCube();
+            cube.block = block;
+            cube.meta = meta;
+            cubes.add(cube);
+        }
 		return cubes;
 	}
 
@@ -97,7 +97,7 @@ public class LittleTileBlock extends LittleTile{
 		try{
 			block.onBlockPlacedBy(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, player, stack);
 			block.onPostBlockPlaced(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, meta);
-		}catch(Exception e){
+		}catch(Exception ignored){
 
 		}
 	}

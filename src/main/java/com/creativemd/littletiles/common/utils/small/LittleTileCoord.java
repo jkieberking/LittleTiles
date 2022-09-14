@@ -6,7 +6,7 @@ import net.minecraft.util.ChunkCoordinates;
 
 public class LittleTileCoord {
 
-	private ChunkCoordinates coord;
+	private final ChunkCoordinates coord;
 	public LittleTileVec position;
 
 	public LittleTileCoord(TileEntity te, ChunkCoordinates coord, LittleTileVec position)

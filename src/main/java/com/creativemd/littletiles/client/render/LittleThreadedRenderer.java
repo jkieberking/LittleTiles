@@ -105,10 +105,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
     {
         this.enableAO = true;
         boolean flag = false;
-        float f3 = 0.0F;
-        float f4 = 0.0F;
-        float f5 = 0.0F;
-        float f6 = 0.0F;
+        float f3;
+        float f4;
+        float f5;
+        float f6;
         boolean flag1 = true;
         int l = p_147751_1_.getMixedBrightnessForBlock(this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_);
         Tessellator tessellator = Tessellator.instance;
@@ -241,7 +241,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorRedTopRight *= f6;
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
-            this.renderFaceYNeg(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 0));
+            this.renderFaceYNeg(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 0));
             flag = true;
         }
 
@@ -345,7 +345,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorRedTopRight *= f6;
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
-            this.renderFaceYPos(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 1));
+            this.renderFaceYPos(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 1));
             flag = true;
         }
 
@@ -463,7 +463,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
             iicon = this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 2);
-            this.renderFaceZNeg(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, iicon);
+            this.renderFaceZNeg(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, iicon);
 
             if (fancyGrass && iicon.getIconName().equals("grass_side") && !this.hasOverrideBlockTexture())
             {
@@ -479,7 +479,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
                 this.colorBlueBottomLeft *= p_147751_7_;
                 this.colorBlueBottomRight *= p_147751_7_;
                 this.colorBlueTopRight *= p_147751_7_;
-                this.renderFaceZNeg(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, BlockGrass.getIconSideOverlay());
+                this.renderFaceZNeg(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, BlockGrass.getIconSideOverlay());
             }
 
             flag = true;
@@ -597,7 +597,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
             iicon = this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 3);
-            this.renderFaceZPos(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 3));
+            this.renderFaceZPos(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 3));
 
             if (fancyGrass && iicon.getIconName().equals("grass_side") && !this.hasOverrideBlockTexture())
             {
@@ -613,7 +613,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
                 this.colorBlueBottomLeft *= p_147751_7_;
                 this.colorBlueBottomRight *= p_147751_7_;
                 this.colorBlueTopRight *= p_147751_7_;
-                this.renderFaceZPos(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, BlockGrass.getIconSideOverlay());
+                this.renderFaceZPos(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, BlockGrass.getIconSideOverlay());
             }
 
             flag = true;
@@ -731,7 +731,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
             iicon = this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 4);
-            this.renderFaceXNeg(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, iicon);
+            this.renderFaceXNeg(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, iicon);
 
             if (fancyGrass && iicon.getIconName().equals("grass_side") && !this.hasOverrideBlockTexture())
             {
@@ -747,7 +747,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
                 this.colorBlueBottomLeft *= p_147751_7_;
                 this.colorBlueBottomRight *= p_147751_7_;
                 this.colorBlueTopRight *= p_147751_7_;
-                this.renderFaceXNeg(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, BlockGrass.getIconSideOverlay());
+                this.renderFaceXNeg(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, BlockGrass.getIconSideOverlay());
             }
 
             flag = true;
@@ -865,7 +865,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
             iicon = this.getBlockIcon(p_147751_1_, this.blockAccess, p_147751_2_, p_147751_3_, p_147751_4_, 5);
-            this.renderFaceXPos(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, iicon);
+            this.renderFaceXPos(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, iicon);
 
             if (fancyGrass && iicon.getIconName().equals("grass_side") && !this.hasOverrideBlockTexture())
             {
@@ -881,7 +881,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
                 this.colorBlueBottomLeft *= p_147751_7_;
                 this.colorBlueBottomRight *= p_147751_7_;
                 this.colorBlueTopRight *= p_147751_7_;
-                this.renderFaceXPos(p_147751_1_, (double)p_147751_2_, (double)p_147751_3_, (double)p_147751_4_, BlockGrass.getIconSideOverlay());
+                this.renderFaceXPos(p_147751_1_, p_147751_2_, p_147751_3_, p_147751_4_, BlockGrass.getIconSideOverlay());
             }
 
             flag = true;
@@ -896,10 +896,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
     {
         this.enableAO = true;
         boolean flag = false;
-        float f3 = 0.0F;
-        float f4 = 0.0F;
-        float f5 = 0.0F;
-        float f6 = 0.0F;
+        float f3;
+        float f4;
+        float f5;
+        float f6;
         boolean flag1 = true;
         int l = p_147808_1_.getMixedBrightnessForBlock(this.blockAccess, p_147808_2_, p_147808_3_, p_147808_4_);
         Tessellator tessellator = Tessellator.instance;
@@ -1032,7 +1032,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorRedTopRight *= f6;
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
-            this.renderFaceYNeg(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, this.getBlockIcon(p_147808_1_, this.blockAccess, p_147808_2_, p_147808_3_, p_147808_4_, 0));
+            this.renderFaceYNeg(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, this.getBlockIcon(p_147808_1_, this.blockAccess, p_147808_2_, p_147808_3_, p_147808_4_, 0));
             flag = true;
         }
 
@@ -1136,7 +1136,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorRedTopRight *= f6;
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
-            this.renderFaceYPos(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, this.getBlockIcon(p_147808_1_, this.blockAccess, p_147808_2_, p_147808_3_, p_147808_4_, 1));
+            this.renderFaceYPos(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, this.getBlockIcon(p_147808_1_, this.blockAccess, p_147808_2_, p_147808_3_, p_147808_4_, 1));
             flag = true;
         }
 
@@ -1270,7 +1270,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
             iicon = this.getBlockIcon(p_147808_1_, this.blockAccess, p_147808_2_, p_147808_3_, p_147808_4_, 2);
-            this.renderFaceZNeg(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, iicon);
+            this.renderFaceZNeg(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, iicon);
 
             if (fancyGrass && iicon.getIconName().equals("grass_side") && !this.hasOverrideBlockTexture())
             {
@@ -1286,7 +1286,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
                 this.colorBlueBottomLeft *= p_147808_7_;
                 this.colorBlueBottomRight *= p_147808_7_;
                 this.colorBlueTopRight *= p_147808_7_;
-                this.renderFaceZNeg(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, BlockGrass.getIconSideOverlay());
+                this.renderFaceZNeg(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, BlockGrass.getIconSideOverlay());
             }
 
             flag = true;
@@ -1412,7 +1412,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
             iicon = this.getBlockIcon(p_147808_1_, this.blockAccess, p_147808_2_, p_147808_3_, p_147808_4_, 3);
-            this.renderFaceZPos(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, iicon);
+            this.renderFaceZPos(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, iicon);
 
             if (fancyGrass && iicon.getIconName().equals("grass_side") && !this.hasOverrideBlockTexture())
             {
@@ -1428,7 +1428,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
                 this.colorBlueBottomLeft *= p_147808_7_;
                 this.colorBlueBottomRight *= p_147808_7_;
                 this.colorBlueTopRight *= p_147808_7_;
-                this.renderFaceZPos(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, BlockGrass.getIconSideOverlay());
+                this.renderFaceZPos(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, BlockGrass.getIconSideOverlay());
             }
 
             flag = true;
@@ -1554,7 +1554,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
             iicon = this.getBlockIcon(p_147808_1_, this.blockAccess, p_147808_2_, p_147808_3_, p_147808_4_, 4);
-            this.renderFaceXNeg(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, iicon);
+            this.renderFaceXNeg(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, iicon);
 
             if (fancyGrass && iicon.getIconName().equals("grass_side") && !this.hasOverrideBlockTexture())
             {
@@ -1570,7 +1570,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
                 this.colorBlueBottomLeft *= p_147808_7_;
                 this.colorBlueBottomRight *= p_147808_7_;
                 this.colorBlueTopRight *= p_147808_7_;
-                this.renderFaceXNeg(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, BlockGrass.getIconSideOverlay());
+                this.renderFaceXNeg(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, BlockGrass.getIconSideOverlay());
             }
 
             flag = true;
@@ -1696,7 +1696,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             this.colorGreenTopRight *= f6;
             this.colorBlueTopRight *= f6;
             iicon = this.getBlockIcon(p_147808_1_, this.blockAccess, p_147808_2_, p_147808_3_, p_147808_4_, 5);
-            this.renderFaceXPos(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, iicon);
+            this.renderFaceXPos(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, iicon);
 
             if (fancyGrass && iicon.getIconName().equals("grass_side") && !this.hasOverrideBlockTexture())
             {
@@ -1712,7 +1712,7 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
                 this.colorBlueBottomLeft *= p_147808_7_;
                 this.colorBlueBottomRight *= p_147808_7_;
                 this.colorBlueTopRight *= p_147808_7_;
-                this.renderFaceXPos(p_147808_1_, (double)p_147808_2_, (double)p_147808_3_, (double)p_147808_4_, BlockGrass.getIconSideOverlay());
+                this.renderFaceXPos(p_147808_1_, p_147808_2_, p_147808_3_, p_147808_4_, BlockGrass.getIconSideOverlay());
             }
 
             flag = true;
@@ -1737,21 +1737,21 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             icon = this.overrideBlockTexture;
         }
 
-        double d3 = (double)icon.getInterpolatedU(this.renderMinX * 16.0D);
-        double d4 = (double)icon.getInterpolatedU(this.renderMaxX * 16.0D);
-        double d5 = (double)icon.getInterpolatedV(this.renderMinZ * 16.0D);
-        double d6 = (double)icon.getInterpolatedV(this.renderMaxZ * 16.0D);
+        double d3 = icon.getInterpolatedU(this.renderMinX * 16.0D);
+        double d4 = icon.getInterpolatedU(this.renderMaxX * 16.0D);
+        double d5 = icon.getInterpolatedV(this.renderMinZ * 16.0D);
+        double d6 = icon.getInterpolatedV(this.renderMaxZ * 16.0D);
 
         if (this.renderMinX < 0.0D || this.renderMaxX > 1.0D)
         {
-            d3 = (double)icon.getMinU();
-            d4 = (double)icon.getMaxU();
+            d3 = icon.getMinU();
+            d4 = icon.getMaxU();
         }
 
         if (this.renderMinZ < 0.0D || this.renderMaxZ > 1.0D)
         {
-            d5 = (double)icon.getMinV();
-            d6 = (double)icon.getMaxV();
+            d5 = icon.getMinV();
+            d6 = icon.getMaxV();
         }
 
         double d7 = d4;
@@ -1761,10 +1761,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.uvRotateBottom == 2)
         {
-            d3 = (double)icon.getInterpolatedU(this.renderMinZ * 16.0D);
-            d5 = (double)icon.getInterpolatedV(16.0D - this.renderMaxX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(this.renderMaxZ * 16.0D);
-            d6 = (double)icon.getInterpolatedV(16.0D - this.renderMinX * 16.0D);
+            d3 = icon.getInterpolatedU(this.renderMinZ * 16.0D);
+            d5 = icon.getInterpolatedV(16.0D - this.renderMaxX * 16.0D);
+            d4 = icon.getInterpolatedU(this.renderMaxZ * 16.0D);
+            d6 = icon.getInterpolatedV(16.0D - this.renderMinX * 16.0D);
             d9 = d5;
             d10 = d6;
             d7 = d3;
@@ -1774,10 +1774,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateBottom == 1)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMaxZ * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMinX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMinZ * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMaxX * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMaxZ * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMinX * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMinZ * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMaxX * 16.0D);
             d7 = d4;
             d8 = d3;
             d3 = d4;
@@ -1787,10 +1787,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateBottom == 3)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMinX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMaxX * 16.0D);
-            d5 = (double)icon.getInterpolatedV(16.0D - this.renderMinZ * 16.0D);
-            d6 = (double)icon.getInterpolatedV(16.0D - this.renderMaxZ * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMinX * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMaxX * 16.0D);
+            d5 = icon.getInterpolatedV(16.0D - this.renderMinZ * 16.0D);
+            d6 = icon.getInterpolatedV(16.0D - this.renderMaxZ * 16.0D);
             d7 = d4;
             d8 = d3;
             d9 = d5;
@@ -1861,21 +1861,21 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             icon = this.overrideBlockTexture;
         }
 
-        double d3 = (double)icon.getInterpolatedU(this.renderMinX * 16.0D);
-        double d4 = (double)icon.getInterpolatedU(this.renderMaxX * 16.0D);
-        double d5 = (double)icon.getInterpolatedV(this.renderMinZ * 16.0D);
-        double d6 = (double)icon.getInterpolatedV(this.renderMaxZ * 16.0D);
+        double d3 = icon.getInterpolatedU(this.renderMinX * 16.0D);
+        double d4 = icon.getInterpolatedU(this.renderMaxX * 16.0D);
+        double d5 = icon.getInterpolatedV(this.renderMinZ * 16.0D);
+        double d6 = icon.getInterpolatedV(this.renderMaxZ * 16.0D);
 
         if (this.renderMinX < 0.0D || this.renderMaxX > 1.0D)
         {
-            d3 = (double)icon.getMinU();
-            d4 = (double)icon.getMaxU();
+            d3 = icon.getMinU();
+            d4 = icon.getMaxU();
         }
 
         if (this.renderMinZ < 0.0D || this.renderMaxZ > 1.0D)
         {
-            d5 = (double)icon.getMinV();
-            d6 = (double)icon.getMaxV();
+            d5 = icon.getMinV();
+            d6 = icon.getMaxV();
         }
 
         double d7 = d4;
@@ -1885,10 +1885,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.uvRotateTop == 1)
         {
-            d3 = (double)icon.getInterpolatedU(this.renderMinZ * 16.0D);
-            d5 = (double)icon.getInterpolatedV(16.0D - this.renderMaxX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(this.renderMaxZ * 16.0D);
-            d6 = (double)icon.getInterpolatedV(16.0D - this.renderMinX * 16.0D);
+            d3 = icon.getInterpolatedU(this.renderMinZ * 16.0D);
+            d5 = icon.getInterpolatedV(16.0D - this.renderMaxX * 16.0D);
+            d4 = icon.getInterpolatedU(this.renderMaxZ * 16.0D);
+            d6 = icon.getInterpolatedV(16.0D - this.renderMinX * 16.0D);
             d9 = d5;
             d10 = d6;
             d7 = d3;
@@ -1898,10 +1898,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateTop == 2)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMaxZ * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMinX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMinZ * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMaxX * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMaxZ * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMinX * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMinZ * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMaxX * 16.0D);
             d7 = d4;
             d8 = d3;
             d3 = d4;
@@ -1911,10 +1911,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateTop == 3)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMinX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMaxX * 16.0D);
-            d5 = (double)icon.getInterpolatedV(16.0D - this.renderMinZ * 16.0D);
-            d6 = (double)icon.getInterpolatedV(16.0D - this.renderMaxZ * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMinX * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMaxX * 16.0D);
+            d5 = icon.getInterpolatedV(16.0D - this.renderMinZ * 16.0D);
+            d6 = icon.getInterpolatedV(16.0D - this.renderMaxZ * 16.0D);
             d7 = d4;
             d8 = d3;
             d9 = d5;
@@ -1982,17 +1982,17 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             icon = this.overrideBlockTexture;
         }
 
-        double d3 = (double)icon.getInterpolatedU(this.renderMinX * 16.0D);
-        double d4 = (double)icon.getInterpolatedU(this.renderMaxX * 16.0D);
+        double d3 = icon.getInterpolatedU(this.renderMinX * 16.0D);
+        double d4 = icon.getInterpolatedU(this.renderMaxX * 16.0D);
 
         if (this.field_152631_f)
         {
-            d4 = (double)icon.getInterpolatedU((1.0D - this.renderMinX) * 16.0D);
-            d3 = (double)icon.getInterpolatedU((1.0D - this.renderMaxX) * 16.0D);
+            d4 = icon.getInterpolatedU((1.0D - this.renderMinX) * 16.0D);
+            d3 = icon.getInterpolatedU((1.0D - this.renderMaxX) * 16.0D);
         }
 
-        double d5 = (double)icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
-        double d6 = (double)icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
+        double d5 = icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
+        double d6 = icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
         double d7;
 
         if (this.flipTexture)
@@ -2004,14 +2004,14 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.renderMinX < 0.0D || this.renderMaxX > 1.0D)
         {
-            d3 = (double)icon.getMinU();
-            d4 = (double)icon.getMaxU();
+            d3 = icon.getMinU();
+            d4 = icon.getMaxU();
         }
 
         if (this.renderMinY < 0.0D || this.renderMaxY > 1.0D)
         {
-            d5 = (double)icon.getMinV();
-            d6 = (double)icon.getMaxV();
+            d5 = icon.getMinV();
+            d6 = icon.getMaxV();
         }
 
         d7 = d4;
@@ -2021,10 +2021,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.uvRotateEast == 2)
         {
-            d3 = (double)icon.getInterpolatedU(this.renderMinY * 16.0D);
-            d4 = (double)icon.getInterpolatedU(this.renderMaxY * 16.0D);
-            d5 = (double)icon.getInterpolatedV(16.0D - this.renderMinX * 16.0D);
-            d6 = (double)icon.getInterpolatedV(16.0D - this.renderMaxX * 16.0D);
+            d3 = icon.getInterpolatedU(this.renderMinY * 16.0D);
+            d4 = icon.getInterpolatedU(this.renderMaxY * 16.0D);
+            d5 = icon.getInterpolatedV(16.0D - this.renderMinX * 16.0D);
+            d6 = icon.getInterpolatedV(16.0D - this.renderMaxX * 16.0D);
             d9 = d5;
             d10 = d6;
             d7 = d3;
@@ -2034,10 +2034,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateEast == 1)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMaxY * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMinY * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMaxX * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMinX * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMaxY * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMinY * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMaxX * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMinX * 16.0D);
             d7 = d4;
             d8 = d3;
             d3 = d4;
@@ -2047,10 +2047,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateEast == 3)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMinX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMaxX * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMaxY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMinY * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMinX * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMaxX * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMaxY * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMinY * 16.0D);
             d7 = d4;
             d8 = d3;
             d9 = d5;
@@ -2118,10 +2118,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             icon = this.overrideBlockTexture;
         }
 
-        double d3 = (double)icon.getInterpolatedU(this.renderMinX * 16.0D);
-        double d4 = (double)icon.getInterpolatedU(this.renderMaxX * 16.0D);
-        double d5 = (double)icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
-        double d6 = (double)icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
+        double d3 = icon.getInterpolatedU(this.renderMinX * 16.0D);
+        double d4 = icon.getInterpolatedU(this.renderMaxX * 16.0D);
+        double d5 = icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
+        double d6 = icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
         double d7;
 
         if (this.flipTexture)
@@ -2133,14 +2133,14 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.renderMinX < 0.0D || this.renderMaxX > 1.0D)
         {
-            d3 = (double)icon.getMinU();
-            d4 = (double)icon.getMaxU();
+            d3 = icon.getMinU();
+            d4 = icon.getMaxU();
         }
 
         if (this.renderMinY < 0.0D || this.renderMaxY > 1.0D)
         {
-            d5 = (double)icon.getMinV();
-            d6 = (double)icon.getMaxV();
+            d5 = icon.getMinV();
+            d6 = icon.getMaxV();
         }
 
         d7 = d4;
@@ -2150,10 +2150,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.uvRotateWest == 1)
         {
-            d3 = (double)icon.getInterpolatedU(this.renderMinY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(16.0D - this.renderMinX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(this.renderMaxY * 16.0D);
-            d5 = (double)icon.getInterpolatedV(16.0D - this.renderMaxX * 16.0D);
+            d3 = icon.getInterpolatedU(this.renderMinY * 16.0D);
+            d6 = icon.getInterpolatedV(16.0D - this.renderMinX * 16.0D);
+            d4 = icon.getInterpolatedU(this.renderMaxY * 16.0D);
+            d5 = icon.getInterpolatedV(16.0D - this.renderMaxX * 16.0D);
             d9 = d5;
             d10 = d6;
             d7 = d3;
@@ -2163,10 +2163,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateWest == 2)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMaxY * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMinX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMinY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMaxX * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMaxY * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMinX * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMinY * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMaxX * 16.0D);
             d7 = d4;
             d8 = d3;
             d3 = d4;
@@ -2176,10 +2176,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateWest == 3)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMinX * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMaxX * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMaxY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMinY * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMinX * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMaxX * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMaxY * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMinY * 16.0D);
             d7 = d4;
             d8 = d3;
             d9 = d5;
@@ -2247,10 +2247,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             icon = this.overrideBlockTexture;
         }
 
-        double d3 = (double)icon.getInterpolatedU(this.renderMinZ * 16.0D);
-        double d4 = (double)icon.getInterpolatedU(this.renderMaxZ * 16.0D);
-        double d5 = (double)icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
-        double d6 = (double)icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
+        double d3 = icon.getInterpolatedU(this.renderMinZ * 16.0D);
+        double d4 = icon.getInterpolatedU(this.renderMaxZ * 16.0D);
+        double d5 = icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
+        double d6 = icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
         double d7;
 
         if (this.flipTexture)
@@ -2262,14 +2262,14 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.renderMinZ < 0.0D || this.renderMaxZ > 1.0D)
         {
-            d3 = (double)icon.getMinU();
-            d4 = (double)icon.getMaxU();
+            d3 = icon.getMinU();
+            d4 = icon.getMaxU();
         }
 
         if (this.renderMinY < 0.0D || this.renderMaxY > 1.0D)
         {
-            d5 = (double)icon.getMinV();
-            d6 = (double)icon.getMaxV();
+            d5 = icon.getMinV();
+            d6 = icon.getMaxV();
         }
 
         d7 = d4;
@@ -2279,10 +2279,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.uvRotateNorth == 1)
         {
-            d3 = (double)icon.getInterpolatedU(this.renderMinY * 16.0D);
-            d5 = (double)icon.getInterpolatedV(16.0D - this.renderMaxZ * 16.0D);
-            d4 = (double)icon.getInterpolatedU(this.renderMaxY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(16.0D - this.renderMinZ * 16.0D);
+            d3 = icon.getInterpolatedU(this.renderMinY * 16.0D);
+            d5 = icon.getInterpolatedV(16.0D - this.renderMaxZ * 16.0D);
+            d4 = icon.getInterpolatedU(this.renderMaxY * 16.0D);
+            d6 = icon.getInterpolatedV(16.0D - this.renderMinZ * 16.0D);
             d9 = d5;
             d10 = d6;
             d7 = d3;
@@ -2292,10 +2292,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateNorth == 2)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMaxY * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMinZ * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMinY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMaxZ * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMaxY * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMinZ * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMinY * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMaxZ * 16.0D);
             d7 = d4;
             d8 = d3;
             d3 = d4;
@@ -2305,10 +2305,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateNorth == 3)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMinZ * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMaxZ * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMaxY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMinY * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMinZ * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMaxZ * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMaxY * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMinY * 16.0D);
             d7 = d4;
             d8 = d3;
             d9 = d5;
@@ -2376,17 +2376,17 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
             icon = this.overrideBlockTexture;
         }
 
-        double d3 = (double)icon.getInterpolatedU(this.renderMinZ * 16.0D);
-        double d4 = (double)icon.getInterpolatedU(this.renderMaxZ * 16.0D);
+        double d3 = icon.getInterpolatedU(this.renderMinZ * 16.0D);
+        double d4 = icon.getInterpolatedU(this.renderMaxZ * 16.0D);
 
         if (this.field_152631_f)
         {
-            d4 = (double)icon.getInterpolatedU((1.0D - this.renderMinZ) * 16.0D);
-            d3 = (double)icon.getInterpolatedU((1.0D - this.renderMaxZ) * 16.0D);
+            d4 = icon.getInterpolatedU((1.0D - this.renderMinZ) * 16.0D);
+            d3 = icon.getInterpolatedU((1.0D - this.renderMaxZ) * 16.0D);
         }
 
-        double d5 = (double)icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
-        double d6 = (double)icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
+        double d5 = icon.getInterpolatedV(16.0D - this.renderMaxY * 16.0D);
+        double d6 = icon.getInterpolatedV(16.0D - this.renderMinY * 16.0D);
         double d7;
 
         if (this.flipTexture)
@@ -2398,14 +2398,14 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.renderMinZ < 0.0D || this.renderMaxZ > 1.0D)
         {
-            d3 = (double)icon.getMinU();
-            d4 = (double)icon.getMaxU();
+            d3 = icon.getMinU();
+            d4 = icon.getMaxU();
         }
 
         if (this.renderMinY < 0.0D || this.renderMaxY > 1.0D)
         {
-            d5 = (double)icon.getMinV();
-            d6 = (double)icon.getMaxV();
+            d5 = icon.getMinV();
+            d6 = icon.getMaxV();
         }
 
         d7 = d4;
@@ -2415,10 +2415,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
 
         if (this.uvRotateSouth == 2)
         {
-            d3 = (double)icon.getInterpolatedU(this.renderMinY * 16.0D);
-            d5 = (double)icon.getInterpolatedV(16.0D - this.renderMinZ * 16.0D);
-            d4 = (double)icon.getInterpolatedU(this.renderMaxY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(16.0D - this.renderMaxZ * 16.0D);
+            d3 = icon.getInterpolatedU(this.renderMinY * 16.0D);
+            d5 = icon.getInterpolatedV(16.0D - this.renderMinZ * 16.0D);
+            d4 = icon.getInterpolatedU(this.renderMaxY * 16.0D);
+            d6 = icon.getInterpolatedV(16.0D - this.renderMaxZ * 16.0D);
             d9 = d5;
             d10 = d6;
             d7 = d3;
@@ -2428,10 +2428,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateSouth == 1)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMaxY * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMaxZ * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMinY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMinZ * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMaxY * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMaxZ * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMinY * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMinZ * 16.0D);
             d7 = d4;
             d8 = d3;
             d3 = d4;
@@ -2441,10 +2441,10 @@ public class LittleThreadedRenderer extends ExtendedRenderBlocks{
         }
         else if (this.uvRotateSouth == 3)
         {
-            d3 = (double)icon.getInterpolatedU(16.0D - this.renderMinZ * 16.0D);
-            d4 = (double)icon.getInterpolatedU(16.0D - this.renderMaxZ * 16.0D);
-            d5 = (double)icon.getInterpolatedV(this.renderMaxY * 16.0D);
-            d6 = (double)icon.getInterpolatedV(this.renderMinY * 16.0D);
+            d3 = icon.getInterpolatedU(16.0D - this.renderMinZ * 16.0D);
+            d4 = icon.getInterpolatedU(16.0D - this.renderMaxZ * 16.0D);
+            d5 = icon.getInterpolatedV(this.renderMaxY * 16.0D);
+            d6 = icon.getInterpolatedV(this.renderMinY * 16.0D);
             d7 = d4;
             d8 = d3;
             d9 = d5;

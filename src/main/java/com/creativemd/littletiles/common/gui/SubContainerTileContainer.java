@@ -53,25 +53,23 @@ public class SubContainerTileContainer extends SubContainer{
 					}
 					if(tiles != null)
 					{
-						for (int i = 0; i < tiles.size(); i++) {
-							if(tiles.get(i).nbt.hasKey("block"))
-							{
-								Block block2 = Block.getBlockFromName(tiles.get(i).nbt.getString("block"));
-								if(block2 != null && !(block2 instanceof BlockAir))
-								{
+                        for (LittleTilePreview tile : tiles) {
+                            if (tile.nbt.hasKey("block")) {
+                                Block block2 = Block.getBlockFromName(tile.nbt.getString("block"));
+                                if (block2 != null && !(block2 instanceof BlockAir)) {
 
-									ItemTileContainer.addBlock(stack, block2, tiles.get(i).nbt.getInteger("meta"), ammount*tiles.get(i).size.getPercentVolume());
-								}
-							}
-						}
+                                    ItemTileContainer.addBlock(stack, block2, tile.nbt.getInteger("meta"), ammount * tile.size.getPercentVolume());
+                                }
+                            }
+                        }
 
 					}
 				}else if(slot.getItem() instanceof ItemTileContainer){
 					ArrayList<BlockEntry> map = ItemTileContainer.loadMap(slot);
-					for (int i = 0; i < map.size(); i++) {
-						ItemTileContainer.addBlock(stack, map.get(i).block, map.get(i).meta, map.get(i).value);
-					}
-					ItemTileContainer.saveMap(slot, new ArrayList<BlockEntry>());
+                    for (BlockEntry blockEntry : map) {
+                        ItemTileContainer.addBlock(stack, blockEntry.block, blockEntry.meta, blockEntry.value);
+                    }
+					ItemTileContainer.saveMap(slot, new ArrayList<>());
 				}else
 					ItemTileContainer.addBlock(stack, block, slot.getItemDamage(), basic.getStackInSlot(0).stackSize);
 

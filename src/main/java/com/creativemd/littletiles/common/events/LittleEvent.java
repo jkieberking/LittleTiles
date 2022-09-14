@@ -44,7 +44,7 @@ public class LittleEvent {
 				if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 				{
 					MovingObjectPosition moving = Minecraft.getMinecraft().objectMouseOver;
-					((ItemBlockTiles)Item.getItemFromBlock(LittleTiles.blockTile)).onItemUse(event.entityPlayer.getHeldItem(), event.entityPlayer, event.world, event.x, event.y, event.z, event.face, (float)moving.hitVec.xCoord, (float)moving.hitVec.yCoord, (float)moving.hitVec.zCoord);
+					Item.getItemFromBlock(LittleTiles.blockTile).onItemUse(event.entityPlayer.getHeldItem(), event.entityPlayer, event.world, event.x, event.y, event.z, event.face, (float)moving.hitVec.xCoord, (float)moving.hitVec.yCoord, (float)moving.hitVec.zCoord);
 				}
 				event.setCanceled(true);
 			}

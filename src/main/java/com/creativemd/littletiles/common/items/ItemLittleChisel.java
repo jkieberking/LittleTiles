@@ -60,7 +60,7 @@ public class ItemLittleChisel extends Item implements IGuiCreator{
 		if(!world.isRemote && !player.isSneaking() && stack.stackTagCompound != null)
 		{
 			if(stack.stackTagCompound.hasKey("x1") && stack.stackTagCompound.hasKey("x2"))
-				((EntityPlayerMP)player).openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+				player.openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
 			else
 				player.addChatMessage(new ChatComponentText("You have to select two positions first"));
 		}

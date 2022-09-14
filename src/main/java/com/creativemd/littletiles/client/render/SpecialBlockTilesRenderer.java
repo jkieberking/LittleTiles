@@ -103,10 +103,8 @@ public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer impleme
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
 		currentRenderedStack = item;
-		if(item.getItem() instanceof ITilesRenderer && item.stackTagCompound != null)
-			return true;
-		return false;
-	}
+        return item.getItem() instanceof ITilesRenderer && item.stackTagCompound != null;
+    }
 
 	@Override
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,

@@ -30,19 +30,18 @@ public class LittleBlockRenderHelper {
 		Chunk chunk = Minecraft.getMinecraft().theWorld.getChunkFromBlockCoords(x, z);
 
 		TileList<LittleTile> tiles = te.getTiles();
-		for (int i = 0; i < tiles.size(); i++) {
-			LittleTile tile = tiles.get(i);
-			ArrayList<CubeObject> cubes = tile.getRenderingCubes();
-			boolean threaded = false;
-			//if()
-				//threaded = ((LittleTileBlock) tile).block.getRenderType() == 0;
-			//threaded = false;
-			if(tile.canBlockBeThreaded())
-				needThread = true;
-			else
-				BlockRenderHelper.renderCubes(world, cubes, x, y, z, block, renderer, null);
+        for (LittleTile tile : tiles) {
+            ArrayList<CubeObject> cubes = tile.getRenderingCubes();
+            boolean threaded = false;
+            //if()
+            //threaded = ((LittleTileBlock) tile).block.getRenderType() == 0;
+            //threaded = false;
+            if (tile.canBlockBeThreaded())
+                needThread = true;
+            else
+                BlockRenderHelper.renderCubes(world, cubes, x, y, z, block, renderer, null);
 
-		}
+        }
 		if(needThread)
 		{
 			if(te.needFullRenderUpdate || lightValue != te.lightValue || te.lastRendered == null)

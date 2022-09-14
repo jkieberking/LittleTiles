@@ -91,16 +91,15 @@ public class LittleChair extends LittleStructure{
 			{
 				LittleTileBox box = new LittleTileBox(centerTileX, LittleTile.minPos, centerTileZ, centerTileX+1, LittleTile.maxPos, centerTileZ+1);
 				//int highest = LittleTile.minPos;
-				for (int i = 0; i < tilesInCenter.size(); i++) {
-					for (int j = 0; j < tilesInCenter.get(i).boundingBoxes.size(); j++) {
-						LittleTileBox littleBox = tilesInCenter.get(i).boundingBoxes.get(j);
-						if(box.intersectsWith(littleBox))
-						{
-							position.y = Math.max(y*16+littleBox.maxY, position.y);
-							//highest = Math.max(highest, littleBox.maxY);
-						}
-					}
-				}
+                for (LittleTile littleTile : tilesInCenter) {
+                    for (int j = 0; j < littleTile.boundingBoxes.size(); j++) {
+                        LittleTileBox littleBox = littleTile.boundingBoxes.get(j);
+                        if (box.intersectsWith(littleBox)) {
+                            position.y = Math.max(y * 16 + littleBox.maxY, position.y);
+                            //highest = Math.max(highest, littleBox.maxY);
+                        }
+                    }
+                }
 
 			}
 		}

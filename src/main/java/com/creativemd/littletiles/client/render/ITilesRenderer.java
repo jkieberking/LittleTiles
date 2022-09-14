@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public interface ITilesRenderer { //is client-side effective only!
 
-	public ArrayList<CubeObject> getRenderingCubes(ItemStack stack);
+	ArrayList<CubeObject> getRenderingCubes(ItemStack stack);
 
-	public boolean hasBackground(ItemStack stack);
+	boolean hasBackground(ItemStack stack);
 
 }

@@ -23,8 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SideOnly(Side.CLIENT)
 public class RenderingThread extends Thread {
 
-	private static CopyOnWriteArrayList<ChunkCoordinates> updateCoords = new CopyOnWriteArrayList<>();
-	private static HashMap<ChunkCoordinates, AtomicInteger> chunks = new HashMap<>();
+	private static final CopyOnWriteArrayList<ChunkCoordinates> updateCoords = new CopyOnWriteArrayList<>();
+	private static final HashMap<ChunkCoordinates, AtomicInteger> chunks = new HashMap<>();
 
 	private static World lastWorld;
 
@@ -80,56 +80,50 @@ public class RenderingThread extends Thread {
 						TileEntityLittleTiles te = (TileEntityLittleTiles) tileEntity;
 						ArrayList<LittleBlockVertex> vertexes = new ArrayList<>();
 						TileList<LittleTile> tiles = te.getTiles();
-						for (int i = 0; i < tiles.size(); i++) {
-							LittleTile tile = tiles.get(i);
-							if(tile instanceof LittleTileBlock && ((LittleTileBlock) tile).canBlockBeThreaded())
-							{
+                        for (LittleTile tile : tiles) {
+                            if (tile instanceof LittleTileBlock && tile.canBlockBeThreaded()) {
 
-								ArrayList<CubeObject> cubes = tile.getRenderingCubes();
-								//tile.isRendering = true;
-								for (int j = 0; j < cubes.size(); j++) {
-									CubeObject cube = cubes.get(j);
-									if(cube.block != null)
-									{
-										if(cube.meta != -1)
-										{
-											//if(renderer.blockAccess == null)
-												//continue;
-												//renderer.blockAccess = Minecraft.getMinecraft().theWorld;
-											if(LittleBlockRenderHelper.fake == null)
-											{
-												LittleBlockRenderHelper.fake = new IBlockAccessFake(Minecraft.getMinecraft().theWorld);//renderer.blockAccess);
+                                ArrayList<CubeObject> cubes = tile.getRenderingCubes();
+                                //tile.isRendering = true;
+                                for (CubeObject cube : cubes) {
+                                    if (cube.block != null) {
+                                        if (cube.meta != -1) {
+                                            //if(renderer.blockAccess == null)
+                                            //continue;
+                                            //renderer.blockAccess = Minecraft.getMinecraft().theWorld;
+                                            if (LittleBlockRenderHelper.fake == null) {
+                                                LittleBlockRenderHelper.fake = new IBlockAccessFake(Minecraft.getMinecraft().theWorld);//renderer.blockAccess);
 
-												LittleBlockRenderHelper.renderBlocks.blockAccess = LittleBlockRenderHelper.fake;
-											}
+                                                LittleBlockRenderHelper.renderBlocks.blockAccess = LittleBlockRenderHelper.fake;
+                                            }
 
-											if(LittleBlockRenderHelper.fake.world != Minecraft.getMinecraft().theWorld)
-												LittleBlockRenderHelper.fake.world = Minecraft.getMinecraft().theWorld;
+                                            if (LittleBlockRenderHelper.fake.world != Minecraft.getMinecraft().theWorld)
+                                                LittleBlockRenderHelper.fake.world = Minecraft.getMinecraft().theWorld;
 
-											LittleBlockRenderHelper.renderBlocks.clearOverrideBlockTexture();
-											LittleBlockRenderHelper.renderBlocks.lockBlockBounds = false;
-											LittleBlockRenderHelper.renderBlocks.setRenderBounds(cube.minX, cube.minY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ);
-											LittleBlockRenderHelper.renderBlocks.meta = cube.meta;
-											LittleBlockRenderHelper.fake.overrideMeta = cube.meta;
-											LittleBlockRenderHelper.renderBlocks.color = cube.color;
-											LittleBlockRenderHelper.renderBlocks.lockBlockBounds = true;
-											//LittleBlockRenderHelper.renderBlocks.enableAO = false;
-											LittleBlockRenderHelper.renderBlocks.blockVertex = new LittleBlockVertex();
-											//LittleBlockRenderHelper.renderBlocks.blockVertex.enableAO = LittleBlockRenderHelper.renderBlocks.enableAO;
-											LittleBlockRenderHelper.renderBlocks.renderBlockAllFaces(cube.block, te.xCoord, te.yCoord, te.zCoord);
-											vertexes.add(LittleBlockRenderHelper.renderBlocks.blockVertex);
-											LittleBlockRenderHelper.renderBlocks.lockBlockBounds = false;
-											LittleBlockRenderHelper.renderBlocks.color = ColorUtils.WHITE;
+                                            LittleBlockRenderHelper.renderBlocks.clearOverrideBlockTexture();
+                                            LittleBlockRenderHelper.renderBlocks.lockBlockBounds = false;
+                                            LittleBlockRenderHelper.renderBlocks.setRenderBounds(cube.minX, cube.minY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ);
+                                            LittleBlockRenderHelper.renderBlocks.meta = cube.meta;
+                                            LittleBlockRenderHelper.fake.overrideMeta = cube.meta;
+                                            LittleBlockRenderHelper.renderBlocks.color = cube.color;
+                                            LittleBlockRenderHelper.renderBlocks.lockBlockBounds = true;
+                                            //LittleBlockRenderHelper.renderBlocks.enableAO = false;
+                                            LittleBlockRenderHelper.renderBlocks.blockVertex = new LittleBlockVertex();
+                                            //LittleBlockRenderHelper.renderBlocks.blockVertex.enableAO = LittleBlockRenderHelper.renderBlocks.enableAO;
+                                            LittleBlockRenderHelper.renderBlocks.renderBlockAllFaces(cube.block, te.xCoord, te.yCoord, te.zCoord);
+                                            vertexes.add(LittleBlockRenderHelper.renderBlocks.blockVertex);
+                                            LittleBlockRenderHelper.renderBlocks.lockBlockBounds = false;
+                                            LittleBlockRenderHelper.renderBlocks.color = ColorUtils.WHITE;
 
-										}
-									}
-								}
+                                        }
+                                    }
+                                }
 
-								//tile.isRendering = false;
-								//System.out.println("Rendered " + i + " tile of " + te.tiles.size());
+                                //tile.isRendering = false;
+                                //System.out.println("Rendered " + i + " tile of " + te.tiles.size());
 
-							}
-						}
+                            }
+                        }
 						//System.out.println("Done rendering block");
 						setLastRenderedTiles(vertexes, te, coord);
 

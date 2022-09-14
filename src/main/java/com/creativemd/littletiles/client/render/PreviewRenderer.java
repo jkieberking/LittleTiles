@@ -113,7 +113,7 @@ public class PreviewRenderer {
 				if(GameSettings.isKeyDown(LittleTilesClient.flip) && !LittleTilesClient.pressedFlip)
 				{
 					LittleTilesClient.pressedFlip = true;
-					int i4 = MathHelper.floor_double((double)(this.mc.thePlayer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+					int i4 = MathHelper.floor_double((double)(mc.thePlayer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 					ForgeDirection direction = null;
 					switch(i4)
 					{
@@ -225,7 +225,7 @@ public class PreviewRenderer {
 								}
 							}
 							hitVec = hitVec.addVector(newX, newY, newZ);
-							look = markedHit = new MovingObjectPosition(newX, newY, newZ/*look.blockX, look.blockY, look.blockZ*/, look.sideHit, hitVec);
+							markedHit = new MovingObjectPosition(newX, newY, newZ/*look.blockX, look.blockY, look.blockZ*/, look.sideHit, hitVec);
 							return ;
 						}
 						else
@@ -285,48 +285,47 @@ public class PreviewRenderer {
 		            GL11.glDisable(GL11.GL_TEXTURE_2D);
 		            GL11.glDepthMask(false);
 
-		            ArrayList<PreviewTile> previews = null;
+		            ArrayList<PreviewTile> previews;
 
 		            previews = helper.getPreviewTiles(mc.thePlayer.getHeldItem(), look, markedHit != null); //, direction, direction2);
 
-		            for (int i = 0; i < previews.size(); i++) {
-						GL11.glPushMatrix();
-						PreviewTile preview = previews.get(i);
-						LittleTileBox previewBox = preview.getPreviewBox();
-						CubeObject cube = previewBox.getCube();
-						Vec3 size = previewBox.getSizeD();
-						double cubeX = x+cube.minX+size.xCoord/2D;
-						//if(posX < 0 && side != ForgeDirection.WEST && side != ForgeDirection.EAST)
-							//cubeX = x+(1-cube.minX)+size.getPosX()/2D;
-						double cubeY = y+cube.minY+size.yCoord/2D;
-						//if(posY < 0 && side != ForgeDirection.DOWN)
-							//cubeY = y-cube.minY+size.getPosY()/2D;
-						double cubeZ = z+cube.minZ+size.zCoord/2D;
-						//if(posZ < 0 && side != ForgeDirection.NORTH)
-							//cubeZ = z-cube.minZ+size.getPosZ()/2D;
+                    for (PreviewTile previewTile : previews) {
+                        GL11.glPushMatrix();
+                        LittleTileBox previewBox = previewTile.getPreviewBox();
+                        CubeObject cube = previewBox.getCube();
+                        Vec3 size = previewBox.getSizeD();
+                        double cubeX = x + cube.minX + size.xCoord / 2D;
+                        //if(posX < 0 && side != ForgeDirection.WEST && side != ForgeDirection.EAST)
+                        //cubeX = x+(1-cube.minX)+size.getPosX()/2D;
+                        double cubeY = y + cube.minY + size.yCoord / 2D;
+                        //if(posY < 0 && side != ForgeDirection.DOWN)
+                        //cubeY = y-cube.minY+size.getPosY()/2D;
+                        double cubeZ = z + cube.minZ + size.zCoord / 2D;
+                        //if(posZ < 0 && side != ForgeDirection.NORTH)
+                        //cubeZ = z-cube.minZ+size.getPosZ()/2D;
 						/*double cubeX = x;
 						if(posX < 0)
 							x -= 1;
 						double cubeY = y;
 						double cubeZ = z;*/
-						Vec3 color = preview.getPreviewColor();
-						RenderHelper3D.renderBlock(cubeX, cubeY, cubeZ, size.xCoord, size.yCoord, size.zCoord, 0, 0, 0, color.xCoord, color.yCoord, color.zCoord, Math.sin(System.nanoTime()/200000000D)*0.2+0.5);
-						GL11.glPopMatrix();
-					}
+                        Vec3 color = previewTile.getPreviewColor();
+                        RenderHelper3D.renderBlock(cubeX, cubeY, cubeZ, size.xCoord, size.yCoord, size.zCoord, 0, 0, 0, color.xCoord, color.yCoord, color.zCoord, Math.sin(System.nanoTime() / 200000000D) * 0.2 + 0.5);
+                        GL11.glPopMatrix();
+                    }
 
 		            if(markedHit == null && mc.thePlayer.isSneaking())
 		            {
-		            	ArrayList<ShiftHandler> shifthandlers = new ArrayList<ShiftHandler>();
+		            	ArrayList<ShiftHandler> shifthandlers = new ArrayList<>();
 
-		            	 for (int i = 0; i < previews.size(); i++)
-		            		 if(previews.get(i).preview != null)
-		            			 shifthandlers.addAll(previews.get(i).preview.shifthandlers);
+                        for (PreviewTile preview : previews)
+                            if (preview.preview != null)
+                                shifthandlers.addAll(preview.preview.shifthandlers);
 
-		            	 for (int i = 0; i < shifthandlers.size(); i++) {
-		            		//GL11.glPushMatrix();
-							shifthandlers.get(i).handleRendering(mc, x, y, z);
-							//GL11.glPopMatrix();
-						}
+                        for (ShiftHandler shifthandler : shifthandlers) {
+                            //GL11.glPushMatrix();
+                            shifthandler.handleRendering(mc, x, y, z);
+                            //GL11.glPopMatrix();
+                        }
 		            }
 
 		            GL11.glDepthMask(true);

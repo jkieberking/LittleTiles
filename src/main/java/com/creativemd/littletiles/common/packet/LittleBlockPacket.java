@@ -109,9 +109,9 @@ public class LittleBlockPacket extends CreativeCorePacket{
 					if(!player.capabilities.isCreativeMode)
 						WorldUtils.dropItem(player.worldObj, tile.getDrops(), x, y, z);
 					TileList<LittleTile> tiles = littleEntity.getTiles();
-					for (int i = 0; i < tiles.size(); i++) {
-						tiles.get(i).onNeighborChangeInside();
-					}
+                    for (LittleTile littleTile : tiles) {
+                        littleTile.onNeighborChangeInside();
+                    }
 					littleEntity.update();
 					break;
 				case 2:
@@ -121,7 +121,7 @@ public class LittleBlockPacket extends CreativeCorePacket{
 						TileEntityLittleTiles te = (TileEntityLittleTiles) tileEntity;
 						if(te.updateLoadedTileServer(pos, look) && te.loadedTile.canSawResizeTile(direction, player))
 						{
-							LittleTileBox box = null;
+							LittleTileBox box;
 							if(player.isSneaking())
 								box = te.loadedTile.boundingBoxes.get(0).shrink(direction);
 							else

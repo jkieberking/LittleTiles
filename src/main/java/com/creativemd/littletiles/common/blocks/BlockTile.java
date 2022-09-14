@@ -34,7 +34,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -80,11 +79,10 @@ public class BlockTile extends BlockContainer{
     {
 		if(loadTileEntity(world, x, y, z))
 		{
-			for (Iterator iterator = tempEntity.getTiles().iterator(); iterator.hasNext();) {
-				LittleTile tile = (LittleTile) iterator.next();
-				if(tile.isBed(world, x, y, z, player))
-					return true;
-			}
+            for (LittleTile tile : tempEntity.getTiles()) {
+                if (tile.isBed(world, x, y, z, player))
+                    return true;
+            }
 		}
         return false;
     }
@@ -115,19 +113,18 @@ public class BlockTile extends BlockContainer{
                 	{
                 		TileEntityLittleTiles littleTE = (TileEntityLittleTiles) te;
                 		TileList<LittleTile> tiles = littleTE.getTiles();
-                		for (int i = 0; i < tiles.size(); i++) {
-                			if(tiles.get(i).isLadder())
-                			{
-	                			for (int j = 0; j < tiles.get(i).boundingBoxes.size(); j++) {
-	                				LittleTileBox box = tiles.get(i).boundingBoxes.get(j).copy();
-	                				box.addOffset(new LittleTileVec(x2*16, y2*16, z2*16));
-	                				double expand = 0.0001;
-	                				if(bb.intersectsWith(box.getBox().expand(expand, expand, expand)))
-	                					return true;
-								}
-                			}
+                        for (LittleTile tile : tiles) {
+                            if (tile.isLadder()) {
+                                for (int j = 0; j < tile.boundingBoxes.size(); j++) {
+                                    LittleTileBox box = tile.boundingBoxes.get(j).copy();
+                                    box.addOffset(new LittleTileVec(x2 * 16, y2 * 16, z2 * 16));
+                                    double expand = 0.0001;
+                                    if (bb.intersectsWith(box.getBox().expand(expand, expand, expand)))
+                                        return true;
+                                }
+                            }
 
-						}
+                        }
                 	}
                     /*block = world.getBlock(x2, y2, z2);
                     if (block != null && block.isLadder(world, x2, y2, z2, entity))
@@ -184,7 +181,7 @@ public class BlockTile extends BlockContainer{
 		{
 			try{ //Why try? because the number of tiles can change while this method is called
 				return tempEntity.loadedTile.getSelectedBox().getOffsetBoundingBox(x, y, z);
-			}catch(Exception e){
+			}catch(Exception ignored){
 
 			}
 		}
@@ -196,15 +193,14 @@ public class BlockTile extends BlockContainer{
     {
 		if(loadTileEntity(world, x, y, z))
 		{
-			for (Iterator iterator = tempEntity.getTiles().iterator(); iterator.hasNext();) {
-				LittleTile tile = (LittleTile) iterator.next();
-				for (int i = 0; i < tile.boundingBoxes.size(); i++) {
-					AxisAlignedBB box = tile.boundingBoxes.get(i).getBox().getOffsetBoundingBox(x, y, z);
-					if(axis.intersectsWith(box))
-						list.add(box);
-				}
+            for (LittleTile tile : tempEntity.getTiles()) {
+                for (int i = 0; i < tile.boundingBoxes.size(); i++) {
+                    AxisAlignedBB box = tile.boundingBoxes.get(i).getBox().getOffsetBoundingBox(x, y, z);
+                    if (axis.intersectsWith(box))
+                        list.add(box);
+                }
 
-			}
+            }
 		}
     }
 
@@ -226,10 +222,9 @@ public class BlockTile extends BlockContainer{
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
 	{
 		if(loadTileEntity(world, x, y, z))
-			for (Iterator iterator = tempEntity.getTiles().iterator(); iterator.hasNext();) {
-				LittleTile tile = (LittleTile) iterator.next();
-				tile.randomDisplayTick(world, x, y, z, random);
-			}
+            for (LittleTile tile : tempEntity.getTiles()) {
+                tile.randomDisplayTick(world, x, y, z, random);
+            }
 	}
 
 	public static boolean cancelNext = false;
@@ -244,7 +239,7 @@ public class BlockTile extends BlockContainer{
 				if(world.isRemote)
 					PacketHandler.sendPacketToServer(new LittleBlockPacket(x, y, z, player, 0));
 				return tempEntity.loadedTile.onBlockActivated(world, x, y, z, player, side, moveX, moveY, moveZ);
-			}catch(Exception e){
+			}catch(Exception ignored){
 
 			}
 		}
@@ -313,14 +308,13 @@ public class BlockTile extends BlockContainer{
 				return 0;
 	    	if(loadTileEntity(world, x, y, z))
 	    	{
-	    		for (Iterator iterator = tempEntity.getTiles().iterator(); iterator.hasNext();) {
-					LittleTile tile = (LittleTile) iterator.next();
-					first = false;
-					int tempLight = tile.getLightValue(world, x, y, z);
-					first = true;
-					if(tempLight > light)
-						light = tempLight;
-				}
+                for (LittleTile tile : tempEntity.getTiles()) {
+                    first = false;
+                    int tempLight = tile.getLightValue(world, x, y, z);
+                    first = true;
+                    if (tempLight > light)
+                        light = tempLight;
+                }
 	    	}
 	    	return light;
 		}catch(Exception e){
@@ -348,7 +342,7 @@ public class BlockTile extends BlockContainer{
 	    			tempEntity.writeToNBT(nbt);
 	    			PacketHandler.sendPacketToServer(new LittleBlockPacket(x, y, z, player, 1));
 	    			tempEntity.updateRender();
-    			}catch(Exception e){
+    			}catch(Exception ignored){
 
     			}
     		}
@@ -375,13 +369,12 @@ public class BlockTile extends BlockContainer{
     /**Blocks will drop before this method is called*/
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
-    	ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+    	ArrayList<ItemStack> stacks = new ArrayList<>();
     	if(loadTileEntity(world, x, y, z))
     	{
-    		for (Iterator iterator = tempEntity.getTiles().iterator(); iterator.hasNext();) {
-				LittleTile tile = (LittleTile) iterator.next();
-				stacks.addAll(tile.getDrops());
-			}
+            for (LittleTile tile : tempEntity.getTiles()) {
+                stacks.addAll(tile.getDrops());
+            }
     	}
     	return stacks;
     }
@@ -395,7 +388,7 @@ public class BlockTile extends BlockContainer{
     			ArrayList<ItemStack> drops = tempEntity.loadedTile.getDrops();
     			if(drops.size() > 0)
     				return drops.get(0);
-    		}catch(Exception e){
+    		}catch(Exception ignored){
 
     		}
     	}
@@ -412,7 +405,7 @@ public class BlockTile extends BlockContainer{
     	try{ //Why try? because the loaded tile can change while setting this icon
 	    	if(loadTileEntity(worldObj, target.blockX, target.blockY, target.blockZ) && tempEntity.updateLoadedTile(mc.thePlayer))
 	    		overrideIcon = tempEntity.loadedTile.getIcon(target.sideHit);
-    	}catch(Exception e){
+    	}catch(Exception ignored){
 
     	}
         return false;
@@ -447,7 +440,7 @@ public class BlockTile extends BlockContainer{
 	            //overrideIcon = null;
 	            return true;
 	    	}
-	    }catch(Exception e){
+	    }catch(Exception ignored){
 
 		}
         return false;
@@ -459,9 +452,8 @@ public class BlockTile extends BlockContainer{
     {
     	if(overrideIcon != null)
     	{
-    		IIcon temp = overrideIcon;
-    		//overrideIcon = null;
-    		return temp;
+            //overrideIcon = null;
+    		return overrideIcon;
     	}
     	else
     		return Blocks.stone.getBlockTextureFromSide(0); //mc.getTextureMapBlocks().getAtlasSprite("MISSING");
@@ -506,10 +498,9 @@ public class BlockTile extends BlockContainer{
     	float bonus = 0F;
     	if(loadTileEntity(world, x, y, z))
     	{
-    		for (Iterator iterator = tempEntity.getTiles().iterator(); iterator.hasNext();) {
-				LittleTile tile = (LittleTile) iterator.next();
-    			bonus += tile.getEnchantPowerBonus(world, x, y, z) * tile.getPercentVolume();
-			}
+            for (LittleTile tile : tempEntity.getTiles()) {
+                bonus += tile.getEnchantPowerBonus(world, x, y, z) * tile.getPercentVolume();
+            }
     	}
     	return bonus;
     }
@@ -523,10 +514,9 @@ public class BlockTile extends BlockContainer{
     	if(loadTileEntity(world, x, y, z))
     	{
     		//tempEntity.markFullRenderUpdate();
-    		for (Iterator iterator = tempEntity.getTiles().iterator(); iterator.hasNext();) {
-				LittleTile tile = (LittleTile) iterator.next();
-    			tile.onNeighborChangeOutside();;
-			}
+            for (LittleTile tile : tempEntity.getTiles()) {
+                tile.onNeighborChangeOutside();
+            }
     	}
     }
 
@@ -536,10 +526,9 @@ public class BlockTile extends BlockContainer{
 		if(loadTileEntity(world, x, y, z))
     	{
 			//tempEntity.markFullRenderUpdate();
-			for (Iterator iterator = tempEntity.getTiles().iterator(); iterator.hasNext();) {
-				LittleTile tile = (LittleTile) iterator.next();
-    			tile.onNeighborChangeOutside();
-			}
+            for (LittleTile tile : tempEntity.getTiles()) {
+                tile.onNeighborChangeOutside();
+            }
     	}
 	}
 
@@ -550,19 +539,17 @@ public class BlockTile extends BlockContainer{
     	{
     		try{ //Why try? because the number of tiles can change while this method is called
     			MovingObjectPosition moving = null;
-    			for (Iterator iterator = tempEntity.getTiles().iterator(); iterator.hasNext();) {
-					LittleTile tile = (LittleTile) iterator.next();
-					for (int i = 0; i < tile.boundingBoxes.size(); i++) {
-						MovingObjectPosition tempMoving = tile.boundingBoxes.get(i).getBox().getOffsetBoundingBox(x, y, z).calculateIntercept(vec1, vec2);
+                for (LittleTile tile : tempEntity.getTiles()) {
+                    for (int i = 0; i < tile.boundingBoxes.size(); i++) {
+                        MovingObjectPosition tempMoving = tile.boundingBoxes.get(i).getBox().getOffsetBoundingBox(x, y, z).calculateIntercept(vec1, vec2);
 
-		    			if(tempMoving != null)
-		    			{
-		    				if(moving == null || moving.hitVec.distanceTo(vec1) > tempMoving.hitVec.distanceTo(vec1))
-		    					moving = tempMoving;
-		    			}
-					}
+                        if (tempMoving != null) {
+                            if (moving == null || moving.hitVec.distanceTo(vec1) > tempMoving.hitVec.distanceTo(vec1))
+                                moving = tempMoving;
+                        }
+                    }
 
-				}
+                }
 
     			if(moving != null)
     			{

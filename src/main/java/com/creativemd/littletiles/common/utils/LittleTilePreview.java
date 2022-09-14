@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public final class LittleTilePreview {
 
 	public boolean canSplit = true;
-	public LittleTileSize size = null;
+	public LittleTileSize size;
 
 	public NBTTagCompound nbt;
 	///**Used for multiblocks**/
@@ -23,7 +23,7 @@ public final class LittleTilePreview {
 
 	public LittleTileBox box;
 
-	public ArrayList<ShiftHandler> shifthandlers = new ArrayList<ShiftHandler>();
+	public ArrayList<ShiftHandler> shifthandlers = new ArrayList<>();
 
 	public LittleTilePreview(LittleTileBox box, NBTTagCompound nbt)
 	{
@@ -76,7 +76,7 @@ public final class LittleTilePreview {
 	public LittleTilePreview copy() {
 		LittleTilePreview preview = new LittleTilePreview(size != null ? size.copy() : null, (NBTTagCompound)nbt.copy());
 		preview.canSplit = this.canSplit;
-		preview.shifthandlers = new ArrayList<ShiftHandler>(this.shifthandlers);
+		preview.shifthandlers = new ArrayList<>(this.shifthandlers);
 		if(box != null)
 			preview.box = box.copy();
 		return preview;

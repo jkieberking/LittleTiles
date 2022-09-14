@@ -9,13 +9,13 @@ import java.util.ArrayList;
 
 public interface ILittleTile {
 
-	public ArrayList<LittleTilePreview> getLittlePreview(ItemStack stack);
+	ArrayList<LittleTilePreview> getLittlePreview(ItemStack stack);
 
-	public void rotateLittlePreview(ItemStack stack, ForgeDirection direction);
+	void rotateLittlePreview(ItemStack stack, ForgeDirection direction);
 
-	public void flipLittlePreview(ItemStack stack, ForgeDirection direction);
+	void flipLittlePreview(ItemStack stack, ForgeDirection direction);
 
-	public LittleStructure getLittleStructure(ItemStack stack);
+	LittleStructure getLittleStructure(ItemStack stack);
 
 	//public ArrayList<LittleTile> getLittleTile(ItemStack stack);
 }

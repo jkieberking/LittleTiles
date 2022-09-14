@@ -14,7 +14,7 @@ import java.util.HashMap;
  */
 public class LittleTileSortingList {
 
-	public static HashMap<SortingTile, LittleTile> tiles = new HashMap<SortingTile, LittleTile>();
+	public static HashMap<SortingTile, LittleTile> tiles = new HashMap<>();
 
 	/*public static LittleTile getLittleTile(ItemStack stack)
 	{

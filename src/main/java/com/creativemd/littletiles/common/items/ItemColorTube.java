@@ -43,7 +43,7 @@ public class ItemColorTube extends Item implements IGuiCreator{
     public void registerIcons(IIconRegister registry)
     {
         this.itemIcon = registry.registerIcon(LittleTiles.modid + ":LTColorTube");
-        this.overlay = registry.registerIcon(LittleTiles.modid + ":LTColorTube-Overlay");
+        overlay = registry.registerIcon(LittleTiles.modid + ":LTColorTube-Overlay");
     }
 
 	@Override
@@ -79,7 +79,7 @@ public class ItemColorTube extends Item implements IGuiCreator{
 	@SideOnly(Side.CLIENT)
     public IIcon getIconFromDamageForRenderPass(int meta, int pass)
     {
-        return pass == 1 ? this.overlay : this.itemIcon;
+        return pass == 1 ? overlay : this.itemIcon;
     }
 
 	@Override
@@ -119,7 +119,7 @@ public class ItemColorTube extends Item implements IGuiCreator{
 	{
 		if(!world.isRemote)
 		{
-			((EntityPlayerMP)player).openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+			player.openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
 		}
 		return stack;
 	}

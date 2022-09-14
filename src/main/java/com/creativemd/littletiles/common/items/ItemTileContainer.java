@@ -66,7 +66,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 
 	public static ArrayList<BlockEntry> loadMap(EntityPlayer player)
 	{
-		ArrayList<BlockEntry> mainList = new ArrayList<BlockEntry>();
+		ArrayList<BlockEntry> mainList = new ArrayList<>();
 		for (int i = 0; i < player.inventory.mainInventory.length; i++) {
 			ItemStack stack = player.inventory.mainInventory[i];
 			if(stack != null && stack.getItem() instanceof ItemTileContainer)
@@ -94,7 +94,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 
 	public static ArrayList<BlockEntry> loadMap(ItemStack stack)
 	{
-		ArrayList<BlockEntry> mainMap = new ArrayList<BlockEntry>();
+		ArrayList<BlockEntry> mainMap = new ArrayList<>();
 		if(stack.hasTagCompound())
 		{
 			int count = stack.stackTagCompound.getInteger("count");
@@ -146,8 +146,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 			float stored = stackMap.get(stackMap.indexOf(entry)).value;
 			float drain = Math.min(ammount, stored);
 			stored -= drain;
-			ammount -= drain;
-			stackMap.get(stackMap.indexOf(entry)).value -= stored;
+            stackMap.get(stackMap.indexOf(entry)).value -= stored;
 			if(stored <= 0)
 				stackMap.remove(entry);
 			saveMap(stack, stackMap);
@@ -199,7 +198,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 	{
 		if(!world.isRemote)
 		{
-			((EntityPlayerMP)player).openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+			player.openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
 			return stack;
 		}
 		return stack;

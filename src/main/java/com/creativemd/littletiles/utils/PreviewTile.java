@@ -101,8 +101,8 @@ public class PreviewTile {
 			offZ = (int) Math.floor(box.minZ/16D);
 
 		int posX = x+offX;
-		int posY = y+offY;
-		int posZ = z+offZ;
+		int posY;
+		int posZ;
 
 		int spaceX = box.minX-offX*16;
 		int spaceY = box.minY-offY*16;

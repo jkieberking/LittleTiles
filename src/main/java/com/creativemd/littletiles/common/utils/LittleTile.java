@@ -33,7 +33,7 @@ import java.util.Random;
 
 public abstract class LittleTile {
 
-	private static HashMap<Class<? extends LittleTile>, String> tileIDs = new HashMap<Class<? extends LittleTile>, String>();
+	private static final HashMap<Class<? extends LittleTile>, String> tileIDs = new HashMap<>();
 
 	public static final int minPos = 0;
 	public static final int maxPos = 16;
@@ -112,7 +112,7 @@ public abstract class LittleTile {
 	/**Every LittleTile class has to have this constructor implemented**/
 	public LittleTile()
 	{
-		boundingBoxes = new ArrayList<LittleTileBox>();
+		boundingBoxes = new ArrayList<>();
 	}
 
 	public String getID()
@@ -147,21 +147,21 @@ public abstract class LittleTile {
 	public double getPercentVolume()
 	{
 		double percent = 0;
-		for (int i = 0; i < boundingBoxes.size(); i++) {
-			percent += boundingBoxes.get(i).getSize().getPercentVolume();
-		}
+        for (LittleTileBox boundingBox : boundingBoxes) {
+            percent += boundingBox.getSize().getPercentVolume();
+        }
 		return percent;
 	}
 
 	public LittleTileSize getSize()
 	{
 		LittleTileSize size = new LittleTileSize(0, 0, 0);
-		for (int i = 0; i < boundingBoxes.size(); i++) {
-			LittleTileSize tempSize = boundingBoxes.get(i).getSize();
-			size.sizeX = (byte) Math.max(size.sizeX, tempSize.sizeX);
-			size.sizeY = (byte) Math.max(size.sizeY, tempSize.sizeY);
-			size.sizeZ = (byte) Math.max(size.sizeZ, tempSize.sizeZ);
-		}
+        for (LittleTileBox boundingBox : boundingBoxes) {
+            LittleTileSize tempSize = boundingBox.getSize();
+            size.sizeX = (byte) Math.max(size.sizeX, tempSize.sizeX);
+            size.sizeY = (byte) Math.max(size.sizeY, tempSize.sizeY);
+            size.sizeZ = (byte) Math.max(size.sizeZ, tempSize.sizeZ);
+        }
 		return size;
 	}
 
@@ -170,11 +170,8 @@ public abstract class LittleTile {
 			return false;
 		if(isStructureBlock != tile.isStructureBlock)
 			return false;
-		if(isStructureBlock && structure != tile.structure)
-			return false;
-
-		return true;
-	}
+        return !isStructureBlock || structure == tile.structure;
+    }
 	//public abstract boolean canBeCombined(LittleTile tile);
 
 	public void combineTiles(LittleTile tile)
@@ -336,7 +333,7 @@ public abstract class LittleTile {
 
 	public LittleTile copy()
 	{
-		LittleTile tile = null;
+		LittleTile tile;
 		try {
 			tile = this.getClass().getConstructor().newInstance();
 		} catch (Exception e) {
@@ -376,7 +373,7 @@ public abstract class LittleTile {
 
 	public ArrayList<ItemStack> getDrops()
 	{
-		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+		ArrayList<ItemStack> drops = new ArrayList<>();
 		ItemStack stack = null;
 		if(isStructureBlock)
 		{

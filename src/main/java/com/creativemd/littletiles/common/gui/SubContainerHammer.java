@@ -50,7 +50,7 @@ public class SubContainerHammer extends SubContainer{
 					dropstack.stackSize = tiles;
 					dropstack.stackTagCompound = new NBTTagCompound();
 					size.writeToNBT("size", dropstack.stackTagCompound);
-					LittleTile tile = null;
+					LittleTile tile;
 					if(value.hasKey("color"))
 						tile = new LittleTileBlockColored(block, stack.getItemDamage(), ColorUtils.IntToRGB(value.getInteger("color")));
 					else

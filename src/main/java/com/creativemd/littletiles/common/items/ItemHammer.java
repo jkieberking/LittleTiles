@@ -44,7 +44,7 @@ public class ItemHammer extends Item implements IGuiCreator{
 	{
 		if(!world.isRemote && !player.isSneaking())
 		{
-			((EntityPlayerMP)player).openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+			player.openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
 			return stack;
 		}
 		return stack;

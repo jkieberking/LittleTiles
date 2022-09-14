@@ -19,7 +19,7 @@ public class SubGuiWrench extends SubGui {
 	@Override
 	public void createControls() {
 		controls.add(new GuiButton("Craft", 70, 5, 40));
-		controls.add(new GuiItemListBox("missing", container.player, 10, 30, 100, 50, new ArrayList<ItemStack>(), new ArrayList<String>()));
+		controls.add(new GuiItemListBox("missing", container.player, 10, 30, 100, 50, new ArrayList<>(), new ArrayList<>()));
 	}
 
 	@CustomEventSubscribe
@@ -46,9 +46,9 @@ public class SubGuiWrench extends SubGui {
 						missing.addAll(SubContainerWrench.getMissing(tiles, entries));
 					}
 
-					for (int i = 0; i < missing.size(); i++) {
-						listBox.add(SubGuiTileContainer.getStringOfValue(missing.get(i).value), missing.get(i).getItemStack());
-					}
+                    for (BlockEntry blockEntry : missing) {
+                        listBox.add(SubGuiTileContainer.getStringOfValue(blockEntry.value), blockEntry.getItemStack());
+                    }
 
 					if(missing.size() > 0)
 						return ;

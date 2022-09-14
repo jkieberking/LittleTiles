@@ -43,14 +43,13 @@ public class LittleTileTileEntity extends LittleTileBlock{
 	public void updatePacket(NBTTagCompound nbt)
 	{
 		super.updatePacket(nbt);
-		if(!firstSended)
-		{
+		if(!firstSended) {
 			firstSended = true;
 			NBTTagCompound nbtTag = new NBTTagCompound();
 			tileEntity.writeToNBT(nbtTag);
 			nbt.setTag("tileentity", nbtTag);
 			nbt.setBoolean("isFirst", true);
-		}else{
+		} else {
 			Packet packet = tileEntity.getDescriptionPacket();
 			if(packet instanceof S35PacketUpdateTileEntity)
 			{
@@ -73,7 +72,7 @@ public class LittleTileTileEntity extends LittleTileBlock{
 		        if(newNBT != null)
 		        	nbt.setTag("tileentity", newNBT);
 			}else{
-				//Send packet. No idea how!
+				//TODO Send packet. No idea how!
 			}
 		}
 	}
@@ -146,7 +145,7 @@ public class LittleTileTileEntity extends LittleTileBlock{
 	            int i = te.getWorldObj().getLightBrightnessForSkyBlocks(te.xCoord, te.yCoord, te.zCoord, 0);
 	            int j = i % 65536;
 	            int k = i / 65536;
-	            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+	            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
 	            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	            double posX = (double)te.xCoord - TileEntityRendererDispatcher.staticPlayerX;
 	            double posY = (double)te.yCoord - TileEntityRendererDispatcher.staticPlayerY;

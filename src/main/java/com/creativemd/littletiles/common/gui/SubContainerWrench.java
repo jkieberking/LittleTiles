@@ -38,51 +38,46 @@ public class SubContainerWrench extends SubContainer{
 	public static ArrayList<BlockEntry> getMissing(ArrayList<LittleTilePreview> tiles, ArrayList<BlockEntry> entries)
 	{
 		ArrayList<BlockEntry> missing = new ArrayList<>();
-		for (int i = 0; i < tiles.size(); i++) {
-			Block blockofTile = Block.getBlockFromName(tiles.get(i).nbt.getString("block"));
-			int meta = tiles.get(i).nbt.getInteger("meta");
-			float size = tiles.get(i).size.getPercentVolume();
-			int j = 0;
-			boolean found = false;
-			while(j < entries.size())
-			{
-				if(blockofTile == entries.get(j).block && meta == entries.get(j).meta)
-				{
-					float amount = Math.min(entries.get(j).value, size);
-					entries.get(j).value -= amount;
-					size -= amount;
+        for (LittleTilePreview tile : tiles) {
+            Block blockofTile = Block.getBlockFromName(tile.nbt.getString("block"));
+            int meta = tile.nbt.getInteger("meta");
+            float size = tile.size.getPercentVolume();
+            int j = 0;
+            boolean found = false;
+            while (j < entries.size()) {
+                if (blockofTile == entries.get(j).block && meta == entries.get(j).meta) {
+                    float amount = Math.min(entries.get(j).value, size);
+                    entries.get(j).value -= amount;
+                    size -= amount;
 
-					if(entries.get(j).value <= 0)
-					{
-						entries.remove(j);
-						if(size > 0)
-							continue;
-					}
+                    if (entries.get(j).value <= 0) {
+                        entries.remove(j);
+                        if (size > 0)
+                            continue;
+                    }
 
-					if(size <= 0)
-					{
-						found = true;
-						break;
-					}
-				}
-				j++;
-			}
-			if(!found)
-			{
-				BlockEntry entry = new BlockEntry(blockofTile, meta, size);
-				int index = missing.indexOf(entry);
-				if(index == -1)
-					missing.add(entry);
-				else
-					missing.get(index).value += size;
-			}
-		}
+                    if (size <= 0) {
+                        found = true;
+                        break;
+                    }
+                }
+                j++;
+            }
+            if (!found) {
+                BlockEntry entry = new BlockEntry(blockofTile, meta, size);
+                int index = missing.indexOf(entry);
+                if (index == -1)
+                    missing.add(entry);
+                else
+                    missing.get(index).value += size;
+            }
+        }
 		return missing;
 	}
 
 	public static ArrayList<BlockEntry> getContentofStack(ItemStack stack)
 	{
-		ArrayList<BlockEntry> entries = new ArrayList<BlockEntry>();
+		ArrayList<BlockEntry> entries = new ArrayList<>();
 		if(stack != null)
 		{
 			ILittleTile tile = PlacementHelper.getLittleInterface(stack);
@@ -92,17 +87,15 @@ public class SubContainerWrench extends SubContainer{
 				ArrayList<LittleTilePreview> tiles = tile.getLittlePreview(stack);
 				if(tiles != null)
 				{
-					for (int i = 0; i < tiles.size(); i++) {
-						if(tiles.get(i).nbt.hasKey("block"))
-						{
-							Block block2 = Block.getBlockFromName(tiles.get(i).nbt.getString("block"));
-							if(block2 != null && !(block2 instanceof BlockAir))
-							{
-								entries.add(new BlockEntry(block2, tiles.get(i).nbt.getInteger("meta"), tiles.get(i).size.getPercentVolume()));
-								//ItemTileContainer.addBlock(stack, block2, );
-							}
-						}
-					}
+                    for (LittleTilePreview littleTilePreview : tiles) {
+                        if (littleTilePreview.nbt.hasKey("block")) {
+                            Block block2 = Block.getBlockFromName(littleTilePreview.nbt.getString("block"));
+                            if (block2 != null && !(block2 instanceof BlockAir)) {
+                                entries.add(new BlockEntry(block2, littleTilePreview.nbt.getInteger("meta"), littleTilePreview.size.getPercentVolume()));
+                                //ItemTileContainer.addBlock(stack, block2, );
+                            }
+                        }
+                    }
 
 				}
 			}
@@ -159,9 +152,9 @@ public class SubContainerWrench extends SubContainer{
 									if(stack2.stackSize == 0)
 										basic.setInventorySlotContents(1, null);
 									if(entries.size() > 0){
-										for (int i = 0; i < entries.size(); i++) {
-											ItemTileContainer.addBlock(player, entries.get(i).block, entries.get(i).meta, entries.get(i).value);
-										}
+                                        for (BlockEntry entry : entries) {
+                                            ItemTileContainer.addBlock(player, entry.block, entry.meta, entry.value);
+                                        }
 									}
 								}
 							}

@@ -50,7 +50,7 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator{
     {
 		if(!world.isRemote && !player.isSneaking() && stack.stackTagCompound != null && !stack.stackTagCompound.hasKey("x"))
 		{
-			((EntityPlayerMP)player).openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+			player.openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
 		}
         return stack;
     }
@@ -95,7 +95,7 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator{
 				int minZ = Math.min(firstZ, z);
 				int maxZ = Math.max(firstZ, z);
 
-				ArrayList<LittleTile> tiles = new ArrayList<LittleTile>();
+				ArrayList<LittleTile> tiles = new ArrayList<>();
 
 				stack.stackTagCompound.removeTag("x");
 				stack.stackTagCompound.removeTag("y");
@@ -110,13 +110,13 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator{
 								LittleTileVec offset = new LittleTileVec((posX-minX)*16, (posY-minY)*16, (posZ-minZ)*16);
 								TileEntityLittleTiles littleEntity = (TileEntityLittleTiles) tileEntity;
 								TileList<LittleTile> teTiles = littleEntity.getTiles();
-								for (int i = 0; i < teTiles.size(); i++) {
-									LittleTile tile = teTiles.get(i).copy();
-									for (int j = 0; j < tile.boundingBoxes.size(); j++) {
-										tile.boundingBoxes.get(j).addOffset(offset);
-									}
-									tiles.add(tile);
-								}
+                                for (LittleTile teTile : teTiles) {
+                                    LittleTile tile = teTile.copy();
+                                    for (int j = 0; j < tile.boundingBoxes.size(); j++) {
+                                        tile.boundingBoxes.get(j).addOffset(offset);
+                                    }
+                                    tiles.add(tile);
+                                }
 							}
 						}
 					}
@@ -161,7 +161,7 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator{
 
 	public static ArrayList<LittleTilePreview> getPreview(ItemStack stack)
 	{
-		ArrayList<LittleTilePreview> result = new ArrayList<LittleTilePreview>();
+		ArrayList<LittleTilePreview> result = new ArrayList<>();
 		int tiles = stack.stackTagCompound.getInteger("tiles");
 		for (int i = 0; i < tiles; i++) {
 			NBTTagCompound nbt = stack.stackTagCompound.getCompoundTag("tile" + i);
@@ -181,21 +181,20 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator{
 		byte maxX = LittleTile.minPos;
 		byte maxY = LittleTile.minPos;
 		byte maxZ = LittleTile.minPos;
-		for (int i = 0; i < tiles.size(); i++) {
-			LittleTilePreview tile = tiles.get(i);
-			minX = (byte) Math.min(minX, tile.box.minX);
-			minY = (byte) Math.min(minY, tile.box.minY);
-			minZ = (byte) Math.min(minZ, tile.box.minZ);
-			maxX = (byte) Math.max(maxX, tile.box.maxX);
-			maxY = (byte) Math.max(maxY, tile.box.maxY);
-			maxZ = (byte) Math.max(maxZ, tile.box.maxZ);
-		}
+        for (LittleTilePreview tile : tiles) {
+            minX = (byte) Math.min(minX, tile.box.minX);
+            minY = (byte) Math.min(minY, tile.box.minY);
+            minZ = (byte) Math.min(minZ, tile.box.minZ);
+            maxX = (byte) Math.max(maxX, tile.box.maxX);
+            maxY = (byte) Math.max(maxY, tile.box.maxY);
+            maxZ = (byte) Math.max(maxZ, tile.box.maxZ);
+        }
 		return new LittleTileSize(maxX-minX, maxY-minY, maxZ-minZ);
 	}
 
 	public static ArrayList<LittleTile> loadTiles(TileEntityLittleTiles te, ItemStack stack)
 	{
-		ArrayList<LittleTile> result = new ArrayList<LittleTile>();
+		ArrayList<LittleTile> result = new ArrayList<>();
 		int tiles = stack.stackTagCompound.getInteger("tiles");
 		for (int i = 0; i < tiles; i++) {
 			NBTTagCompound nbt = stack.stackTagCompound.getCompoundTag("tile" + i);
@@ -221,10 +220,10 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator{
 	public static ArrayList<CubeObject> getCubes(ItemStack stack)
 	{
 		ArrayList<LittleTilePreview> preview = getPreview(stack);
-		ArrayList<CubeObject> cubes = new ArrayList<CubeObject>();
-		for (int i = 0; i < preview.size(); i++) {
-			cubes.add(preview.get(i).getCubeBlock());
-		}
+		ArrayList<CubeObject> cubes = new ArrayList<>();
+        for (LittleTilePreview littleTilePreview : preview) {
+            cubes.add(littleTilePreview.getCubeBlock());
+        }
 		return cubes;
 	}
 
@@ -255,7 +254,7 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator{
 	public ArrayList<CubeObject> getRenderingCubes(ItemStack stack) {
 		if(stack.stackTagCompound != null && !stack.stackTagCompound.hasKey("x"))
 			return getCubes(stack);
-		return new ArrayList<CubeObject>();
+		return new ArrayList<>();
 	}
 
 	@Override

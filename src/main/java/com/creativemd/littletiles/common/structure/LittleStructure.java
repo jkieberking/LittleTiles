@@ -26,139 +26,117 @@ import java.util.HashMap;
 
 public abstract class LittleStructure {
 
-	private static HashMap<String, LittleStructureEntry> structures = new HashMap<String, LittleStructureEntry>();
+    private static final HashMap<String, LittleStructureEntry> structures = new HashMap<>();
 
-	public static ArrayList<String> getStructureNames()
-	{
-		ArrayList<String> result = new ArrayList<>();
-		for (String id : structures.keySet()) {
-			result.add(id);
-		}
-		return result;
-	}
+    public static ArrayList<String> getStructureNames() {
+        return new ArrayList<>(structures.keySet());
+    }
 
-	public static void registerLittleStructure(String id, LittleStructure structure)
-	{
-		registerLittleStructure(id, new LittleStructureEntry(structure.getClass(), structure));
-	}
+    public static void registerLittleStructure(String id, LittleStructure structure) {
+        registerLittleStructure(id, new LittleStructureEntry(structure.getClass(), structure));
+    }
 
-	public static void registerLittleStructure(String id, LittleStructureEntry entry)
-	{
-		if(structures.containsKey(id))
-			System.out.println("ID is already taken! id=" + id);
-		else if(structures.containsValue(entry))
-			System.out.println("Already registered class=" + entry);
-		else{
-			structures.put(id, entry);
-		}
-	}
+    public static void registerLittleStructure(String id, LittleStructureEntry entry) {
+        if (structures.containsKey(id))
+            System.out.println("ID is already taken! id=" + id);
+        else if (structures.containsValue(entry))
+            System.out.println("Already registered class=" + entry);
+        else {
+            structures.put(id, entry);
+        }
+    }
 
-	public static String getIDByClass(Class<? extends LittleStructure> classStructure)
-	{
-		for (String id : structures.keySet()) {
-			if(classStructure.equals(structures.get(id).structureClass))
-				return id;
-		}
-		return "";
-	}
+    public static String getIDByClass(Class<? extends LittleStructure> classStructure) {
+        for (String id : structures.keySet()) {
+            if (classStructure.equals(structures.get(id).structureClass))
+                return id;
+        }
+        return "";
+    }
 
-	public static Class<? extends LittleStructure> getClassByID(String id)
-	{
-		LittleStructureEntry entry = structures.get(id);
-		if(entry != null)
-			return entry.structureClass;
-		return null;
-	}
+    public static Class<? extends LittleStructure> getClassByID(String id) {
+        LittleStructureEntry entry = structures.get(id);
+        if (entry != null)
+            return entry.structureClass;
+        return null;
+    }
 
-	public static LittleStructureEntry getEntryByID(String id)
-	{
-		return structures.get(id);
-	}
+    public static LittleStructureEntry getEntryByID(String id) {
+        return structures.get(id);
+    }
 
-	public static void initStructures()
-	{
-		registerLittleStructure("fixed", new LittleFixedStructure());
-		registerLittleStructure("chair", new LittleChair());
-		registerLittleStructure("door", new LittleDoor());
-		registerLittleStructure("ladder", new LittleLadder());
-		registerLittleStructure("bed", new LittleBed());
-	}
+    public static void initStructures() {
+        registerLittleStructure("fixed", new LittleFixedStructure());
+        registerLittleStructure("chair", new LittleChair());
+        registerLittleStructure("door", new LittleDoor());
+        registerLittleStructure("ladder", new LittleLadder());
+        registerLittleStructure("bed", new LittleBed());
+    }
 
-	public static LittleStructure createAndLoadStructure(NBTTagCompound nbt, LittleTile mainTile)
-	{
-		if(nbt == null)
-			return null;
-		String id = nbt.getString("id");
-		LittleStructureEntry entry = getEntryByID(id);
-		if(entry != null)
-		{
-			Class<? extends LittleStructure> classStructure = entry.structureClass;
-			if(classStructure != null)
-			{
-				LittleStructure structure = null;
-				try {
-					structure = classStructure.getConstructor().newInstance();
-				} catch (Exception e) {
-					System.out.println("Found invalid structureID=" + id);
-				}
-				structure.mainTile = mainTile;
-				structure.loadFromNBT(nbt);
-				return structure;
-			}
-		}
-		return null;
-	}
+    public static LittleStructure createAndLoadStructure(NBTTagCompound nbt, LittleTile mainTile) {
+        if (nbt == null)
+            return null;
+        String id = nbt.getString("id");
+        LittleStructureEntry entry = getEntryByID(id);
+        if (entry != null) {
+            Class<? extends LittleStructure> classStructure = entry.structureClass;
+            if (classStructure != null) {
+                LittleStructure structure = null;
+                try {
+                    structure = classStructure.getConstructor().newInstance();
+                } catch (Exception e) {
+                    System.out.println("Found invalid structureID=" + id);
+                }
+                structure.mainTile = mainTile;
+                structure.loadFromNBT(nbt);
+                return structure;
+            }
+        }
+        return null;
+    }
 
-	public LittleTile mainTile;
-	private ArrayList<LittleTile> tiles = null;
+    public LittleTile mainTile;
+    private ArrayList<LittleTile> tiles = null;
 
-	public void setTiles(ArrayList<LittleTile> tiles)
-	{
-		this.tiles = tiles;
-	}
+    public void setTiles(ArrayList<LittleTile> tiles) {
+        this.tiles = tiles;
+    }
 
-	public ArrayList<LittleTile> getTiles()
-	{
-		if(tiles == null)
-			if(!loadTiles())
-			{
-				ArrayList<LittleTile> tiles =  new ArrayList<>();
-				return tiles;
-			}
-		return tiles;
-	}
+    public ArrayList<LittleTile> getTiles() {
+        if (tiles == null)
+            if (!loadTiles()) {
+                return new ArrayList<>();
+            }
+        return tiles;
+    }
 
-	public boolean hasLoaded()
-	{
-		loadTiles();
-		return tilesToLoad == null || tilesToLoad.size() == 0;
-	}
+    public boolean hasLoaded() {
+        loadTiles();
+        return tilesToLoad == null || tilesToLoad.size() == 0;
+    }
 
-	public boolean loadTiles()
-	{
-		if(mainTile != null)
-		{
-			if(tiles == null)
-			{
-				tiles = new ArrayList<LittleTile>();
-				tiles.add(mainTile);
-			}
+    public boolean loadTiles() {
+        if (mainTile != null) {
+            if (tiles == null) {
+                tiles = new ArrayList<>();
+                tiles.add(mainTile);
+            }
 
-			if(tilesToLoad == null)
-				return true;
+            if (tilesToLoad == null)
+                return true;
 
-			int i = 0;
-			while (i < tilesToLoad.size()) {
-				if(checkForTile(mainTile.te.getWorldObj(), tilesToLoad.get(i)))
-					tilesToLoad.remove(i);
-				else
-					i++;
-			}
+            int i = 0;
+            while (i < tilesToLoad.size()) {
+                if (checkForTile(mainTile.te.getWorldObj(), tilesToLoad.get(i)))
+                    tilesToLoad.remove(i);
+                else
+                    i++;
+            }
 
-			if(tilesToLoad.size() == 0)
-				tilesToLoad = null;
-			return true;
-		}
+            if (tilesToLoad.size() == 0)
+                tilesToLoad = null;
+            return true;
+        }
 		return false;
 	}
 
@@ -184,7 +162,7 @@ public abstract class LittleStructure {
 			tilesToLoad = new ArrayList<>();
 			int count = nbt.getInteger("count");
 			for (int i = 0; i < count; i++) {
-				LittleTileCoord coord = null;
+                LittleTileCoord coord;
 				if(nbt.hasKey("i" + i + "coX"))
 				{
 					LittleTilePosition pos = new LittleTilePosition("i" + i, nbt);
@@ -218,14 +196,13 @@ public abstract class LittleStructure {
 		{
 			nbt.setInteger("count", tiles.size());
 			for (int i = 0; i < tiles.size(); i++) {
-				if(tiles.get(i).isStructureBlock)
-				{
-					tiles.get(i).updateCorner();
-					new LittleTileCoord(mainTile.te, tiles.get(i).te.getCoord(), tiles.get(i).cornerVec.copy()).writeToNBT("i" + i, nbt);;
-					//new LittleTilePosition().writeToNBT("i" + i, nbt);
-				}
-					//tiles.get(i).pos.writeToNBT("i" + i, nbt);
-			}
+                if (tiles.get(i).isStructureBlock) {
+                    tiles.get(i).updateCorner();
+                    new LittleTileCoord(mainTile.te, tiles.get(i).te.getCoord(), tiles.get(i).cornerVec.copy()).writeToNBT("i" + i, nbt);
+                    //new LittleTilePosition().writeToNBT("i" + i, nbt);
+                }
+                //tiles.get(i).pos.writeToNBT("i" + i, nbt);
+            }
 		}
 
 		if(tilesToLoad != null)
@@ -291,87 +268,80 @@ public abstract class LittleStructure {
 		return false;
 	}*/
 
-	//====================Rendering====================
+    //====================Rendering====================
 
-	public ArrayList<PreviewTile> getSpecialTiles()
-	{
-		return new ArrayList<>();
-	}
+    public ArrayList<PreviewTile> getSpecialTiles() {
+        return new ArrayList<>();
+    }
 
-	//====================LittleTile-Stuff====================
+    //====================LittleTile-Stuff====================
 
-	public void onLittleTileDestory()
-	{
-		ArrayList<LittleTile> tiles = getTiles();
-		for (int i = 0; i < tiles.size(); i++) {
-			tiles.get(i).te.removeTile(tiles.get(i));
-			//tiles.get(i).destroy();
-		}
-	}
+    public void onLittleTileDestory() {
+        ArrayList<LittleTile> tiles = getTiles();
+        for (LittleTile tile : tiles) {
+            tile.te.removeTile(tile);
+            //tiles.get(i).destroy();
+        }
+    }
 
-	public ItemStack getStructureDrop()
-	{
-		return dropStack;
-	}
+    public ItemStack getStructureDrop() {
+        return dropStack;
+    }
 
-	public boolean onBlockActivated(World world, LittleTile tile, int x, int y, int z, EntityPlayer player, int side, float moveX, float moveY, float moveZ)
-	{
-		return false;
-	}
+    public boolean onBlockActivated(World world, LittleTile tile, int x, int y, int z, EntityPlayer player, int side, float moveX, float moveY, float moveZ) {
+        return false;
+    }
 
-	//====================SORTING====================
+    //====================SORTING====================
 
-	public HashMapList<ChunkCoordinates, LittleTile> getTilesSortedPerBlock()
-	{
-		HashMapList<ChunkCoordinates, LittleTile> coords = new HashMapList<>();
-		ArrayList<LittleTile> tiles = getTiles();
-		for (int i = 0; i < tiles.size(); i++) {
-			coords.add(tiles.get(i).te.getCoord(), tiles.get(i));
-		}
-		return coords;
-	}
+    public HashMapList<ChunkCoordinates, LittleTile> getTilesSortedPerBlock() {
+        HashMapList<ChunkCoordinates, LittleTile> coords = new HashMapList<>();
+        ArrayList<LittleTile> tiles = getTiles();
+        for (LittleTile tile : tiles) {
+            coords.add(tile.te.getCoord(), tile);
+        }
+        return coords;
+    }
 
-	public void onFlip(World world, EntityPlayer player, ItemStack stack, ForgeDirection direction){}
+    public void onFlip(World world, EntityPlayer player, ItemStack stack, ForgeDirection direction) {
+    }
 
-	public void onRotate(World world, EntityPlayer player, ItemStack stack, ForgeDirection direction){}
+    public void onRotate(World world, EntityPlayer player, ItemStack stack, ForgeDirection direction) {
+    }
 
-	//====================GUI STUFF====================
-	@SideOnly(Side.CLIENT)
-	public abstract void createControls(SubGui gui, LittleStructure structure);
+    //====================GUI STUFF====================
+    @SideOnly(Side.CLIENT)
+    public abstract void createControls(SubGui gui, LittleStructure structure);
 
-	@SideOnly(Side.CLIENT)
-	public abstract LittleStructure parseStructure(SubGui gui);
+    @SideOnly(Side.CLIENT)
+    public abstract LittleStructure parseStructure(SubGui gui);
 
-	//====================LittleStructure ID====================
+    //====================LittleStructure ID====================
 
-	public String getIDOfStructure()
-	{
-		return getIDByClass(this.getClass());
-	}
+    public String getIDOfStructure() {
+        return getIDByClass(this.getClass());
+    }
 
-	public static class LittleStructureEntry {
+    public static class LittleStructureEntry {
 
-		public Class<? extends LittleStructure> structureClass;
-		public LittleStructure parser;
+        public Class<? extends LittleStructure> structureClass;
+        public LittleStructure parser;
 
-		public LittleStructureEntry(Class<? extends LittleStructure> structureClass, LittleStructure parser)
-		{
-			this.structureClass = structureClass;
-			this.parser = parser;
-		}
+        public LittleStructureEntry(Class<? extends LittleStructure> structureClass, LittleStructure parser) {
+            this.structureClass = structureClass;
+            this.parser = parser;
+        }
 
-		@Override
-		public boolean equals(Object object)
-		{
-			return object instanceof LittleStructureEntry && ((LittleStructureEntry) object).structureClass == this.structureClass;
-		}
+        @Override
+        public boolean equals(Object object) {
+            return object instanceof LittleStructureEntry && ((LittleStructureEntry) object).structureClass == this.structureClass;
+        }
 
-		@Override
-		public String toString()
-		{
-			return structureClass.toString();
-		}
-	}
+        @Override
+        public String toString() {
+            return structureClass.toString();
+        }
+    }
 
 	public boolean isBed(IBlockAccess world, int x, int y, int z, EntityLivingBase player)
 	{

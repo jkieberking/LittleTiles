@@ -52,43 +52,41 @@ public class GuiTileViewer extends GuiControl{
 
 	public void updateNormalAxis()
 	{
-		ArrayList<CubeObject> cubes = ((ITilesRenderer)stack.getItem()).getRenderingCubes(stack);
-		double minX = Integer.MAX_VALUE;
-		double minY = Integer.MAX_VALUE;
-		double minZ = Integer.MAX_VALUE;
-		double maxX = Integer.MIN_VALUE;
-		double maxY = Integer.MIN_VALUE;
-		double maxZ = Integer.MIN_VALUE;
+        ArrayList<CubeObject> cubes = ((ITilesRenderer) stack.getItem()).getRenderingCubes(stack);
+        double minX = Integer.MAX_VALUE;
+        double minY = Integer.MAX_VALUE;
+        double minZ = Integer.MAX_VALUE;
+        double maxX = Integer.MIN_VALUE;
+        double maxY = Integer.MIN_VALUE;
+        double maxZ = Integer.MIN_VALUE;
 
-		for (int i = 0; i < cubes.size(); i++) {
-			CubeObject cube = cubes.get(i);
-			minX = Math.min(minX, cube.minX);
-			minY = Math.min(minY, cube.minY);
-			minZ = Math.min(minZ, cube.minZ);
-			maxX = Math.max(maxX, cube.maxX);
-			maxY = Math.max(maxY, cube.maxY);
-			maxZ = Math.max(maxZ, cube.maxZ);
-		}
+        for (CubeObject cube : cubes) {
+            minX = Math.min(minX, cube.minX);
+            minY = Math.min(minY, cube.minY);
+            minZ = Math.min(minZ, cube.minZ);
+            maxX = Math.max(maxX, cube.maxX);
+            maxY = Math.max(maxY, cube.maxY);
+            maxZ = Math.max(maxZ, cube.maxZ);
+        }
 
-		double sizeX = maxX-minX;
-		double sizeY = maxY-minZ;
-		double sizeZ = maxZ-minZ;
+        double sizeX = maxX - minX;
+        double sizeY = maxY - minZ;
+        double sizeZ = maxZ - minZ;
 
-		switch(axisDirection)
-		{
-		case Xaxis:
-			if(sizeY >= sizeZ)
-				normalAxis = Axis.Zaxis;
-			else
-				normalAxis = Axis.Yaxis;
-			break;
-		case Yaxis:
-			if(sizeX >= sizeZ)
-				normalAxis = Axis.Zaxis;
-			else
-				normalAxis = Axis.Xaxis;
-			break;
-		case Zaxis:
+        switch (axisDirection) {
+            case Xaxis:
+                if (sizeY >= sizeZ)
+                    normalAxis = Axis.Zaxis;
+                else
+                    normalAxis = Axis.Yaxis;
+                break;
+            case Yaxis:
+                if (sizeX >= sizeZ)
+                    normalAxis = Axis.Zaxis;
+                else
+                    normalAxis = Axis.Xaxis;
+                break;
+            case Zaxis:
 			if(sizeX >= sizeY)
 				normalAxis = Axis.Yaxis;
 			else
@@ -151,16 +149,16 @@ public class GuiTileViewer extends GuiControl{
         movey *= scale;
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor(movex,movey,(this.width-2) * scale,(this.height-2) * scale);
-		GL11.glPushMatrix();
+        GL11.glScissor(movex, movey, (this.width - 2) * scale, (this.height - 2) * scale);
+        GL11.glPushMatrix();
 
-		//Vec3 offset = Vec3.createVectorHelper(p_72443_0_, p_72443_2_, p_72443_4_);
-		GL11.glTranslated(this.width/2-offsetX, this.height/2-offsetY, 0);
-		GL11.glScaled(4, 4, 4);
-		GL11.glScaled(this.scale, this.scale, this.scale);
-		GL11.glTranslated(offsetX*2, offsetY*2, 0);
+        //Vec3 offset = Vec3.createVectorHelper(p_72443_0_, p_72443_2_, p_72443_4_);
+        GL11.glTranslated((float) (this.width / 2) - offsetX, (float) (this.height / 2) - offsetY, 0);
+        GL11.glScaled(4, 4, 4);
+        GL11.glScaled(this.scale, this.scale, this.scale);
+        GL11.glTranslated(offsetX * 2, offsetY * 2, 0);
 
-		mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+        mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
         //Block block = Block.getBlockFromItem(stack.getItem());
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
@@ -179,15 +177,16 @@ public class GuiTileViewer extends GuiControl{
 
         //}
 
-        if(viewDirection == ForgeDirection.UP || viewDirection == ForgeDirection.DOWN)
-        	GL11.glRotated(-90, 1, 0, 0);
-        else if(viewDirection == ForgeDirection.DOWN)
-        	GL11.glRotated(90, 1, 0, 0);
-        else
-        	RenderHelper3D.applyDirection(viewDirection);
+        if (viewDirection == ForgeDirection.UP /*|| viewDirection == ForgeDirection.DOWN  // why is there is duplicate condition here ?*/) {
+            GL11.glRotated(-90, 1, 0, 0);
+        } else if (viewDirection == ForgeDirection.DOWN) {
+            GL11.glRotated(90, 1, 0, 0);
+        } else {
+            RenderHelper3D.applyDirection(viewDirection);
+        }
 
         GL11.glPushMatrix();
-        GL11.glTranslatef((float)(- 2), (float)(+ 3), -3.0F);
+        GL11.glTranslatef((float) (-2), (float) (+3), -3.0F);
         GL11.glScalef(10.0F, 10.0F, 10.0F);
         GL11.glTranslatef(1.0F, 0.5F, 1.0F);
         GL11.glScalef(1.0F, 1.0F, -1.0F);
@@ -203,8 +202,8 @@ public class GuiTileViewer extends GuiControl{
 
         if(visibleAxis)
         {
-        	double min = -10*1/scale;
-        	double max = -min;
+            double min = -10d / scale;
+            double max = -min;
         	CubeObject cube = new LittleTileBox(axisX, axisY, axisZ, axisX+1, axisY+1, axisZ+1).getCube();
         	cube.block = Blocks.wool;
         	cube.meta = 0;

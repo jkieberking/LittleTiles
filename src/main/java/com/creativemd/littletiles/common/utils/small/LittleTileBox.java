@@ -21,19 +21,19 @@ public class LittleTileBox {
 	public LittleTileBox(LittleTileVec center, LittleTileSize size)
 	{
 		LittleTileVec offset = size.calculateCenter();
-		minX = (int) (center.x-offset.x);
-		minY = (int) (center.y-offset.y);
-		minZ = (int) (center.z-offset.z);
-		maxX = (int) (minX+size.sizeX);
-		maxY = (int) (minY+size.sizeY);
-		maxZ = (int) (minZ+size.sizeZ);
+		minX = center.x-offset.x;
+		minY = center.y-offset.y;
+		minZ = center.z-offset.z;
+		maxX = minX+size.sizeX;
+		maxY = minY+size.sizeY;
+		maxZ = minZ+size.sizeZ;
 	}
 
 	public LittleTileBox(String name, NBTTagCompound nbt)
 	{
 		if(nbt.getTag(name + "minX") instanceof NBTTagByte)
 		{
-			set((byte) nbt.getByte(name+"minX"), (byte) nbt.getByte(name+"minY"), (byte) nbt.getByte(name+"minZ"), (byte) nbt.getByte(name+"maxX"), (byte) nbt.getByte(name+"maxY"), (byte) nbt.getByte(name+"maxZ"));
+			set(nbt.getByte(name+"minX"), nbt.getByte(name+"minY"), nbt.getByte(name+"minZ"), nbt.getByte(name+"maxX"), nbt.getByte(name+"maxY"), nbt.getByte(name+"maxZ"));
 			writeToNBT(name, nbt);
 		}
 		else
@@ -82,12 +82,12 @@ public class LittleTileBox {
 
 	public Vec3 getSizeD()
 	{
-		return Vec3.createVectorHelper((maxX - minX)*1/16D, (maxY - minY)*1/16D, (maxZ - minZ)*1/16D);
+		return Vec3.createVectorHelper((maxX - minX) /16D, (maxY - minY) /16D, (maxZ - minZ) /16D);
 	}
 
 	public LittleTileSize getSize()
 	{
-		return new LittleTileSize((int)(maxX - minX), (int)(maxY - minY), (int)(maxZ - minZ));
+		return new LittleTileSize(maxX - minX, maxY - minY, maxZ - minZ);
 	}
 
 	public LittleTileBox copy()
@@ -325,7 +325,7 @@ public class LittleTileBox {
 
 	public LittleTileVec getNearstedPointTo(LittleTileBox box)
 	{
-		int x = 0;
+		int x;
 		if(minX >= box.minX && minX <= box.maxX)
 			x = minX;
 		else if(box.minX >= minX && box.minX <= box.maxX)
@@ -336,7 +336,7 @@ public class LittleTileBox {
 			else
 				x = minX;
 
-		int y = 0;
+		int y;
 		if(minY >= box.minY && minY <= box.maxY)
 			y = minY;
 		else if(box.minY >= minY && box.minY <= box.maxY)
@@ -347,7 +347,7 @@ public class LittleTileBox {
 			else
 				y = minY;
 
-		int z = 0;
+		int z;
 		if(minZ >= box.minZ && minZ <= box.maxZ)
 			z = minZ;
 		else if(box.minZ >= minZ && box.minZ <= box.maxZ)
@@ -378,15 +378,12 @@ public class LittleTileBox {
 		if(this.minY > box.maxY || box.minY > this.minY)
 			return false;
 
-		if(this.minZ > box.maxZ || box.minZ > this.minZ)
-			return false;
-
-		return true;
-	}
+        return this.minZ <= box.maxZ && box.minZ <= this.minZ;
+    }
 
 	public boolean intersectsWith(LittleTileBox box)
     {
-        return box.maxX > this.minX && box.minX < this.maxX ? (box.maxY > this.minY && box.minY < this.maxY ? box.maxZ > this.minZ && box.minZ < this.maxZ : false) : false;
+        return box.maxX > this.minX && box.minX < this.maxX && (box.maxY > this.minY && box.minY < this.maxY && box.maxZ > this.minZ && box.minZ < this.maxZ);
     }
 
 	public ForgeDirection faceTo(LittleTileBox box) {

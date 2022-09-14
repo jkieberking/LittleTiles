@@ -298,18 +298,18 @@ public class LittleDoor extends LittleStructure{
 		//LittleTileVec blockOffset = new LittleTileVec(8, 8, 8);
 		//LittleTileVec blockInvOffset = blockOffset.copy();
 		//blockInvOffset.invert();
-		for (int i = 0; i < defaultpreviews.size(); i++) {
-			PreviewTile box = defaultpreviews.get(i).copy();
+        for (PreviewTile defaultpreview : defaultpreviews) {
+            PreviewTile box = defaultpreview.copy();
 
-			//box.box.addOffset(missingOffset);
-			box.box.rotateBoxWithCenter(direction, Vec3.createVectorHelper(1/32D, 1/32D, 1/32D));
-			//box.box.rotateBoxWithCenter(direction, Vec3.createVectorHelper(0, 0, 0));
-			//box.box.addOffset(missingInfOffset);
-			//box.box.addOffset(blockInvOffset);
-			//box.box.addOffset(new LittleTileVec(0, 0, 1));
-			box.box.addOffset(internalOffset);
-			previews.add(box);
-		}
+            //box.box.addOffset(missingOffset);
+            box.box.rotateBoxWithCenter(direction, Vec3.createVectorHelper(1 / 32D, 1 / 32D, 1 / 32D));
+            //box.box.rotateBoxWithCenter(direction, Vec3.createVectorHelper(0, 0, 0));
+            //box.box.addOffset(missingInfOffset);
+            //box.box.addOffset(blockInvOffset);
+            //box.box.addOffset(new LittleTileVec(0, 0, 1));
+            box.box.addOffset(internalOffset);
+            previews.add(box);
+        }
 
 		/*LittleTileVec size = getSize(previews);
 
@@ -334,7 +334,7 @@ public class LittleDoor extends LittleStructure{
 		LittleDoor structure = new LittleDoor();
 		structure.dropStack = dropStack.copy();
 		structure.axisVec = new LittleTileVec(0, 0, 0);
-		structure.setTiles(new ArrayList<LittleTile>());
+		structure.setTiles(new ArrayList<>());
 		structure.axis = this.axis;
 
 		ForgeDirection rotationAxis = this.axis.getDirection();
@@ -370,14 +370,14 @@ public class LittleDoor extends LittleStructure{
 		if(ItemBlockTiles.placeTiles(world, player, previews, structure, x, y, z, null, null))
 		{
 			ArrayList<LittleTile> tiles = getTiles();
-			for (int i = 0; i < tiles.size(); i++) {
-				tiles.get(i).te.update();
-			}
+            for (LittleTile littleTile : tiles) {
+                littleTile.te.update();
+            }
 			tiles.clear();
 			tiles = structure.getTiles();
-			for (int i = 0; i < tiles.size(); i++) {
-				tiles.get(i).te.combineTiles();
-			}
+            for (LittleTile tile : tiles) {
+                tile.te.combineTiles();
+            }
 			return true;
 		}
 		return false;
@@ -411,23 +411,22 @@ public class LittleDoor extends LittleStructure{
 
 			//invaxis.addVec(internalOffset);
 			ArrayList<LittleTile> tiles = getTiles();
-			for (int i = 0; i < tiles.size(); i++) {
-				LittleTile tileOfList = tiles.get(i);
-				for (int j = 0; j < tileOfList.boundingBoxes.size(); j++) {
-					NBTTagCompound nbt = new NBTTagCompound();
-					tileOfList.saveTile(nbt);
-					LittleTileBox box = tileOfList.boundingBoxes.get(j).copy();
-					box.addOffset(new LittleTileVec(tileOfList.te.xCoord*16, tileOfList.te.yCoord*16, tileOfList.te.zCoord*16));
-					box.addOffset(invaxis);
-					//box.addOffset(internalOffset);
-					//box.set(-box.minX, -box.minY, -box.minZ, -box.maxX, -box.maxY, -box.maxZ);
-					//box.addOffset(internalOffset);
-					PreviewTile preview = new PreviewTile(box, new LittleTilePreview(box, nbt));
-					previews.add(preview);
-					//tiles.get(i).boundingBoxes.get(j).rotateBox(direction);
-				}
+            for (LittleTile tileOfList : tiles) {
+                for (int j = 0; j < tileOfList.boundingBoxes.size(); j++) {
+                    NBTTagCompound nbt = new NBTTagCompound();
+                    tileOfList.saveTile(nbt);
+                    LittleTileBox box = tileOfList.boundingBoxes.get(j).copy();
+                    box.addOffset(new LittleTileVec(tileOfList.te.xCoord * 16, tileOfList.te.yCoord * 16, tileOfList.te.zCoord * 16));
+                    box.addOffset(invaxis);
+                    //box.addOffset(internalOffset);
+                    //box.set(-box.minX, -box.minY, -box.minZ, -box.maxX, -box.maxY, -box.maxZ);
+                    //box.addOffset(internalOffset);
+                    PreviewTile preview = new PreviewTile(box, new LittleTilePreview(box, nbt));
+                    previews.add(preview);
+                    //tiles.get(i).boundingBoxes.get(j).rotateBox(direction);
+                }
 
-			}
+            }
 
 			previews.add(new PreviewTileAxis(new LittleTileBox(0, 0, 0, 1, 1, 1), null, axis));
 
@@ -529,18 +528,18 @@ public class LittleDoor extends LittleStructure{
 				previews.get(i).box.addOffset(internalOffset);
 			}*/
 
-			for (int i = 0; i < tiles.size(); i++) {
-				tiles.get(i).te.removeTile(tiles.get(i));
-			}
+            for (LittleTile value : tiles) {
+                value.te.removeTile(value);
+            }
 
 			if(tryToPlacePreviews(world, player, mainX, mainY, mainZ, rotation, previews, !inverse))
 				return true;
 			else if(tryToPlacePreviews(world, player, mainX, mainY, mainZ, rotation.getOpposite(), previews, inverse))
 				return true;
 
-			for (int i = 0; i < tiles.size(); i++) {
-				tiles.get(i).te.addTile(tiles.get(i));
-			}
+            for (LittleTile littleTile : tiles) {
+                littleTile.te.addTile(littleTile);
+            }
 			return true;
 
 			//tiles.get(i).te.combineTiles();

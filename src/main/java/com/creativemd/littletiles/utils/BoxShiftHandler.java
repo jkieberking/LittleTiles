@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public abstract class BoxShiftHandler extends ShiftHandler{
 
-	public ArrayList<LittleTileBox> boxes = new ArrayList<LittleTileBox>();
+	public ArrayList<LittleTileBox> boxes = new ArrayList<>();
 
 	public void init(World world, int x, int y, int z)
 	{
@@ -24,18 +24,18 @@ public abstract class BoxShiftHandler extends ShiftHandler{
 
 	@Override
 	public void handleRendering(Minecraft mc, double x, double y, double z) {
-		for (int i = 0; i < boxes.size(); i++) {
-			if(!boxes.get(i).isValidBox())
-				continue;
-			GL11.glPushMatrix();
-			CubeObject cube = boxes.get(i).getCube();
-			LittleTileSize size = boxes.get(i).getSize();
-			double cubeX = x+cube.minX+size.getPosX()/2D;
-			double cubeY = y+cube.minY+size.getPosY()/2D;
-			double cubeZ = z+cube.minZ+size.getPosZ()/2D;
-			RenderHelper3D.renderBlock(cubeX, cubeY, cubeZ, size.getPosX(), size.getPosY(), size.getPosZ(), 0, 0, 0, 1, 1, 0.5, (Math.sin(System.nanoTime()/200000000D)+1.5)*0.2D);
-			GL11.glPopMatrix();
-		}
+        for (LittleTileBox box : boxes) {
+            if (!box.isValidBox())
+                continue;
+            GL11.glPushMatrix();
+            CubeObject cube = box.getCube();
+            LittleTileSize size = box.getSize();
+            double cubeX = x + cube.minX + size.getPosX() / 2D;
+            double cubeY = y + cube.minY + size.getPosY() / 2D;
+            double cubeZ = z + cube.minZ + size.getPosZ() / 2D;
+            RenderHelper3D.renderBlock(cubeX, cubeY, cubeZ, size.getPosX(), size.getPosY(), size.getPosZ(), 0, 0, 0, 1, 1, 0.5, (Math.sin(System.nanoTime() / 200000000D) + 1.5) * 0.2D);
+            GL11.glPopMatrix();
+        }
 
 
 	}
@@ -43,8 +43,7 @@ public abstract class BoxShiftHandler extends ShiftHandler{
 	@Override
 	public double getDistance(LittleTileVec suggestedPos) {
 		double distance = 2;
-		for (int i = 0; i < boxes.size(); i++)
-			distance = Math.min(distance, boxes.get(i).distanceTo(suggestedPos));
+        for (LittleTileBox box : boxes) distance = Math.min(distance, box.distanceTo(suggestedPos));
 		return 0;
 	}
 
