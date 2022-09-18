@@ -1,59 +1,52 @@
 package com.creativemd.littletiles.common.utils;
 
-import java.util.ArrayList;
-
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.common.util.Constants.NBT;
-import scala.tools.nsc.backend.icode.Primitives.Shift;
-
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
-import com.creativemd.littletiles.common.utils.small.LittleTileVec;
-import com.creativemd.littletiles.utils.InsideShiftHandler;
 import com.creativemd.littletiles.utils.ShiftHandler;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
 
 public final class LittleTilePreview {
-	
+
 	public boolean canSplit = true;
-	public LittleTileSize size = null;
-	
+	public LittleTileSize size;
+
 	public NBTTagCompound nbt;
 	///**Used for multiblocks**/
-	//public ArrayList<LittleTilePreview> subTiles = new ArrayList<LittleTilePreview>(); 
-	
+	//public ArrayList<LittleTilePreview> subTiles = new ArrayList<LittleTilePreview>();
+
 	public LittleTileBox box;
-	
-	public ArrayList<ShiftHandler> shifthandlers = new ArrayList<ShiftHandler>();
-	
+
+	public ArrayList<ShiftHandler> shifthandlers = new ArrayList<>();
+
 	public LittleTilePreview(LittleTileBox box, NBTTagCompound nbt)
 	{
 		this(box.getSize(), nbt);
 		this.box = box;
 	}
-	
+
 	public LittleTilePreview(LittleTileSize size, NBTTagCompound nbt)
 	{
 		this.size = size;
 		this.nbt = nbt;
 	}
-	
+
 	public void updateSize()
 	{
 		size = box.getSize();
 	}
-	
+
 	public LittleTile getLittleTile(TileEntityLittleTiles te)
 	{
 		return LittleTile.CreateandLoadTile(te, te.getWorldObj(), nbt);
 	}
-	
+
 	/*public ArrayList<LittleTilePreview> getAllTiles()
 	{
 		ArrayList<LittleTilePreview> tiles = new ArrayList<LittleTilePreview>();
@@ -64,7 +57,7 @@ public final class LittleTilePreview {
 		}
 		return tiles;
 	}*/
-	
+
 	public CubeObject getCubeBlock()
 	{
 		CubeObject cube = box.getCube();
@@ -83,12 +76,12 @@ public final class LittleTilePreview {
 	public LittleTilePreview copy() {
 		LittleTilePreview preview = new LittleTilePreview(size != null ? size.copy() : null, (NBTTagCompound)nbt.copy());
 		preview.canSplit = this.canSplit;
-		preview.shifthandlers = new ArrayList<ShiftHandler>(this.shifthandlers);
+		preview.shifthandlers = new ArrayList<>(this.shifthandlers);
 		if(box != null)
 			preview.box = box.copy();
 		return preview;
 	}
-	
+
 	public static void flipPreview(NBTTagCompound nbt, ForgeDirection direction)
 	{
 		if(nbt.hasKey("bBoxminX"))
@@ -108,7 +101,7 @@ public final class LittleTilePreview {
 			}
 		}
 	}
-	
+
 	public static void rotatePreview(NBTTagCompound nbt, ForgeDirection direction)
 	{
 		if(nbt.hasKey("sizex"))
@@ -134,8 +127,8 @@ public final class LittleTilePreview {
 			}
 		}
 	}
-	
-	
+
+
 	public static LittleTilePreview getPreviewFromNBT(NBTTagCompound nbt)
 	{
 		if(nbt == null)
@@ -150,7 +143,7 @@ public final class LittleTilePreview {
 			if(size == null)
 				size = box.getSize();
 		}
-		
+
 		if(size != null)
 		{
 			LittleTilePreview preview = new LittleTilePreview(size, nbt);
@@ -160,5 +153,5 @@ public final class LittleTilePreview {
 			return null;
 		}
 	}
-	
+
 }

@@ -1,29 +1,7 @@
 package com.creativemd.littletiles.common.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import scala.tools.nsc.backend.icode.Primitives.Shift;
-
-import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.creativecore.common.utils.HashMapList;
 import com.creativemd.littletiles.common.blocks.BlockTile;
 import com.creativemd.littletiles.common.blocks.ILittleTile;
-import com.creativemd.littletiles.common.items.ItemBlockTiles;
-import com.creativemd.littletiles.common.items.ItemMultiTiles;
-import com.creativemd.littletiles.common.items.ItemRecipe;
 import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
@@ -32,17 +10,22 @@ import com.creativemd.littletiles.common.utils.small.LittleTileVec;
 import com.creativemd.littletiles.utils.InsideShiftHandler;
 import com.creativemd.littletiles.utils.PreviewTile;
 import com.creativemd.littletiles.utils.ShiftHandler;
-import com.google.common.primitives.UnsignedInteger;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
 
 /**This class does all caculate on where to place a block. Used for rendering preview and placing**/
 public class PlacementHelper {
-	
+
 	private static PlacementHelper instance;
-	
+
 	public static PlacementHelper getInstance(EntityPlayer player)
 	{
 		if(instance == null)
@@ -53,16 +36,16 @@ public class PlacementHelper {
 		}
 		return instance;
 	}
-	
+
 	public EntityPlayer player;
-	public World world; 
-	
+	public World world;
+
 	public PlacementHelper(EntityPlayer player)
 	{
 		this.player = player;
 		this.world = player.worldObj;
 	}
-	
+
 	public static ILittleTile getLittleInterface(ItemStack stack)
 	{
 		if(stack == null)
@@ -73,7 +56,7 @@ public class PlacementHelper {
 			return (ILittleTile)Block.getBlockFromItem(stack.getItem());
 		return null;
 	}
-	
+
 	public static boolean isLittleBlock(ItemStack stack)
 	{
 		if(stack == null)
@@ -84,31 +67,29 @@ public class PlacementHelper {
 			return ((ILittleTile)Block.getBlockFromItem(stack.getItem())).getLittlePreview(stack) != null;
 		return false;
 	}
-	
+
 	public ArrayList<PreviewTile> getPreviewTiles(ItemStack stack, MovingObjectPosition moving, boolean customPlacement) //, ForgeDirection rotation, ForgeDirection rotation2)
 	{
 		return getPreviewTiles(stack, moving.blockX, moving.blockY, moving.blockZ, player.getPosition(1.0F), moving.hitVec, ForgeDirection.getOrientation(moving.sideHit), customPlacement); //, rotation, rotation2);
 	}
-	
+
 	public static LittleTileVec getInternalOffset(ArrayList<LittleTilePreview> tiles)
 	{
 		byte minX = LittleTile.maxPos;
 		byte minY = LittleTile.maxPos;
 		byte minZ = LittleTile.maxPos;
-		for (int i = 0; i < tiles.size(); i++) {
-			LittleTilePreview tile = tiles.get(i);
-			if(tile == null)
-				return new LittleTileVec(0, 0, 0);
-			if(tile.box != null)
-			{
-				minX = (byte) Math.min(minX, tile.box.minX);
-				minY = (byte) Math.min(minY, tile.box.minY);
-				minZ = (byte) Math.min(minZ, tile.box.minZ);
-			}
-		}
+        for (LittleTilePreview tile : tiles) {
+            if (tile == null)
+                return new LittleTileVec(0, 0, 0);
+            if (tile.box != null) {
+                minX = (byte) Math.min(minX, tile.box.minX);
+                minY = (byte) Math.min(minY, tile.box.minY);
+                minZ = (byte) Math.min(minZ, tile.box.minZ);
+            }
+        }
 		return new LittleTileVec(minX, minY, minZ);
 	}
-	
+
 	public static LittleTileSize getSize(ArrayList<LittleTilePreview> tiles)
 	{
 		byte minX = LittleTile.maxPos;
@@ -118,67 +99,65 @@ public class PlacementHelper {
 		byte maxY = LittleTile.minPos;
 		byte maxZ = LittleTile.minPos;
 		LittleTileSize size = new LittleTileSize(0, 0, 0);
-		for (int i = 0; i < tiles.size(); i++) {
-			LittleTilePreview tile = tiles.get(i);
-			if(tile == null)
-				return new LittleTileSize(0, 0, 0);
-			if(tile.box != null)
-			{
-				minX = (byte) Math.min(minX, tile.box.minX);
-				minY = (byte) Math.min(minY, tile.box.minY);
-				minZ = (byte) Math.min(minZ, tile.box.minZ);
-				maxX = (byte) Math.max(maxX, tile.box.maxX);
-				maxY = (byte) Math.max(maxY, tile.box.maxY);
-				maxZ = (byte) Math.max(maxZ, tile.box.maxZ);
-			}else{
-				size.max(tile.size);
-			}
-		}
+        for (LittleTilePreview tile : tiles) {
+            if (tile == null)
+                return new LittleTileSize(0, 0, 0);
+            if (tile.box != null) {
+                minX = (byte) Math.min(minX, tile.box.minX);
+                minY = (byte) Math.min(minY, tile.box.minY);
+                minZ = (byte) Math.min(minZ, tile.box.minZ);
+                maxX = (byte) Math.max(maxX, tile.box.maxX);
+                maxY = (byte) Math.max(maxY, tile.box.maxY);
+                maxZ = (byte) Math.max(maxZ, tile.box.maxZ);
+            } else {
+                size.max(tile.size);
+            }
+        }
 		return new LittleTileSize(maxX-minX, maxY-minY, maxZ-minZ).max(size);
 	}
-	
+
 	public ArrayList<PreviewTile> getPreviewTiles(ItemStack stack, int x, int y, int z, Vec3 playerPos, Vec3 hitVec, ForgeDirection side, boolean customPlacement) //, ForgeDirection rotation, ForgeDirection rotation2)
 	{
 		return getPreviewTiles(stack, x, y, z, playerPos, hitVec, side, customPlacement, false);
 	}
-	
+
 	public ArrayList<PreviewTile> getPreviewTiles(ItemStack stack, int x, int y, int z, Vec3 playerPos, Vec3 hitVec, ForgeDirection side, boolean customPlacement, boolean inside) //, ForgeDirection rotation, ForgeDirection rotation2)
 	{
-		ArrayList<ShiftHandler> shifthandlers = new ArrayList<ShiftHandler>();
-		ArrayList<PreviewTile> preview = new ArrayList<PreviewTile>();
+		ArrayList<ShiftHandler> shifthandlers = new ArrayList<>();
+		ArrayList<PreviewTile> preview = new ArrayList<>();
 		ArrayList<LittleTilePreview> tiles = null;
-		
+
 		LittleTilePreview tempPreview = null;
 		ILittleTile iTile = PlacementHelper.getLittleInterface(stack);
-		
+
 		if(iTile != null)
 			tiles = iTile.getLittlePreview(stack);
-		
+
 		if(tiles != null)
 		{
 			LittleTileSize size = getSize(tiles);
-			
+
 			//size.rotateSize(rotation);
 			//size.rotateSize(rotation2);
 			//size.rotateSize(rotation2.getRotation(ForgeDirection.DOWN));
-			
+
 			//size.rotateSize(side);
-			
-			
+
+
  			if(tiles.size() == 1)
 				shifthandlers.addAll(tiles.get(0).shifthandlers);
-			
+
 			shifthandlers.add(new InsideShiftHandler());
-			
+
 			LittleTileBox box = getTilesBox(size, hitVec, x, y, z, side, customPlacement, inside);
 			LittleTileVec internalOffset = getInternalOffset(tiles);
 			internalOffset.invert();
 			//box.addOffset(new LittleTileVec(-LittleTile.maxPos/2, -LittleTile.maxPos/2, -LittleTile.maxPos/2));
-			
+
 			boolean canPlaceNormal = false;
-			
+
 			if(!customPlacement && player.isSneaking())
-			{			
+			{
 				if(!inside && !canBePlacedInside(x, y, z, hitVec, side))
 				{
 					switch(side)
@@ -205,7 +184,7 @@ public class PlacementHelper {
 						break;
 					}
 				}
-				
+
 				if(tiles.size() > 0 && tiles.get(0).box != null)
 				{
 					Block block = world.getBlock(x, y, z);
@@ -216,96 +195,90 @@ public class PlacementHelper {
 						if(te instanceof TileEntityLittleTiles)
 						{
 							TileEntityLittleTiles teTiles = (TileEntityLittleTiles) te;
-							for (int i = 0; i < tiles.size(); i++) {
-								LittleTilePreview tile = tiles.get(i);
-								if(!teTiles.isSpaceForLittleTile(tile.box))
-								{
-									canPlaceNormal = false;
-									break;
-								}
-							}
+                            for (LittleTilePreview tile : tiles) {
+                                if (!teTiles.isSpaceForLittleTile(tile.box)) {
+                                    canPlaceNormal = false;
+                                    break;
+                                }
+                            }
 						}
 					}
 				}
-				
+
 				if(!canPlaceNormal)
 				{
-					
-					for (int i = 0; i < shifthandlers.size(); i++) {
-						shifthandlers.get(i).init(world, x, y, z);
-					}
-					
+
+                    for (ShiftHandler shiftHandler : shifthandlers) {
+                        shiftHandler.init(world, x, y, z);
+                    }
+
 					LittleTileVec hit = getHitVec(hitVec, x, y, z, side, customPlacement, inside);
 					ShiftHandler handler = null;
 					double distance = 2;
-					for (int i = 0; i < shifthandlers.size(); i++) {
-						double tempDistance = shifthandlers.get(i).getDistance(hit);
-						if(tempDistance < distance)
-						{
-							distance = tempDistance;
-							handler = shifthandlers.get(i);
-						}
-					}
-					
+                    for (ShiftHandler shifthandler : shifthandlers) {
+                        double tempDistance = shifthandler.getDistance(hit);
+                        if (tempDistance < distance) {
+                            distance = tempDistance;
+                            handler = shifthandler;
+                        }
+                    }
+
 					if(handler != null)
 					{
 						box = handler.getNewPosition(world, x, y, z, box);
 					}
 				}
 			}
-			
+
 			LittleTileVec offset = box.getMinVec();
-			
+
 			offset.addVec(internalOffset);
-			
-			
-			for (int i = 0; i < tiles.size(); i++) {
-				LittleTilePreview tile = tiles.get(i);
-				if(tile != null)
-				{
-					if(tile.box == null)
-					{
-						preview.add(new PreviewTile(box.copy(), tile));
-					}else{
-						if(!canPlaceNormal)
-							tile.box.addOffset(offset);
-						//tile.box.rotateBox(rotation);
-						//tile.box.rotateBox(rotation2);
-						//tile.box.rotateBox(rotation2.getRotation(ForgeDirection.DOWN));
-						preview.add(new PreviewTile(tile.box, tile));
-					}
-				}
-			}
-			
+
+
+            for (LittleTilePreview tile : tiles) {
+                if (tile != null) {
+                    if (tile.box == null) {
+                        preview.add(new PreviewTile(box.copy(), tile));
+                    } else {
+                        if (!canPlaceNormal)
+                            tile.box.addOffset(offset);
+                        //tile.box.rotateBox(rotation);
+                        //tile.box.rotateBox(rotation2);
+                        //tile.box.rotateBox(rotation2.getRotation(ForgeDirection.DOWN));
+                        preview.add(new PreviewTile(tile.box, tile));
+                    }
+                }
+            }
+
 			LittleStructure structure = iTile.getLittleStructure(stack);
 			if(structure != null)
 			{
 				//ArrayList<LittleTileBox> highlightedBoxes = structure.getSpecialTiles();
 				ArrayList<PreviewTile> newBoxes = structure.getSpecialTiles();
-				
-				for (int i = 0; i < newBoxes.size(); i++) {
-					if(!canPlaceNormal)
-						newBoxes.get(i).box.addOffset(offset);
-				}
-				
+
+                for (PreviewTile newBox : newBoxes) {
+                    if (!canPlaceNormal)
+                        newBox.box.addOffset(offset);
+                }
+
 				preview.addAll(newBoxes);
-				
+
 				/*for (int i = 0; i < highlightedBoxes.size(); i++) {
 					if(!canPlaceNormal)
 						highlightedBoxes.get(i).addOffset(offset);
 					//tile.box.rotateBox(rotation);
 					//tile.box.rotateBox(rotation2);
 					//tile.box.rotateBox(rotation2.getRotation(ForgeDirection.DOWN));
-					PreviewTile previewTile = new PreviewTile(highlightedBoxes.get(i), null); 
+					PreviewTile previewTile = new PreviewTile(highlightedBoxes.get(i), null);
 					previewTile.color = Vec3.createVectorHelper(1, 0, 0);
 					preview.add(previewTile);
 				}*/
 			}
 		}
-		
+
 		return preview;
 	}
-	
+
 	public LittleTileBox getTilesBox(LittleTileSize size, Vec3 hitVec, int x, int y, int z, ForgeDirection side, boolean customPlacement, boolean inside)
 	{
 		LittleTileVec hit = getHitVec(hitVec, x, y, z, side, customPlacement, inside);
@@ -338,16 +311,12 @@ public class PlacementHelper {
 		}
 		return new LittleTileBox(hit, size);
 	}
-	
-	public boolean canBePlacedInsideBlock(int x, int y, int z)
-	{
+
+	public boolean canBePlacedInsideBlock(int x, int y, int z) {
 		TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
-		if(tileEntity instanceof TileEntityLittleTiles)
-			return true;
-		
-		return false;
-	}
-	
+        return tileEntity instanceof TileEntityLittleTiles;
+    }
+
 	public boolean canBePlacedInside(int x, int y, int z, Vec3 hitVec, ForgeDirection side)
 	{
 		TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
@@ -375,12 +344,12 @@ public class PlacementHelper {
         }
         else if (block != Blocks.vine && block != Blocks.tallgrass && block != Blocks.deadbush && !block.isReplaceable(p_77648_3_, p_77648_4_, p_77648_5_, p_77648_6_))
         {
-        	
-        } 
+
+        }
 		 */
 		return false;
 	}
-	
+
 	public LittleTileVec getHitVec(Vec3 hitVec, int x, int y, int z, ForgeDirection side, boolean customPlacement, boolean isInside)
 	{
 		if(customPlacement && !isInside)
@@ -388,7 +357,7 @@ public class PlacementHelper {
 			double posX = hitVec.xCoord - x;
 			double posY = hitVec.yCoord - y;
 			double posZ = hitVec.zCoord - z;
-			
+
 			LittleTileVec vec = new LittleTileVec((int)(posX*16), (int)(posY*16), (int)(posZ*16));
 			if(!canBePlacedInside(x, y, z, hitVec, side))
 			{
@@ -414,7 +383,7 @@ public class PlacementHelper {
 					break;
 				default:
 					break;
-				
+
 				}
 			}
 			return vec;
@@ -460,7 +429,7 @@ public class PlacementHelper {
 				break;
 			default:
 				break;
-			
+
 			}
 		}
 		return vec;

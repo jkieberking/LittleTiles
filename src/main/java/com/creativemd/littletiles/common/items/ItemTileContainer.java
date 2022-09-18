@@ -1,22 +1,12 @@
 package com.creativemd.littletiles.common.items;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.gui.IGuiCreator;
 import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.creativecore.core.CreativeCore;
 import com.creativemd.littletiles.LittleTiles;
-import com.creativemd.littletiles.common.blocks.ILittleTile;
 import com.creativemd.littletiles.common.gui.SubContainerTileContainer;
 import com.creativemd.littletiles.common.gui.SubGuiTileContainer;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
-import com.creativemd.littletiles.common.utils.LittleTilePreview;
-import com.creativemd.littletiles.common.utils.PlacementHelper;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -27,8 +17,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemTileContainer extends Item implements IGuiCreator{
 
@@ -74,7 +66,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 
 	public static ArrayList<BlockEntry> loadMap(EntityPlayer player)
 	{
-		ArrayList<BlockEntry> mainList = new ArrayList<BlockEntry>();
+		ArrayList<BlockEntry> mainList = new ArrayList<>();
 		for (int i = 0; i < player.inventory.mainInventory.length; i++) {
 			ItemStack stack = player.inventory.mainInventory[i];
 			if(stack != null && stack.getItem() instanceof ItemTileContainer)
@@ -102,7 +94,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 
 	public static ArrayList<BlockEntry> loadMap(ItemStack stack)
 	{
-		ArrayList<BlockEntry> mainMap = new ArrayList<BlockEntry>();
+		ArrayList<BlockEntry> mainMap = new ArrayList<>();
 		if(stack.hasTagCompound())
 		{
 			int count = stack.stackTagCompound.getInteger("count");
@@ -154,8 +146,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 			float stored = stackMap.get(stackMap.indexOf(entry)).value;
 			float drain = Math.min(ammount, stored);
 			stored -= drain;
-			ammount -= drain;
-			stackMap.get(stackMap.indexOf(entry)).value -= stored;
+            stackMap.get(stackMap.indexOf(entry)).value -= stored;
 			if(stored <= 0)
 				stackMap.remove(entry);
 			saveMap(stack, stackMap);
@@ -207,7 +198,7 @@ public class ItemTileContainer extends Item implements IGuiCreator{
 	{
 		if(!world.isRemote)
 		{
-			((EntityPlayerMP)player).openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+			player.openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
 			return stack;
 		}
 		return stack;

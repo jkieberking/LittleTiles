@@ -1,34 +1,30 @@
 package com.creativemd.littletiles.common.gui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.creativecore.common.gui.controls.GuiButton;
 import com.creativemd.creativecore.common.gui.controls.GuiItemListBox;
-import com.creativemd.creativecore.common.gui.controls.GuiListBox;
 import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
 import com.creativemd.littletiles.common.items.ItemTileContainer;
 import com.creativemd.littletiles.common.items.ItemTileContainer.BlockEntry;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
-
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.ArrayList;
+
 public class SubGuiTileContainer extends SubGui{
-	
+
 	public ItemStack stack;
-	
+
 	public SubGuiTileContainer(ItemStack stack)
 	{
 		super();
 		this.stack = stack;
 	}
-	
+
 	public static String getStringOfValue(float value)
 	{
 		String line = "";
@@ -45,8 +41,8 @@ public class SubGuiTileContainer extends SubGui{
 
 	@Override
 	public void createControls() {
-		ArrayList<String> lines = new ArrayList<String>();
-		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+		ArrayList<String> lines = new ArrayList<>();
+		ArrayList<ItemStack> stacks = new ArrayList<>();
 		if(stack.stackTagCompound == null)
 			stack.stackTagCompound = new NBTTagCompound();
 		ArrayList<BlockEntry> map = ItemTileContainer.loadMap(stack);
@@ -60,7 +56,7 @@ public class SubGuiTileContainer extends SubGui{
 		controls.add(new GuiItemListBox("items", container.player, 5, 5, 140, 75, stacks, lines));
 		controls.add(new GuiButton("drop", 145, 60, 30, 20));
 	}
-	
+
 	@CustomEventSubscribe
 	public void onClicked(ControlClickEvent event)
 	{
@@ -78,7 +74,7 @@ public class SubGuiTileContainer extends SubGui{
 			}
 		}
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
@@ -94,7 +90,7 @@ public class SubGuiTileContainer extends SubGui{
 	@Override
 	public void drawOverlay(FontRenderer fontRenderer) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }

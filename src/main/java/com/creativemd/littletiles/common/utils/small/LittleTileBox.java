@@ -3,8 +3,6 @@ package com.creativemd.littletiles.common.utils.small;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.creativecore.common.utils.Rotation;
 import com.creativemd.littletiles.common.utils.LittleTile;
-import com.ibm.icu.impl.UBiDiProps;
-
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -12,66 +10,66 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class LittleTileBox {
-	
+
 	public int minX;
 	public int minY;
 	public int minZ;
 	public int maxX;
 	public int maxY;
 	public int maxZ;
-	
+
 	public LittleTileBox(LittleTileVec center, LittleTileSize size)
 	{
 		LittleTileVec offset = size.calculateCenter();
-		minX = (int) (center.x-offset.x);
-		minY = (int) (center.y-offset.y);
-		minZ = (int) (center.z-offset.z);
-		maxX = (int) (minX+size.sizeX);
-		maxY = (int) (minY+size.sizeY);
-		maxZ = (int) (minZ+size.sizeZ);
+		minX = center.x-offset.x;
+		minY = center.y-offset.y;
+		minZ = center.z-offset.z;
+		maxX = minX+size.sizeX;
+		maxY = minY+size.sizeY;
+		maxZ = minZ+size.sizeZ;
 	}
-	
+
 	public LittleTileBox(String name, NBTTagCompound nbt)
 	{
 		if(nbt.getTag(name + "minX") instanceof NBTTagByte)
 		{
-			set((byte) nbt.getByte(name+"minX"), (byte) nbt.getByte(name+"minY"), (byte) nbt.getByte(name+"minZ"), (byte) nbt.getByte(name+"maxX"), (byte) nbt.getByte(name+"maxY"), (byte) nbt.getByte(name+"maxZ"));
+			set(nbt.getByte(name+"minX"), nbt.getByte(name+"minY"), nbt.getByte(name+"minZ"), nbt.getByte(name+"maxX"), nbt.getByte(name+"maxY"), nbt.getByte(name+"maxZ"));
 			writeToNBT(name, nbt);
 		}
 		else
 			set(nbt.getInteger(name+"minX"), nbt.getInteger(name+"minY"), nbt.getInteger(name+"minZ"), nbt.getInteger(name+"maxX"), nbt.getInteger(name+"maxY"), nbt.getInteger(name+"maxZ"));
 	}
-	
+
 	public LittleTileBox(CubeObject cube)
 	{
 		this((int)(cube.minX*16), (int)(cube.minY*16), (int)(cube.minZ*16), (int)(cube.maxX*16), (int)(cube.maxY*16), (int)(cube.maxZ*16));
 	}
-	
+
 	public LittleTileBox(AxisAlignedBB box)
 	{
 		this((int)(box.minX*16), (int)(box.minY*16), (int)(box.minZ*16), (int)(box.maxX*16), (int)(box.maxY*16), (int)(box.maxZ*16));
 	}
-	
+
 	public LittleTileBox(LittleTileVec min, LittleTileVec max)
 	{
 		this(min.x, min.y, min.z, max.x, max.y, max.z);
 	}
-	
+
 	public LittleTileBox(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
 	{
 		set(minX, minY, minZ, maxX, maxY, maxZ);
 	}
-	
+
 	public AxisAlignedBB getBox()
 	{
 		return AxisAlignedBB.getBoundingBox(minX/16D, minY/16D, minZ/16D, maxX/16D, maxY/16D, maxZ/16D);
 	}
-	
+
 	public CubeObject getCube()
 	{
 		return new CubeObject(minX/16D, minY/16D, minZ/16D, maxX/16D, maxY/16D, maxZ/16D);
 	}
-	
+
 	public void writeToNBT(String name, NBTTagCompound  nbt)
 	{
 		nbt.setInteger(name+"minX", minX);
@@ -81,17 +79,17 @@ public class LittleTileBox {
 		nbt.setInteger(name+"maxY", maxY);
 		nbt.setInteger(name+"maxZ", maxZ);
 	}
-	
+
 	public Vec3 getSizeD()
 	{
-		return Vec3.createVectorHelper((maxX - minX)*1/16D, (maxY - minY)*1/16D, (maxZ - minZ)*1/16D);
+		return Vec3.createVectorHelper((maxX - minX) /16D, (maxY - minY) /16D, (maxZ - minZ) /16D);
 	}
-	
+
 	public LittleTileSize getSize()
 	{
-		return new LittleTileSize((int)(maxX - minX), (int)(maxY - minY), (int)(maxZ - minZ));
+		return new LittleTileSize(maxX - minX, maxY - minY, maxZ - minZ);
 	}
-	
+
 	public LittleTileBox copy()
 	{
 		return new LittleTileBox(minX, minY, minZ, maxX, maxY, maxZ);
@@ -100,7 +98,7 @@ public class LittleTileBox {
 	public boolean isValidBox() {
 		return maxX > minX && maxY > minY && maxZ > minZ;
 	}
-	
+
 	public void set(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
 	{
 		this.minX = minX;
@@ -110,21 +108,21 @@ public class LittleTileBox {
 		this.maxY = maxY;
 		this.maxZ = maxZ;
 	}
-	
+
 	public boolean needsMultipleBlocks() {
 		int x = minX/16;
 		int y = minY/16;
 		int z = minZ/16;
-		
+
 		return maxX-x*16<=LittleTile.maxPos && maxY-y*16<=LittleTile.maxPos && maxZ-z*16<=LittleTile.maxPos;
 	}
-	
+
 	public LittleTileBox combineBoxes(LittleTileBox box)
 	{
 		boolean x = this.minX == box.minX && this.maxX == box.maxX;
 		boolean y = this.minY == box.minY && this.maxY == box.maxY;
 		boolean z = this.minZ == box.minZ && this.maxZ == box.maxZ;
-		
+
 		if(x && y && z)
 		{
 			return this;
@@ -152,7 +150,7 @@ public class LittleTileBox {
 		}
 		return null;
 	}
-	
+
 	public void addOffset(LittleTileVec vec)
 	{
 		minX += vec.x;
@@ -162,7 +160,7 @@ public class LittleTileBox {
 		maxY += vec.y;
 		maxZ += vec.z;
 	}
-	
+
 	public void subOffset(LittleTileVec vec)
 	{
 		minX -= vec.x;
@@ -172,7 +170,7 @@ public class LittleTileBox {
 		maxY -= vec.y;
 		maxZ -= vec.z;
 	}
-	
+
 	public void assignCube(CubeObject cube)
 	{
 		this.minX = (int)(cube.minX*16);
@@ -182,17 +180,17 @@ public class LittleTileBox {
 		this.maxY = (int)(cube.maxY*16);
 		this.maxZ = (int)(cube.maxZ*16);
 	}
-	
+
 	public LittleTileVec getMinVec()
 	{
 		return new LittleTileVec(minX, minY, minZ);
 	}
-	
+
 	public LittleTileVec getMaxVec()
 	{
 		return new LittleTileVec(maxX, maxY, maxZ);
 	}
-	
+
 	/*public void rotateBoxby(ForgeDirection direction)
 	{
 		switch(direction)
@@ -211,7 +209,7 @@ public class LittleTileBox {
 			break;
 		}
 	}*/
-	
+
 	public void rotateBoxWithCenter(Rotation direction, Vec3 center)
 	{
 		CubeObject cube = this.getCube();
@@ -230,7 +228,7 @@ public class LittleTileBox {
 		this.maxZ = (int) (cube.maxZ*16);
 		//assignCube(cube);
 	}
-	
+
 	public void flipBox(ForgeDirection direction)
 	{
 		switch(direction)
@@ -253,19 +251,19 @@ public class LittleTileBox {
 		default:
 			break;
 		}
-		
+
 		resort();
 	}
-	
+
 	public void flipBoxWithCenter(ForgeDirection direction, LittleTileVec center)
 	{
 		if(center == null)
 			center = new LittleTileVec(8, 8, 8);
 		subOffset(center);
 		flipBox(direction);
-		addOffset(center);		
+		addOffset(center);
 	}
-	
+
 	public void rotateBox(ForgeDirection direction)
 	{
 		CubeObject cube = this.getCube();
@@ -287,7 +285,7 @@ public class LittleTileBox {
 		cube.maxZ += z;*/
 		assignCube(cube);
 	}
-	
+
 	@Override
 	public boolean equals(Object object)
 	{
@@ -295,13 +293,13 @@ public class LittleTileBox {
 			return minX == ((LittleTileBox) object).minX && minY == ((LittleTileBox) object).minY && minZ == ((LittleTileBox) object).minZ && maxX == ((LittleTileBox) object).maxX && maxY == ((LittleTileBox) object).maxY && maxZ == ((LittleTileBox) object).maxZ;
 		return super.equals(object);
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return "[" + minX + "," + minY + "," + minZ + " -> " + maxX + "," + maxY + "," + maxZ + "]";
 	}
-	
+
 	public LittleTileVec getNearstedPointTo(LittleTileVec vec)
 	{
 		int x = minX;
@@ -309,25 +307,25 @@ public class LittleTileBox {
 			x = vec.x;
 		if(Math.abs(minX-x) > Math.abs(maxX-x))
 			x = maxX;
-		
+
 		int y = minY;
 		if(vec.y >= minY || vec.y <= maxY)
 			y = vec.y;
 		if(Math.abs(minY-y) > Math.abs(maxY-y))
 			y = maxY;
-		
+
 		int z = minZ;
 		if(vec.z >= minZ || vec.z <= maxZ)
 			z = vec.z;
 		if(Math.abs(minZ-z) > Math.abs(maxZ-z))
 			z = maxZ;
-		
+
 		return new LittleTileVec(x, y, z);
 	}
-	
+
 	public LittleTileVec getNearstedPointTo(LittleTileBox box)
 	{
-		int x = 0;
+		int x;
 		if(minX >= box.minX && minX <= box.maxX)
 			x = minX;
 		else if(box.minX >= minX && box.minX <= box.maxX)
@@ -337,8 +335,8 @@ public class LittleTileBox {
 				x = maxX;
 			else
 				x = minX;
-		
-		int y = 0;
+
+		int y;
 		if(minY >= box.minY && minY <= box.maxY)
 			y = minY;
 		else if(box.minY >= minY && box.minY <= box.maxY)
@@ -348,8 +346,8 @@ public class LittleTileBox {
 				y = maxY;
 			else
 				y = minY;
-		
-		int z = 0;
+
+		int z;
 		if(minZ >= box.minZ && minZ <= box.maxZ)
 			z = minZ;
 		else if(box.minZ >= minZ && box.minZ <= box.maxZ)
@@ -359,65 +357,62 @@ public class LittleTileBox {
 				z = maxZ;
 			else
 				z = minZ;
-		
+
 		return new LittleTileVec(x, y, z);
 	}
-	
+
 	public double distanceTo(LittleTileBox box)
 	{
 		return distanceTo(box.getNearstedPointTo(this));
 	}
-	
+
 	public double distanceTo(LittleTileVec vec)
 	{
 		return this.getNearstedPointTo(vec).distanceTo(vec);
 	}
-	
+
 	public boolean isBoxInside(LittleTileBox box) {
 		if(this.minX > box.maxX || box.minX > this.minX)
 			return false;
-		
+
 		if(this.minY > box.maxY || box.minY > this.minY)
 			return false;
-		
-		if(this.minZ > box.maxZ || box.minZ > this.minZ)
-			return false;
-		
-		return true;
-	}
-	
+
+        return this.minZ <= box.maxZ && box.minZ <= this.minZ;
+    }
+
 	public boolean intersectsWith(LittleTileBox box)
     {
-        return box.maxX > this.minX && box.minX < this.maxX ? (box.maxY > this.minY && box.minY < this.maxY ? box.maxZ > this.minZ && box.minZ < this.maxZ : false) : false;
+        return box.maxX > this.minX && box.minX < this.maxX && (box.maxY > this.minY && box.minY < this.maxY && box.maxZ > this.minZ && box.minZ < this.maxZ);
     }
-	
+
 	public ForgeDirection faceTo(LittleTileBox box) {
-		
+
 		boolean x = !(this.minX >= box.maxX || box.minX >= this.maxX);
 		boolean y = !(this.minY >= box.maxY || box.minY >= this.maxY);
 		boolean z = !(this.minZ >= box.maxZ || box.minZ >= this.maxZ);
-		
+
 		if(x && y && z)
 			return ForgeDirection.UNKNOWN;
-		
+
 		if(x && y)
 			if(this.minZ > box.maxZ)
 				return ForgeDirection.NORTH;
 			else
 				return ForgeDirection.SOUTH;
-		
+
 		if(x && z)
 			if(this.minY > box.maxY)
 				return ForgeDirection.DOWN;
 			else
 				return ForgeDirection.UP;
-		
+
 		if(y && z)
 			if(this.minX > box.maxX)
 				return ForgeDirection.WEST;
 			else
 				return ForgeDirection.EAST;
-		
+
 		return ForgeDirection.UNKNOWN;
 	}
 
@@ -429,23 +424,23 @@ public class LittleTileBox {
 			return false;
 		return x && y || x && z || y && z;
 	}
-	
+
 	/**:D**/
 	public boolean isParallel(LittleTileBox box) {
 		return true;
 	}
-	
+
 	public boolean isBoxInsideBlock()
 	{
 		return minX >= LittleTile.minPos && maxX <= LittleTile.maxPos && minY >= LittleTile.minPos && maxY <= LittleTile.maxPos && minZ >= LittleTile.minPos && maxZ <= LittleTile.maxPos;
 	}
-	
+
 	public LittleTileBox expand(ForgeDirection direction)
 	{
 		LittleTileBox result = this.copy();
 		switch(direction)
 		{
-		
+
 		case EAST:
 			result.maxX++;
 			break;
@@ -469,13 +464,13 @@ public class LittleTileBox {
 		}
 		return result;
 	}
-	
+
 	public LittleTileBox shrink(ForgeDirection direction)
 	{
 		LittleTileBox result = this.copy();
 		switch(direction)
 		{
-		
+
 		case EAST:
 			result.maxX--;
 			break;
@@ -499,11 +494,11 @@ public class LittleTileBox {
 		}
 		return result;
 	}
-	
+
 	public void applyDirection(ForgeDirection direction) {
 		switch(direction)
 		{
-		
+
 		case EAST:
 			minX += 16;
 			maxX += 16;
@@ -536,6 +531,6 @@ public class LittleTileBox {
 	public void resort() {
 		set(Math.min(minX, maxX), Math.min(minY, maxY), Math.min(minZ, maxZ), Math.max(minX, maxX), Math.max(minY, maxY), Math.max(minZ, maxZ));
 	}
-	
-	
+
+
 }

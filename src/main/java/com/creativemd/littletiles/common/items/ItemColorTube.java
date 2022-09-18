@@ -1,9 +1,5 @@
 package com.creativemd.littletiles.common.items;
 
-import java.util.List;
-
-import javax.swing.Icon;
-
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.gui.IGuiCreator;
 import com.creativemd.creativecore.common.gui.SubGui;
@@ -15,7 +11,6 @@ import com.creativemd.littletiles.common.gui.SubContainerColorTube;
 import com.creativemd.littletiles.common.gui.SubGuiColorTube;
 import com.creativemd.littletiles.common.packet.LittleBlockPacket;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -29,6 +24,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class ItemColorTube extends Item implements IGuiCreator{
 
 	public ItemColorTube()
@@ -37,7 +34,7 @@ public class ItemColorTube extends Item implements IGuiCreator{
 		hasSubtypes = true;
 		setMaxStackSize(1);
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public static IIcon overlay;
 
@@ -46,9 +43,9 @@ public class ItemColorTube extends Item implements IGuiCreator{
     public void registerIcons(IIconRegister registry)
     {
         this.itemIcon = registry.registerIcon(LittleTiles.modid + ":LTColorTube");
-        this.overlay = registry.registerIcon(LittleTiles.modid + ":LTColorTube-Overlay");
+        overlay = registry.registerIcon(LittleTiles.modid + ":LTColorTube-Overlay");
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack stack, int pass)
@@ -57,7 +54,7 @@ public class ItemColorTube extends Item implements IGuiCreator{
         	return ColorUtils.WHITE;
         return getColor(stack);
     }
-	
+
 	public static int getColor(ItemStack stack)
 	{
 		if(stack == null)
@@ -68,7 +65,7 @@ public class ItemColorTube extends Item implements IGuiCreator{
 			setColor(stack, ColorUtils.WHITE);
 		return stack.stackTagCompound.getInteger("color");
 	}
-	
+
 	public static void setColor(ItemStack stack, int color)
 	{
 		if(stack == null)
@@ -77,21 +74,21 @@ public class ItemColorTube extends Item implements IGuiCreator{
 			stack.stackTagCompound = new NBTTagCompound();
 		stack.stackTagCompound.setInteger("color", color);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public IIcon getIconFromDamageForRenderPass(int meta, int pass)
     {
-        return pass == 1 ? this.overlay : this.itemIcon;
+        return pass == 1 ? overlay : this.itemIcon;
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public boolean requiresMultipleRenderPasses()
     {
         return true;
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced)
@@ -99,7 +96,7 @@ public class ItemColorTube extends Item implements IGuiCreator{
 		list.add("rightclick: dyes a tile");
 		list.add("shift+rightclick: copies tile's color");
 	}
-	
+
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
@@ -116,13 +113,13 @@ public class ItemColorTube extends Item implements IGuiCreator{
 		}
 		return false;
     }
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		if(!world.isRemote)
 		{
-			((EntityPlayerMP)player).openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+			player.openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
 		}
 		return stack;
 	}

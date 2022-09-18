@@ -2,19 +2,18 @@ package com.creativemd.littletiles.common.utils.small;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.common.util.Constants.NBT;
 
 public class LittleTileSize {
-	
+
 	public byte sizeX;
 	public byte sizeY;
 	public byte sizeZ;
-	
+
 	public LittleTileSize(String name, NBTTagCompound nbt)
 	{
 		this(nbt.getByte(name+"x"), nbt.getByte(name+"y"), nbt.getByte(name+"z"));
 	}
-	
+
 	public LittleTileSize(byte sizeX, byte sizeY, byte sizeZ)
 	{
 		/*if(sizeX < 1)
@@ -33,19 +32,19 @@ public class LittleTileSize {
 			sizeZ = 16;*/
 		this.sizeZ = sizeZ;
 	}
-	
+
 	public LittleTileSize(int sizeX, int sizeY, int sizeZ)
 	{
 		this((byte)sizeX, (byte)sizeY, (byte)sizeZ);
 	}
-	
+
 	public void set(byte sizeX, byte sizeY, byte sizeZ)
 	{
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
 		this.sizeZ = sizeZ;
 	}
-	
+
 	@Override
 	public boolean equals(Object object)
 	{
@@ -53,18 +52,18 @@ public class LittleTileSize {
 			return sizeX == ((LittleTileSize) object).sizeX && sizeY == ((LittleTileSize) object).sizeY && sizeZ == ((LittleTileSize) object).sizeZ;
 		return super.equals(object);
 	}
-	
+
 	public float getVolume()
 	{
 		return sizeX * sizeY * sizeZ;
 	}
-	
+
 	/**Returns how the volume in percent to a size of a normal block*/
 	public float getPercentVolume()
 	{
 		return getVolume() / (16*16*16);
 	}
-	
+
 	public LittleTileVec calculateInvertedCenter()
 	{
 		double x = sizeX/2D;
@@ -72,8 +71,8 @@ public class LittleTileSize {
 		double z = sizeZ/2D;
 		return new LittleTileVec((byte)(Math.ceil(x)), (byte)(Math.ceil(y)), (byte)(Math.ceil(z)));
 	}
-	
-	
+
+
 	public LittleTileVec calculateCenter()
 	{
 		double x = sizeX/2D;
@@ -81,27 +80,27 @@ public class LittleTileSize {
 		double z = sizeZ/2D;
 		return new LittleTileVec((byte)(Math.floor(x)), (byte)(Math.floor(y)), (byte)(Math.floor(z)));
 	}
-	
+
 	public double getPosX()
 	{
 		return (double)sizeX/16D;
 	}
-	
+
 	public double getPosY()
 	{
 		return (double)sizeY/16D;
 	}
-	
+
 	public double getPosZ()
 	{
 		return (double)sizeZ/16D;
 	}
-	
+
 	public LittleTileSize copy()
 	{
 		return new LittleTileSize(sizeX, sizeY, sizeZ);
 	}
-	
+
 	/*public void rotateby(ForgeDirection direction)
 	{
 		switch(direction)
@@ -122,7 +121,7 @@ public class LittleTileSize {
 			break;
 		}
 	}*/
-	
+
 	public void rotateSize(ForgeDirection direction)
 	{
 		switch(direction)
@@ -143,14 +142,14 @@ public class LittleTileSize {
 			break;
 		}
 	}
-	
+
 	public void writeToNBT(String name, NBTTagCompound  nbt)
 	{
 		nbt.setByte(name+"x", sizeX);
 		nbt.setByte(name+"y", sizeY);
 		nbt.setByte(name+"z", sizeZ);
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -163,5 +162,5 @@ public class LittleTileSize {
 		this.sizeZ = (byte) Math.max(this.sizeZ, size.sizeZ);
 		return this;
 	}
-	
+
 }

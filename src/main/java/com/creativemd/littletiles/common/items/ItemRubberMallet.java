@@ -1,8 +1,5 @@
 package com.creativemd.littletiles.common.items;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.gui.SubContainerHammer;
@@ -13,7 +10,6 @@ import com.creativemd.littletiles.common.utils.LittleTileBlock;
 import com.creativemd.littletiles.common.utils.LittleTileBlockColored;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.utils.TileList;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -26,15 +22,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class ItemRubberMallet extends Item {
-	
+
 	public ItemRubberMallet()
 	{
 		setCreativeTab(CreativeTabs.tabTools);
 		hasSubtypes = true;
 		setMaxStackSize(1);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced)
@@ -43,7 +41,7 @@ public class ItemRubberMallet extends Item {
 		list.add("smallest pieces possible");
 		list.add("limit: " + LittleTiles.maxNewTiles);
 	}
-	
+
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
@@ -57,29 +55,27 @@ public class ItemRubberMallet extends Item {
 					TileList<LittleTile> newTiles = TileEntityLittleTiles.createTileList();
 					TileEntityLittleTiles te = (TileEntityLittleTiles) tileEntity;
 					TileList<LittleTile> tiles = te.getTiles();
-					for (int i = 0; i < tiles.size(); i++) {
-						LittleTile oldTile = tiles.get(i);
-						if((oldTile.getClass() == LittleTileBlock.class || oldTile instanceof LittleTileBlockColored) && oldTile.structure == null)
-						{
-							for (int j = 0; j < oldTile.boundingBoxes.size(); j++) {
-								LittleTileBox box = oldTile.boundingBoxes.get(j);
-								for (int littleX = box.minX; littleX < box.maxX; littleX++) {
-									for (int littleY = box.minY; littleY < box.maxY; littleY++) {
-										for (int littleZ = box.minZ; littleZ < box.maxZ; littleZ++) {
-											LittleTile tile = oldTile.copy();
-											tile.boundingBoxes.clear();
-											tile.boundingBoxes.add(new LittleTileBox(littleX, littleY, littleZ, littleX+1, littleY+1, littleZ+1));
-											tile.updateCorner();
-											tile.te = te;
-											newTiles.add(tile);
-										}
-									}
-								}
-							}
-							
-						}else
-							newTiles.add(oldTile);
-					}
+                    for (LittleTile oldTile : tiles) {
+                        if ((oldTile.getClass() == LittleTileBlock.class || oldTile instanceof LittleTileBlockColored) && oldTile.structure == null) {
+                            for (int j = 0; j < oldTile.boundingBoxes.size(); j++) {
+                                LittleTileBox box = oldTile.boundingBoxes.get(j);
+                                for (int littleX = box.minX; littleX < box.maxX; littleX++) {
+                                    for (int littleY = box.minY; littleY < box.maxY; littleY++) {
+                                        for (int littleZ = box.minZ; littleZ < box.maxZ; littleZ++) {
+                                            LittleTile tile = oldTile.copy();
+                                            tile.boundingBoxes.clear();
+                                            tile.boundingBoxes.add(new LittleTileBox(littleX, littleY, littleZ, littleX + 1, littleY + 1, littleZ + 1));
+                                            tile.updateCorner();
+                                            tile.te = te;
+                                            newTiles.add(tile);
+                                        }
+                                    }
+                                }
+                            }
+
+                        } else
+                            newTiles.add(oldTile);
+                    }
 					if(LittleTiles.maxNewTiles >= newTiles.size() - te.getTiles().size())
 					{
 						te.setTiles(newTiles);
@@ -94,7 +90,7 @@ public class ItemRubberMallet extends Item {
 			return true;
 		}else {
 			Block block = world.getBlock(x, y, z);
-			
+
 			if(tileEntity == null && SubContainerHammer.isBlockValid(block))
 			{
 				if(!world.isRemote)
@@ -124,14 +120,14 @@ public class ItemRubberMallet extends Item {
 					}else{
 						player.addChatComponentMessage(new ChatComponentText("Too much new tiles! Limit=" + LittleTiles.maxNewTiles));
 					}
-					
+
 				}
 				return true;
 			}
 		}
 		return false;
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     protected String getIconString()

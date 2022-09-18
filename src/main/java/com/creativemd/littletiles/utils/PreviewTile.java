@@ -1,73 +1,70 @@
 package com.creativemd.littletiles.utils;
 
-import java.util.ArrayList;
-
 import com.creativemd.creativecore.common.utils.HashMapList;
 import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
-import com.creativemd.littletiles.common.utils.LittleTile.LittleTilePosition;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
-
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 
+import java.util.ArrayList;
+
 public class PreviewTile {
-	
+
 	public static final Vec3 white = Vec3.createVectorHelper(1, 1, 1);
 
 	public LittleTileBox box;
 	public LittleTilePreview preview;
-	
+
 	public PreviewTile(LittleTileBox box, LittleTilePreview preview)
 	{
 		this.box = box;
 		this.preview = preview;
 	}
-	
+
 	public PreviewTile copy()
 	{
 		return new PreviewTile(box.copy(), preview.copy());
 	}
-	
+
 	public Vec3 getPreviewColor()
 	{
 		return white;
 	}
-	
+
 	public boolean needsCollisionTest()
 	{
 		return true;
 	}
-	
+
 	public LittleTileBox getPreviewBox()
 	{
 		return box;
 	}
-	
+
 	public LittleTile placeTile(EntityPlayer player, ItemStack stack, TileEntityLittleTiles teLT, LittleStructure structure, ArrayList<LittleTile> unplaceableTiles)
 	{
 		//PreviewTile tile = placeTiles.get(j);
 		LittleTile LT = preview.getLittleTile(teLT);
 		if(LT == null)
 			return null;
-		
+
 		LT.boundingBoxes.clear();
 		LT.boundingBoxes.add(box.copy());
 		LT.updateCorner();
-		
+
 		if(structure != null)
 		{
 			LT.isStructureBlock = true;
 			LT.structure = structure;
 			structure.getTiles().add(LT);
 		}
-		
+
 		if(teLT.isSpaceForLittleTile(box.copy()))
 		{
 			LT.place();
@@ -78,21 +75,21 @@ public class PreviewTile {
 		}
 		return null;
 	}
-	
+
 	public boolean split(HashMapList<ChunkCoordinates, PreviewTile> tiles, int x, int y, int z)
 	{
 		//box.resort();
-		
+
 		if(preview != null && !preview.canSplit && box.needsMultipleBlocks())
 			return false;
-		
+
 		//if(!box.isValidBox())
 			//System.out.println("Invalid box found!");
 		//int tilesCount = 0;
 		//ArrayList<LittleTileBox> failedBoxes = new ArrayList<LittleTileBox>();
-		
+
 		LittleTileSize size = box.getSize();
-		
+
 		int offX = box.minX/16;
 		if(box.minX < 0)
 			offX = (int) Math.floor(box.minX/16D);
@@ -102,21 +99,21 @@ public class PreviewTile {
 		int offZ = box.minZ/16;
 		if(box.minZ < 0)
 			offZ = (int) Math.floor(box.minZ/16D);
-		
+
 		int posX = x+offX;
-		int posY = y+offY;
-		int posZ = z+offZ;
-		
+		int posY;
+		int posZ;
+
 		int spaceX = box.minX-offX*16;
 		int spaceY = box.minY-offY*16;
 		int spaceZ = box.minZ-offZ*16;
-		
+
 		for (int i = 0; spaceX+size.sizeX > i*16; i++) {
 			posY = y+offY;
 			for (int j = 0; spaceY+size.sizeY > j*16; j++) {
 				posZ = z+offZ;
 				for (int h = 0; spaceZ+size.sizeZ > h*16; h++) {
-					
+
 					PreviewTile tile = this.copy();
 					if(i > 0)
 						tile.box.minX =	0;
@@ -130,7 +127,7 @@ public class PreviewTile {
 					}
 					else
 						tile.box.maxX = 16;
-					
+
 					if(j > 0)
 						tile.box.minY =	0;
 					else
@@ -143,7 +140,7 @@ public class PreviewTile {
 					}
 					else
 						tile.box.maxY = 16;
-					
+
 					if(h > 0)
 						tile.box.minZ =	0;
 					else
@@ -156,7 +153,7 @@ public class PreviewTile {
 					}
 					else
 						tile.box.maxZ = 16;
-					
+
 					if(tile.box.isValidBox())
 					{
 						tiles.add(new ChunkCoordinates(posX, posY, posZ), tile);
@@ -169,7 +166,7 @@ public class PreviewTile {
 			}
 			posX++;
 		}
-		
+
 		/*if(tilesCount == 0)
 		{
 			System.out.println("Failed to split box!");
@@ -179,8 +176,8 @@ public class PreviewTile {
 			}
 			System.out.println("==============================");
 		}*/
-		
+
 		return true;
 	}
-	
+
 }

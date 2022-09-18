@@ -1,7 +1,5 @@
 package com.creativemd.littletiles.common.items;
 
-import java.util.List;
-
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.gui.IGuiCreator;
 import com.creativemd.creativecore.common.gui.SubGui;
@@ -11,12 +9,9 @@ import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.gui.SubContainerHammer;
 import com.creativemd.littletiles.common.gui.SubGuiHammer;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -24,14 +19,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class ItemHammer extends Item implements IGuiCreator{
-	
+
 	public ItemHammer()
 	{
 		setCreativeTab(CreativeTabs.tabTools);
 		setMaxStackSize(1);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced)
@@ -41,18 +38,18 @@ public class ItemHammer extends Item implements IGuiCreator{
 		list.add("shift+rightclick will harvest and");
 		list.add("drop all tiles inside one block");
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		if(!world.isRemote && !player.isSneaking())
 		{
-			((EntityPlayerMP)player).openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+			player.openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
 			return stack;
 		}
 		return stack;
 	}
-	
+
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
@@ -75,14 +72,14 @@ public class ItemHammer extends Item implements IGuiCreator{
 		}
         return false;
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
     protected String getIconString()
     {
         return LittleTiles.modid + ":LTHammer";
     }
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public SubGui getGui(EntityPlayer player, ItemStack stack, World world,
@@ -95,5 +92,5 @@ public class ItemHammer extends Item implements IGuiCreator{
 			World world, int x, int y, int z) {
 		return new SubContainerHammer(player);
 	}
-	
+
 }
