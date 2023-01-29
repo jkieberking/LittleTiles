@@ -1,21 +1,23 @@
 package com.creativemd.littletiles.client;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
+
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.client.render.PreviewRenderer;
 import com.creativemd.littletiles.client.render.SpecialBlockTilesRenderer;
 import com.creativemd.littletiles.common.blocks.BlockTile;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
 import com.creativemd.littletiles.server.LittleTilesServer;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.item.Item;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 
 @SideOnly(Side.CLIENT)
 public class LittleTilesClient extends LittleTilesServer {

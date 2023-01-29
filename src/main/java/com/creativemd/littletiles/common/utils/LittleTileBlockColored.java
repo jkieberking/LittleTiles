@@ -1,13 +1,14 @@
 package com.creativemd.littletiles.common.utils;
 
-import com.creativemd.creativecore.common.utils.ColorUtils;
-import com.creativemd.creativecore.common.utils.CubeObject;
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.util.Vec3;
 
-import java.util.ArrayList;
+import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.common.utils.CubeObject;
 
 public class LittleTileBlockColored extends LittleTileBlock {
 
@@ -76,8 +77,7 @@ public class LittleTileBlockColored extends LittleTileBlock {
     }
 
     public static LittleTileBlock setColor(LittleTileBlock tile, int color) {
-        if (color == ColorUtils.WHITE)
-            return removeColor(tile);
+        if (color == ColorUtils.WHITE) return removeColor(tile);
         if (tile instanceof LittleTileBlockColored) {
             ((LittleTileBlockColored) tile).color = color;
         } else {
