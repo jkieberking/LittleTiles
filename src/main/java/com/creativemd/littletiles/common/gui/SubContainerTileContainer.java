@@ -27,7 +27,7 @@ public class SubContainerTileContainer extends SubContainer {
     public int index;
 
     public SubContainerTileContainer(EntityPlayer player, ItemStack stack, int index) {
-        super(player);
+        super(player, true);
         this.stack = stack;
         this.index = index;
     }

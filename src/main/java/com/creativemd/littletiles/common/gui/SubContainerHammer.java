@@ -22,7 +22,7 @@ import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 public class SubContainerHammer extends SubContainer {
 
     public SubContainerHammer(EntityPlayer player) {
-        super(player);
+        super(player, true);
     }
 
     public InventoryBasic basic = new InventoryBasic("Hammer", false, 1);

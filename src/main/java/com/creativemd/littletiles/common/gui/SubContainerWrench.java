@@ -25,7 +25,7 @@ public class SubContainerWrench extends SubContainer {
     public InventoryBasic basic = new InventoryBasic("default", false, 2);
 
     public SubContainerWrench(EntityPlayer player) {
-        super(player);
+        super(player, true);
     }
 
     @Override
