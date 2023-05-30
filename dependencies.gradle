@@ -1,5 +1,5 @@
 // Add your dependencies here
 
 dependencies {
-    api('com.github.GTNewHorizons:CreativeCore:1.3.28-GTNH-pre:dev')
+    api('com.github.GTNewHorizons:CreativeCore:1.3.29-GTNH-pre:dev')
 }
