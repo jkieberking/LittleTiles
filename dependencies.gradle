@@ -1,7 +1,5 @@
 // Add your dependencies here
 
 dependencies {
-    compile('com.github.GTNewHorizons:CreativeCore:1.3.26-GTNH:dev')
-
-    compileOnly('com.github.GTNewHorizons:CodeChickenLib:1.1.5.3:dev')
+    api('com.github.GTNewHorizons:CreativeCore:1.3.28-GTNH-pre:dev')
 }
