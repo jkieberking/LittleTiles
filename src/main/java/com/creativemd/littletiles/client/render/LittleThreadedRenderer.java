@@ -8,6 +8,7 @@ import net.minecraft.util.IIcon;
 
 import com.creativemd.creativecore.client.rendering.ExtendedRenderBlocks;
 import com.creativemd.littletiles.client.render.LittleBlockVertex.LittleVertex;
+
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class LittleThreadedRenderer extends ExtendedRenderBlocks {
