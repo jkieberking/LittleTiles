@@ -2,6 +2,9 @@ package com.creativemd.littletiles.common.items;
 
 import java.util.List;
 
+import com.cleanroommc.modularui.factory.ClientGUI;
+import com.cleanroommc.modularui.screen.ModularScreen;
+import com.creativemd.littletiles.common.gui.GuiChisel;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -20,8 +23,11 @@ import com.creativemd.littletiles.common.gui.SubGuiChisel;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ItemLittleChisel extends Item implements IGuiCreator {
+public class ItemLittleChisel extends Item {
+    private static final Logger log = LogManager.getLogger(ItemLittleChisel.class);
 
     public ItemLittleChisel() {
         setCreativeTab(CreativeTabs.tabTools);
@@ -61,10 +67,8 @@ public class ItemLittleChisel extends Item implements IGuiCreator {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (!world.isRemote && !player.isSneaking() && stack.stackTagCompound != null) {
-            if (stack.stackTagCompound.hasKey("x1") && stack.stackTagCompound.hasKey("x2")) player
-                    .openGui(CreativeCore.instance, 1, world, (int) player.posX, (int) player.posY, (int) player.posZ);
-            else player.addChatMessage(new ChatComponentText("You have to select two positions first"));
+        if (!world.isRemote) {
+            ClientGUI.open(new GuiChisel());
         }
         return stack;
     }
@@ -90,16 +94,5 @@ public class ItemLittleChisel extends Item implements IGuiCreator {
             }
         }
         return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public SubGui getGui(EntityPlayer player, ItemStack stack, World world, int x, int y, int z) {
-        return new SubGuiChisel(stack);
-    }
-
-    @Override
-    public SubContainer getContainer(EntityPlayer player, ItemStack stack, World world, int x, int y, int z) {
-        return new SubContainerChisel(player);
     }
 }

@@ -2,4 +2,8 @@
 
 dependencies {
     api('com.github.GTNewHorizons:CreativeCore:1.4.0-GTNH:dev')
+    api("com.github.GTNewHorizons:GTNHLib:0.6.0:dev") // @TODO mavenlocal move this to CreativeCore
+    // api("com.github.GTNewHorizons:ModularUI:1.2.17:dev") // @TODO mavenlocal maybe move this to CreativeCore
+    api("com.github.GTNewHorizons:ModularUI2:2.2.0-1.7.10:dev")
+
 }
