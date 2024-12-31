@@ -4,7 +4,10 @@ import java.util.List;
 
 import com.cleanroommc.modularui.factory.ClientGUI;
 import com.cleanroommc.modularui.screen.ModularScreen;
+import com.creativemd.littletiles.common.api.ILittleTool;
 import com.creativemd.littletiles.common.gui.GuiChisel;
+import com.creativemd.littletiles.common.utils.place.IMarkMode;
+import com.creativemd.littletiles.common.utils.shape.ShapeSelection;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -26,8 +29,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ItemLittleChisel extends Item {
+public class ItemLittleChisel extends Item implements ILittleTool {
     private static final Logger log = LogManager.getLogger(ItemLittleChisel.class);
+
+    public static ShapeSelection selection;
 
     public ItemLittleChisel() {
         setCreativeTab(CreativeTabs.tabTools);
@@ -66,6 +71,14 @@ public class ItemLittleChisel extends Item {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public IMarkMode onMark(EntityPlayer player, ItemStack stack /* PlacementPosition position, RayTraceResult result, PlacementPreview previews */ ) {
+        if (selection != null)
+            selection.toggleMark();
+        return selection;
+    }
+
+    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote) {
             ClientGUI.open(new GuiChisel());
@@ -94,5 +107,13 @@ public class ItemLittleChisel extends Item {
             }
         }
         return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void tick(EntityPlayer player, ItemStack stack/* @TODO add position, PlacementPosition position, RayTraceResult result */) {
+        if (selection == null)
+            selection = new ShapeSelection(stack, false);
+//        selection.setLast(player, stack, getPosition(position, result, currentMode), result);
     }
 }

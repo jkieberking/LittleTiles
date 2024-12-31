@@ -2,15 +2,21 @@ package com.creativemd.littletiles.client.render;
 
 import java.util.ArrayList;
 
+import com.creativemd.littletiles.common.api.ILittleTool;
+import com.creativemd.littletiles.common.utils.place.IMarkMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -34,6 +40,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PreviewRenderer {
+
+    public static IMarkMode marked;
 
     public static Minecraft mc = Minecraft.getMinecraft();
 
@@ -88,11 +96,47 @@ public class PreviewRenderer {
         if (posZ != (int) markedHit.hitVec.zCoord) markedHit.blockZ += ((int) markedHit.hitVec.zCoord) - posZ;
     }
 
+    public void processMarkKey(EntityPlayer player, ILittleTool iTile, ItemStack stack /*PlacementPreview preview */) {
+        while (LittleTilesClient.mark.isPressed()) {
+            if (marked == null) {
+                // @TODO setup onmark for position/etc...
+                marked = iTile.onMark(player, stack /*, PlacementHelper.getPosition(player.world, mc.objectMouseOver, iTile.getPositionContext(stack), iTile, stack), mc.objectMouseOver, preview */);
+                player.addChatMessage(new ChatComponentText("Marked!"));
+//                if (GuiScreen.isCtrlKeyDown())
+//                    FMLClientHandler.instance().displayGuiScreen(player, new GuiContainerSub(player, marked.getConfigurationGui(), new SubContainerEmpty(player)));
+            } else {
+//                if (GuiScreen.isCtrlKeyDown())
+//                    FMLClientHandler.instance().displayGuiScreen(player, new GuiContainerSub(player, marked.getConfigurationGui(), new SubContainerEmpty(player)));
+//                else {
+                marked.done();
+                marked = null;
+                player.addChatMessage(new ChatComponentText("unMarked!"));
+
+//                }
+            }
+        }
+    }
+
     @SubscribeEvent
     public void tick(RenderHandEvent event) {
-        if (mc.thePlayer != null && mc.inGameHasFocus) {
-            // mc.theWorld
-            if (PlacementHelper.isLittleBlock(mc.thePlayer.getHeldItem())) {
+        if (mc.thePlayer != null && mc.inGameHasFocus && !mc.gameSettings.hideGUI) {
+                World world = mc.theWorld;
+                EntityPlayer player = mc.thePlayer;
+                ItemStack stack = mc.thePlayer.getHeldItem();
+
+//                if (!LittleAction.canPlace(player))
+//                    return;
+
+//                handleUndoAndRedo(player);
+
+            if (stack.getItem() instanceof ILittleTool &&
+                (marked != null || (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectType.BLOCK /* @TODO don't think we need this?: && mc.objectMouseOver.sideHit != null */))
+            ) {
+                ((ILittleTool) stack.getItem()).tick(player, stack /*, position, mc.objectMouseOver */);
+
+                processMarkKey(player, (ILittleTool) stack.getItem(), stack);
+
+
                 if (GameSettings.isKeyDown(LittleTilesClient.flip) && !LittleTilesClient.pressedFlip) {
                     LittleTilesClient.pressedFlip = true;
                     int i4 = MathHelper.floor_double((double) (mc.thePlayer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
@@ -167,7 +211,7 @@ public class PreviewRenderer {
                         if (markedHit == null) {
 
                             LittleTileVec vec = helper
-                                    .getHitVec(look.hitVec, look.blockX, look.blockY, look.blockZ, side, false, false);
+                                .getHitVec(look.hitVec, look.blockX, look.blockY, look.blockZ, side, false, false);
                             Vec3 hitVec = Vec3.createVectorHelper(vec.getPosX(), vec.getPosY(), vec.getPosZ());
 
                             int newX = look.blockX;
@@ -199,11 +243,11 @@ public class PreviewRenderer {
                             }
                             hitVec = hitVec.addVector(newX, newY, newZ);
                             markedHit = new MovingObjectPosition(
-                                    newX,
-                                    newY,
-                                    newZ/* look.blockX, look.blockY, look.blockZ */,
-                                    look.sideHit,
-                                    hitVec);
+                                newX,
+                                newY,
+                                newZ/* look.blockX, look.blockY, look.blockZ */,
+                                look.sideHit,
+                                hitVec);
                             return;
                         } else markedHit = null;
                     } else if (!GameSettings.isKeyDown(LittleTilesClient.mark)) {
@@ -250,8 +294,8 @@ public class PreviewRenderer {
                     ArrayList<PreviewTile> previews;
 
                     previews = helper.getPreviewTiles(mc.thePlayer.getHeldItem(), look, markedHit != null); // ,
-                                                                                                            // direction,
-                                                                                                            // direction2);
+                    // direction,
+                    // direction2);
 
                     for (PreviewTile previewTile : previews) {
                         GL11.glPushMatrix();
@@ -272,19 +316,19 @@ public class PreviewRenderer {
                          */
                         Vec3 color = previewTile.getPreviewColor();
                         RenderHelper3D.renderBlock(
-                                cubeX,
-                                cubeY,
-                                cubeZ,
-                                size.xCoord,
-                                size.yCoord,
-                                size.zCoord,
-                                0,
-                                0,
-                                0,
-                                color.xCoord,
-                                color.yCoord,
-                                color.zCoord,
-                                Math.sin(System.nanoTime() / 200000000D) * 0.2 + 0.5);
+                            cubeX,
+                            cubeY,
+                            cubeZ,
+                            size.xCoord,
+                            size.yCoord,
+                            size.zCoord,
+                            0,
+                            0,
+                            0,
+                            color.xCoord,
+                            color.yCoord,
+                            color.zCoord,
+                            Math.sin(System.nanoTime() / 200000000D) * 0.2 + 0.5);
                         GL11.glPopMatrix();
                     }
 
@@ -305,7 +349,7 @@ public class PreviewRenderer {
                     GL11.glEnable(GL11.GL_TEXTURE_2D);
                     GL11.glDisable(GL11.GL_BLEND);
                 }
-            } else markedHit = null;
+            }
         }
     }
 }

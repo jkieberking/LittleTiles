@@ -1,7 +1,9 @@
 package com.creativemd.littletiles.common.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.creativemd.littletiles.common.api.ILittleTool;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,7 +24,7 @@ import com.creativemd.littletiles.utils.InsideShiftHandler;
 import com.creativemd.littletiles.utils.PreviewTile;
 import com.creativemd.littletiles.utils.ShiftHandler;
 
-/** This class does all caculate on where to place a block. Used for rendering preview and placing **/
+/** This class does all calculations on where to place a block. Used for rendering preview and placing **/
 public class PlacementHelper {
 
     private static PlacementHelper instance;
@@ -405,4 +407,60 @@ public class PlacementHelper {
         }
         return vec;
     }
+// @TODO setup placement position
+//    @SideOnly(Side.CLIENT)
+//    public static PlacementPosition getPosition(World world, RayTraceResult moving, LittleGridContext context, ILittleTool tile, ItemStack stack) {
+//        EntityPlayer player = Minecraft.getMinecraft().player;
+//
+//        int x = moving.getBlockPos().getX();
+//        int y = moving.getBlockPos().getY();
+//        int z = moving.getBlockPos().getZ();
+//
+//        boolean canBePlacedInsideBlock = true;
+//        if (!canBePlacedInside(world, moving.getBlockPos(), moving.hitVec, moving.sideHit)) {
+//            switch (moving.sideHit) {
+//                case EAST:
+//                    x++;
+//                    break;
+//                case WEST:
+//                    x--;
+//                    break;
+//                case UP:
+//                    y++;
+//                    break;
+//                case DOWN:
+//                    y--;
+//                    break;
+//                case SOUTH:
+//                    z++;
+//                    break;
+//                case NORTH:
+//                    z--;
+//                    break;
+//                default:
+//                    break;
+//            }
+//
+//            canBePlacedInsideBlock = false;
+//        }
+//
+//        BlockPos pos = new BlockPos(x, y, z);
+//
+//        PlacementPosition result = new PlacementPosition(pos, getHitVec(moving, context, canBePlacedInsideBlock).getVecContext(), moving.sideHit);
+//
+//        if (tile instanceof ILittlePlacer && stack != null && (LittleAction.isUsingSecondMode(player) != ((ILittlePlacer) tile).snapToGridByDefault(stack))) {
+//            Vec3d position = player.getPositionEyes(TickUtils.getPartialTickTime());
+//            double d0 = player.capabilities.isCreativeMode ? 5.0F : 4.5F;
+//            Vec3d temp = player.getLook(TickUtils.getPartialTickTime());
+//            Vec3d look = position.addVector(temp.x * d0, temp.y * d0, temp.z * d0);
+//            position = position.subtract(pos.getX(), pos.getY(), pos.getZ());
+//            look = look.subtract(pos.getX(), pos.getY(), pos.getZ());
+//            List<LittleRenderBox> cubes = ((ILittlePlacer) tile).getPositingCubes(world, pos, stack);
+//            if (cubes != null)
+//                result.positingCubes = cubes;
+//        }
+//
+//        return result;
+//    }
+
 }
