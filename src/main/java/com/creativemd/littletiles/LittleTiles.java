@@ -1,5 +1,6 @@
 package com.creativemd.littletiles;
 
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -78,9 +79,13 @@ public class LittleTiles {
 
     public static boolean isAngelicaLoaded;
 
-    @EventHandler
+        @EventHandler
     public void Init(FMLInitializationEvent event) {
         ForgeModContainer.fullBoundingBoxLadders = true;
+
+        // @TODO actually set up proper config loading
+        LittleTilesConfig littleConfig = new LittleTilesConfig();
+        littleConfig.core.configured();
 
         GameRegistry.registerItem(hammer, "hammer");
         GameRegistry.registerItem(recipe, "recipe");

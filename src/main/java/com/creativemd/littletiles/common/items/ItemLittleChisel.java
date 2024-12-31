@@ -7,6 +7,7 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.creativemd.littletiles.common.api.ILittleTool;
 import com.creativemd.littletiles.common.gui.GuiChisel;
 import com.creativemd.littletiles.common.utils.place.IMarkMode;
+import com.creativemd.littletiles.common.utils.place.PlacementPosition;
 import com.creativemd.littletiles.common.utils.shape.ShapeSelection;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,7 +73,7 @@ public class ItemLittleChisel extends Item implements ILittleTool {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IMarkMode onMark(EntityPlayer player, ItemStack stack /* PlacementPosition position, RayTraceResult result, PlacementPreview previews */ ) {
+    public IMarkMode onMark(EntityPlayer player, ItemStack stack, PlacementPosition position /*, RayTraceResult result, PlacementPreview previews */ ) {
         if (selection != null)
             selection.toggleMark();
         return selection;
@@ -111,9 +112,9 @@ public class ItemLittleChisel extends Item implements ILittleTool {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void tick(EntityPlayer player, ItemStack stack/* @TODO add position, PlacementPosition position, RayTraceResult result */) {
+    public void tick(EntityPlayer player, ItemStack stack, PlacementPosition position /*, RayTraceResult result */) {
         if (selection == null)
             selection = new ShapeSelection(stack, false);
-//        selection.setLast(player, stack, getPosition(position, result, currentMode), result);
+        selection.setLast(player, stack, position /*, getPosition(position, result, currentMode), result */);
     }
 }

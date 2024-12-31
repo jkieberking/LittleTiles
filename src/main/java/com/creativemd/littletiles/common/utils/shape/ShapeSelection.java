@@ -18,9 +18,19 @@ import com.creativemd.littletiles.common.api.ILittleTool;
 //import net.minecraft.client.renderer.GlStateManager;
 //import net.minecraft.client.renderer.RenderGlobal;
 //import net.minecraft.entity.player.EntityPlayer;
+import com.creativemd.littletiles.common.utils.grid.IGridBased;
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.place.IMarkMode;
+import com.creativemd.littletiles.common.utils.place.PlacementPosition;
+import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.ArrayList;
+import java.util.List;
 //import net.minecraft.util.EnumFacing;
 //import net.minecraft.util.EnumFacing.Axis;
 //import net.minecraft.util.EnumFacing.AxisDirection;
@@ -36,20 +46,20 @@ import net.minecraft.nbt.NBTTagCompound;
 //import java.util.List;
 
 // @TODO add implements API
-public class ShapeSelection implements IMarkMode /* implements Iterable<ShapeSelection.ShapeSelectPos>, IGridBased */ {
+public class ShapeSelection implements IMarkMode, IGridBased /* implements Iterable<ShapeSelection.ShapeSelectPos>, IGridBased */ {
 
     public ItemStack stack;
     public ILittleTool tool;
-//    private final List<ShapeSelectPos> positions = new ArrayList<>();
+    private final List<ShapeSelectPos> positions = new ArrayList<>();
 
     public final boolean inside;
 
 //    protected LittleShape shape;
     protected String shapeKey;
 
-//    protected BlockPos pos;
-//    private ShapeSelectPos last;
-//    protected LittleGridContext context = LittleGridContext.getMin();
+    protected BlockPos pos;
+    private ShapeSelectPos last;
+    protected LittleGridContext context = LittleGridContext.getMin();
 
 //    protected LittleBox overallBox;
 //    protected ShapeSelectCache cache;
@@ -122,14 +132,14 @@ public class ShapeSelection implements IMarkMode /* implements Iterable<ShapeSel
 //        return cache;
 //    }
 //
-//    public BlockPos getPos() {
-//        return pos;
-//    }
+    public BlockPos getPos() {
+        return pos;
+    }
 //
-//    @Override
-//    public LittleGridContext getContext() {
-//        return context;
-//    }
+    @Override
+    public LittleGridContext getContext() {
+        return context;
+    }
 //
 //    public LittleBoxes getBoxes(boolean allowLowResolution) {
 //        if (this.allowLowResolution && allowLowResolution)
@@ -156,35 +166,35 @@ public class ShapeSelection implements IMarkMode /* implements Iterable<ShapeSel
 //        return true;
 //    }
 
-//    @SideOnly(Side.CLIENT)
-//    public void setLast(EntityPlayer player, ItemStack stack, PlacementPosition position, RayTraceResult result) {
-//        this.stack = stack;
+    @SideOnly(Side.CLIENT)
+    public void setLast(EntityPlayer player, ItemStack stack, PlacementPosition position /*, RayTraceResult result */) {
+        this.stack = stack;
 //        if (result == null)
 //            return;
-//        if (positions.isEmpty())
-//            pos = position.getPos();
-//        last = new ShapeSelectPos(player, position, result);
-//        ensureSameContext(last);
-//    }
-//
-//    private void ensureSameContext(ShapeSelectPos pos) {
-//        if (context.size > pos.getContext().size)
-//            pos.convertTo(context);
-//        else if (context.size < pos.getContext().size)
-//            convertTo(pos.getContext());
-//    }
+        if (positions.isEmpty())
+            pos = position.getPos();
+        last = new ShapeSelectPos(player, position /*, result */);
+        ensureSameContext(last);
+    }
+
+    private void ensureSameContext(ShapeSelectPos pos) {
+        if (context.size > pos.getContext().size)
+            pos.convertTo(context);
+        else if (context.size < pos.getContext().size)
+            convertTo(pos.getContext());
+    }
 //
     public void toggleMark() {
         if (marked) {
             // @TODO when marked, add shape
 //            while (shape.maxAllowed() != -1 && positions.size() >= shape.maxAllowed())
-//                positions.remove(positions.size() - 1);
-//            markedPosition = positions.size() - 1;
+                positions.remove(positions.size() - 1);
+            markedPosition = positions.size() - 1;
             marked = false;
         } else {
             // @TODO when unmarked, remove shape
-//            markedPosition = positions.size();
-//            positions.add(last);
+            markedPosition = positions.size();
+            positions.add(last);
             marked = true;
         }
     }
@@ -194,10 +204,11 @@ public class ShapeSelection implements IMarkMode /* implements Iterable<ShapeSel
 //        return allowLowResolution;
 //    }
 //
-//    @Override
-//    public PlacementPosition getPosition() {
-//        return positions.get(markedPosition).pos.copy();
-//    }
+    @Override
+    public PlacementPosition getPosition() {
+        ShapeSelectPos retPos = positions.get(markedPosition);
+        return retPos.pos.copy();
+    }
 //
 //    @Override
 //    @SideOnly(Side.CLIENT)
@@ -300,12 +311,12 @@ public class ShapeSelection implements IMarkMode /* implements Iterable<ShapeSel
 //        return last;
 //    }
 //
-//    @Override
-//    public void convertTo(LittleGridContext to) {
-//        for (ShapeSelectPos other : positions)
-//            other.convertTo(to);
-//        context = to;
-//    }
+    @Override
+    public void convertTo(LittleGridContext to) {
+        for (ShapeSelectPos other : positions)
+            other.convertTo(to);
+        context = to;
+    }
 //
 //    @Override
 //    public void convertToSmallest() {
@@ -346,98 +357,6 @@ public class ShapeSelection implements IMarkMode /* implements Iterable<ShapeSel
 //                cachedBoxes = shape.getBoxes(ShapeSelection.this, false);
 //            return cachedBoxes;
 //        }
-//    }
-//
-//    public class ShapeSelectPos implements IGridBased {
-//
-////        public final PlacementPosition pos;
-////        public final RayTraceResult ray;
-////        public final BlockTile.TEResult result;
-////
-////        public ShapeSelectPos(EntityPlayer player, PlacementPosition position, RayTraceResult result) {
-////            this.pos = position;
-////            this.ray = result;
-////            this.result = BlockTile.loadTeAndTile(player.world, result.getBlockPos(), player);
-////            if (inside && result.sideHit.getAxisDirection() == AxisDirection.POSITIVE && context.isAtEdge(VectorUtils.get(result.sideHit.getAxis(), result.hitVec)))
-////                pos.getVec().sub(result.sideHit);
-////        }
-////
-////        public ShapeSelectPos(PlacementPosition position, RayTraceResult ray, BlockTile.TEResult result) {
-////            this.pos = position;
-////            this.ray = ray;
-////            this.result = result;
-////        }
-////
-////        public void move(LittleGridContext context, EnumFacing facing) {
-////            LittleVec vec = new LittleVec(facing);
-////            vec.scale(GuiScreen.isCtrlKeyDown() ? context.size : 1);
-////            pos.subVec(vec);
-////        }
-////
-////        @Override
-////        public boolean equals(Object obj) {
-////            if (obj instanceof ShapeSelectPos) {
-////                if (!pos.equals(((ShapeSelectPos) obj).pos))
-////                    return false;
-////                if (result.parent != ((ShapeSelectPos) obj).result.parent)
-////                    return false;
-////                if (result.tile != ((ShapeSelectPos) obj).result.tile)
-////                    return false;
-////                return true;
-////            }
-////            return false;
-////        }
-////
-////        public AxisAlignedBB getBox() {
-////            return pos.getBox(context);
-////        }
-////
-////        @SideOnly(Side.CLIENT)
-////        public void render(LittleGridContext context, double x, double y, double z, boolean selected) {
-////            GlStateManager.enableBlend();
-////            GlStateManager
-////                .tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-////
-////            GlStateManager.disableTexture2D();
-////            GlStateManager.depthMask(false);
-////            AxisAlignedBB box = getBox().grow(0.002).offset(-x, -y, -z);
-////
-////            GlStateManager.glLineWidth(4.0F);
-////            RenderGlobal.drawSelectionBoundingBox(box, 0.0F, 0.0F, 0.0F, 1F);
-////
-////            GlStateManager.disableDepth();
-////            GlStateManager.glLineWidth(1.0F);
-////            if (selected)
-////                RenderGlobal.drawSelectionBoundingBox(box, 1F, 0.3F, 0.0F, 1F);
-////            GlStateManager.enableDepth();
-////
-////            GlStateManager.depthMask(true);
-////            GlStateManager.enableTexture2D();
-////            GlStateManager.disableBlend();
-////        }
-////
-////        @Override
-////        public LittleGridContext getContext() {
-////            return pos.getContext();
-////        }
-////
-////        @Override
-////        public void convertTo(LittleGridContext to) {
-////            pos.convertTo(to);
-////        }
-////
-////        @Override
-////        public void convertToSmallest() {
-////            pos.convertToSmallest();
-////        }
-////
-////        public int getSmallestContext() {
-////            return pos.getSmallestContext();
-////        }
-////
-////        public ShapeSelectPos copy() {
-////            return new ShapeSelectPos(pos.copy(), ray, result);
-////        }
 //    }
 
 }

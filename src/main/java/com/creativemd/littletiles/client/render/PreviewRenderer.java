@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.creativemd.littletiles.common.api.ILittleTool;
 import com.creativemd.littletiles.common.utils.place.IMarkMode;
+import com.creativemd.littletiles.common.utils.place.PlacementPosition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -100,8 +101,10 @@ public class PreviewRenderer {
         while (LittleTilesClient.mark.isPressed()) {
             if (marked == null) {
                 // @TODO setup onmark for position/etc...
-                marked = iTile.onMark(player, stack /*, PlacementHelper.getPosition(player.world, mc.objectMouseOver, iTile.getPositionContext(stack), iTile, stack), mc.objectMouseOver, preview */);
+                PlacementHelper placementHelper = PlacementHelper.getInstance(player);
+                marked = iTile.onMark(player, stack , placementHelper.getPosition(player.worldObj, mc.objectMouseOver, iTile.getPositionContext(stack), iTile, stack) /*, mc.objectMouseOver, preview */);
                 player.addChatMessage(new ChatComponentText("Marked!"));
+                player.addChatMessage(new ChatComponentText("Marked position is: " + marked.getPosition().getPos().toString()));
 //                if (GuiScreen.isCtrlKeyDown())
 //                    FMLClientHandler.instance().displayGuiScreen(player, new GuiContainerSub(player, marked.getConfigurationGui(), new SubContainerEmpty(player)));
             } else {
@@ -132,7 +135,10 @@ public class PreviewRenderer {
             if (stack.getItem() instanceof ILittleTool &&
                 (marked != null || (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectType.BLOCK /* @TODO don't think we need this?: && mc.objectMouseOver.sideHit != null */))
             ) {
-                ((ILittleTool) stack.getItem()).tick(player, stack /*, position, mc.objectMouseOver */);
+                PlacementHelper helper = PlacementHelper.getInstance(mc.thePlayer);
+                PlacementPosition position = marked != null ? marked.getPosition() : helper.getPosition(world, mc.objectMouseOver, ((ILittleTool) stack.getItem()).getPositionContext(stack), (ILittleTool) stack.getItem(), stack);
+
+                ((ILittleTool) stack.getItem()).tick(player, stack, position /* mc.objectMouseOver */);
 
                 processMarkKey(player, (ILittleTool) stack.getItem(), stack);
 
@@ -170,7 +176,6 @@ public class PreviewRenderer {
                 if (markedHit != null) look = markedHit;
 
                 if (look != null && look.typeOfHit == MovingObjectType.BLOCK && mc.thePlayer.getHeldItem() != null) {
-                    PlacementHelper helper = PlacementHelper.getInstance(mc.thePlayer);
 
                     int posX = look.blockX;
                     int posY = look.blockY;

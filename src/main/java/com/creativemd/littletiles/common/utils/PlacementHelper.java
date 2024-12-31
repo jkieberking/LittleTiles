@@ -4,10 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.creativemd.littletiles.common.api.ILittleTool;
+import com.creativemd.littletiles.common.tile.math.vec.LittleAbsoluteVec;
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+import com.creativemd.littletiles.common.utils.place.PlacementPosition;
+import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -328,6 +336,15 @@ public class PlacementHelper {
         return false;
     }
 
+    public static LittleAbsoluteVec getAbsoluteHitVec(BlockPos blockPos, LittleGridContext context, boolean isInsideOfBlock) {
+        LittleAbsoluteVec pos = new LittleAbsoluteVec(blockPos, context);
+
+//        if (!isInsideOfBlock)
+//            pos.getVec().set(result.sideHit.getAxis(), result.sideHit.getAxisDirection() == AxisDirection.POSITIVE ? 0 : context.size);
+
+        return pos;
+    }
+
     public LittleTileVec getHitVec(Vec3 hitVec, int x, int y, int z, ForgeDirection side, boolean customPlacement,
             boolean isInside) {
         if (customPlacement && !isInside) {
@@ -407,60 +424,84 @@ public class PlacementHelper {
         }
         return vec;
     }
-// @TODO setup placement position
-//    @SideOnly(Side.CLIENT)
-//    public static PlacementPosition getPosition(World world, RayTraceResult moving, LittleGridContext context, ILittleTool tile, ItemStack stack) {
-//        EntityPlayer player = Minecraft.getMinecraft().player;
-//
-//        int x = moving.getBlockPos().getX();
-//        int y = moving.getBlockPos().getY();
-//        int z = moving.getBlockPos().getZ();
-//
-//        boolean canBePlacedInsideBlock = true;
-//        if (!canBePlacedInside(world, moving.getBlockPos(), moving.hitVec, moving.sideHit)) {
-//            switch (moving.sideHit) {
-//                case EAST:
-//                    x++;
-//                    break;
-//                case WEST:
-//                    x--;
-//                    break;
-//                case UP:
-//                    y++;
-//                    break;
-//                case DOWN:
-//                    y--;
-//                    break;
-//                case SOUTH:
-//                    z++;
-//                    break;
-//                case NORTH:
-//                    z--;
-//                    break;
-//                default:
-//                    break;
-//            }
-//
-//            canBePlacedInsideBlock = false;
-//        }
-//
-//        BlockPos pos = new BlockPos(x, y, z);
-//
-//        PlacementPosition result = new PlacementPosition(pos, getHitVec(moving, context, canBePlacedInsideBlock).getVecContext(), moving.sideHit);
-//
-//        if (tile instanceof ILittlePlacer && stack != null && (LittleAction.isUsingSecondMode(player) != ((ILittlePlacer) tile).snapToGridByDefault(stack))) {
+    @SideOnly(Side.CLIENT)
+    public PlacementPosition getPosition(World world, MovingObjectPosition moving, LittleGridContext context, ILittleTool tool, ItemStack stack) {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        ForgeDirection sideHit = ForgeDirection.getOrientation(moving.sideHit);
+        int x = moving.blockX;
+        int y = moving.blockY;
+        int z = moving.blockZ;
+
+        boolean canBePlacedInsideBlock = true;
+        if (!canBePlacedInside(x, y, z, moving.hitVec, sideHit)) {
+            switch (sideHit) {
+                case EAST:
+                    x++;
+                    break;
+                case WEST:
+                    x--;
+                    break;
+                case UP:
+                    y++;
+                    break;
+                case DOWN:
+                    y--;
+                    break;
+                case SOUTH:
+                    z++;
+                    break;
+                case NORTH:
+                    z--;
+                    break;
+                default:
+                    break;
+            }
+
+            canBePlacedInsideBlock = false;
+        }
+
+        BlockPos pos = new BlockPos(x, y, z);
+
+        EnumFacing facing;
+        switch (sideHit) {
+            case EAST:
+                facing = EnumFacing.EAST;
+                break;
+            case WEST:
+                facing = EnumFacing.WEST;
+                break;
+            case UP:
+                facing = EnumFacing.UP;
+                break;
+            case DOWN:
+                facing = EnumFacing.DOWN;
+                break;
+            case SOUTH:
+                facing = EnumFacing.SOUTH;
+                break;
+            case NORTH:
+                facing = EnumFacing.NORTH;
+                break;
+            default:
+                throw new RuntimeException("no detected side hit");
+        }
+
+        PlacementPosition result = new PlacementPosition(pos, getAbsoluteHitVec(new BlockPos(x, y ,z), context, false).getVecContext(), facing);
+
+        // @TODO implement this, not sure what it does right now
+//        if (tool instanceof ILittlePlacer && stack != null && (LittleAction.isUsingSecondMode(player) != ((ILittlePlacer) tool).snapToGridByDefault(stack))) {
 //            Vec3d position = player.getPositionEyes(TickUtils.getPartialTickTime());
 //            double d0 = player.capabilities.isCreativeMode ? 5.0F : 4.5F;
 //            Vec3d temp = player.getLook(TickUtils.getPartialTickTime());
 //            Vec3d look = position.addVector(temp.x * d0, temp.y * d0, temp.z * d0);
 //            position = position.subtract(pos.getX(), pos.getY(), pos.getZ());
 //            look = look.subtract(pos.getX(), pos.getY(), pos.getZ());
-//            List<LittleRenderBox> cubes = ((ILittlePlacer) tile).getPositingCubes(world, pos, stack);
+//            List<LittleRenderBox> cubes = ((ILittlePlacer) tool).getPositingCubes(world, pos, stack);
 //            if (cubes != null)
 //                result.positingCubes = cubes;
 //        }
-//
-//        return result;
-//    }
+
+        return result;
+    }
 
 }

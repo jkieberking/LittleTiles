@@ -11,7 +11,7 @@ public interface IMarkMode {
 
 //    public boolean allowLowResolution();
 //
-//    public PlacementPosition getPosition();
+    public PlacementPosition getPosition();
 //
 //    @SideOnly(Side.CLIENT)
 //    public SubGui getConfigurationGui();

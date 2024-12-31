@@ -8,7 +8,9 @@ package com.creativemd.littletiles.common.api;
 //import com.creativemd.littletiles.common.util.place.MarkMode;
 //import com.creativemd.littletiles.common.util.place.PlacementPosition;
 //import com.creativemd.littletiles.common.util.place.PlacementPreview;
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.place.IMarkMode;
+import com.creativemd.littletiles.common.utils.place.PlacementPosition;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,11 +22,11 @@ import net.minecraft.item.ItemStack;
 //import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface ILittleTool {
-//
-//    @SideOnly(Side.CLIENT)
-//    public default LittleGridContext getPositionContext(ItemStack stack) {
-//        return LittleGridContext.get();
-//    }
+
+    @SideOnly(Side.CLIENT)
+    public default LittleGridContext getPositionContext(ItemStack stack) {
+        return LittleGridContext.get();
+    }
 //
 //    public void rotate(EntityPlayer player, ItemStack stack, Rotation rotation, boolean client);
 //
@@ -35,7 +37,7 @@ public interface ILittleTool {
 //    }
 //
     @SideOnly(Side.CLIENT)
-    public IMarkMode onMark(EntityPlayer player, ItemStack stack /* PlacementPosition position, RayTraceResult result, PlacementPreview previews */);
+    public IMarkMode onMark(EntityPlayer player, ItemStack stack, PlacementPosition position /*, RayTraceResult result, PlacementPreview previews */);
 //    {
 //        if (previews != null)
 //            return new MarkMode(player, position, previews);
@@ -43,7 +45,7 @@ public interface ILittleTool {
 //    }
 //
     @SideOnly(Side.CLIENT)
-    public default void tick(EntityPlayer player, ItemStack stack /*, PlacementPosition position, RayTraceResult result */) {}
+    public default void tick(EntityPlayer player, ItemStack stack, PlacementPosition position /*, RayTraceResult result */) {}
 //
 //    @SideOnly(Side.CLIENT)
 //    public default void render(EntityPlayer player, ItemStack stack, double x, double y, double z) {}
