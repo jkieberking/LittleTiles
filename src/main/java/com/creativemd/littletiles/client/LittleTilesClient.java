@@ -1,5 +1,11 @@
 package com.creativemd.littletiles.client;
 
+import com.creativemd.littletiles.client.interact.LittleInteractionHandlerClient;
+import com.creativemd.littletiles.client.overlay.OverlayRenderer;
+import com.creativemd.littletiles.common.event.LittleEventHandler;
+import com.creativemd.littletiles.common.tooltip.ActionMessage;
+import com.creativemd.littletiles.common.tooltip.CompiledActionMessage;
+import com.creativemd.littletiles.server.interact.LittleInteractionHandlerServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
@@ -10,7 +16,7 @@ import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.client.render.PreviewRenderer;
 import com.creativemd.littletiles.client.render.SpecialBlockTilesRenderer;
 import com.creativemd.littletiles.common.blocks.BlockTile;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.server.LittleTilesServer;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -21,6 +27,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class LittleTilesClient extends LittleTilesServer {
+
+    public static LittleInteractionHandlerClient INTERACTION;
+    public static OverlayRenderer overlay;
 
     public static int modelID;
     public static SpecialBlockTilesRenderer renderer = new SpecialBlockTilesRenderer();
@@ -41,12 +50,11 @@ public class LittleTilesClient extends LittleTilesServer {
     public void loadSide() {
         modelID = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(modelID, renderer);
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLittleTiles.class, new SpecialBlockTilesRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLittleTilesProxy.class, new SpecialBlockTilesRenderer());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(LittleTiles.blockTile), renderer);
         MinecraftForgeClient.registerItemRenderer(LittleTiles.recipe, renderer);
         MinecraftForgeClient.registerItemRenderer(LittleTiles.multiTiles, renderer);
         BlockTile.mc = Minecraft.getMinecraft();
-        FMLCommonHandler.instance().bus().register(new PreviewRenderer());
         MinecraftForge.EVENT_BUS.register(new PreviewRenderer());
         ClientRegistry.registerKeyBinding(up);
         ClientRegistry.registerKeyBinding(down);
@@ -55,5 +63,17 @@ public class LittleTilesClient extends LittleTilesServer {
         ClientRegistry.registerKeyBinding(flip);
         ClientRegistry.registerKeyBinding(mark);
     }
+
+//    @Override;
+    public void loadSidePost() {
+        MinecraftForge.EVENT_BUS.register(overlay = new OverlayRenderer());
+        INTERACTION = new LittleInteractionHandlerClient();
+
+    }
+
+    public static void displayActionMessage(ActionMessage message) {
+        overlay.addMessage(new CompiledActionMessage(message));
+    }
+
 
 }

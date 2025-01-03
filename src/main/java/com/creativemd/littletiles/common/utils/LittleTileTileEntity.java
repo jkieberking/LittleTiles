@@ -18,13 +18,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.Unpooled;
 
-public class LittleTileTileEntity extends LittleTileBlock {
+public class LittleTileTileEntity extends LittleTile {
 
     public LittleTileTileEntity() {
         super();
@@ -90,7 +90,7 @@ public class LittleTileTileEntity extends LittleTileBlock {
                             tileEntity.xCoord,
                             tileEntity.yCoord,
                             tileEntity.zCoord,
-                            meta,
+                            this.getMeta(),
                             tileNBT));
         }
     }
@@ -148,7 +148,7 @@ public class LittleTileTileEntity extends LittleTileBlock {
                 posY += cornerVec.getPosY() - 0.5;
                 posZ += cornerVec.getPosZ() - 0.5;
 
-                tileEntity.blockMetadata = meta;
+                tileEntity.blockMetadata = this.getMeta();
 
                 TileEntityRendererDispatcher.instance.renderTileEntityAt(tileEntity, posX, posY, posZ, partialTickTime);
             }
@@ -183,15 +183,15 @@ public class LittleTileTileEntity extends LittleTileBlock {
         if (tileEntity != null && tileEntity.getWorldObj() != null) {
             TileEntity Tempte = tileEntity.getWorldObj()
                     .getTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-            if (Tempte instanceof TileEntityLittleTiles) {
-                te = (TileEntityLittleTiles) Tempte;
+            if (Tempte instanceof TileEntityLittleTilesProxy) {
+                te = (TileEntityLittleTilesProxy) Tempte;
                 return true;
             }
         }
         return false;
     }
 
-    @Override
+//    @Override
     protected boolean canSawResize(ForgeDirection direction, EntityPlayer player) {
         return false;
     }

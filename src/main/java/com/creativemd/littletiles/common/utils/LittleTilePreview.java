@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 import com.creativemd.littletiles.utils.ShiftHandler;
@@ -40,7 +40,7 @@ public final class LittleTilePreview {
         size = box.getSize();
     }
 
-    public LittleTile getLittleTile(TileEntityLittleTiles te) {
+    public LittleTile getLittleTile(TileEntityLittleTilesProxy te) {
         return LittleTile.CreateandLoadTile(te, te.getWorldObj(), nbt);
     }
 

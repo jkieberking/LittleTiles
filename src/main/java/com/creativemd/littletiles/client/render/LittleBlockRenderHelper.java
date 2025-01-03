@@ -12,7 +12,7 @@ import net.minecraft.world.chunk.Chunk;
 import com.creativemd.creativecore.client.block.BlockRenderHelper;
 import com.creativemd.creativecore.client.block.IBlockAccessFake;
 import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.utils.TileList;
 
@@ -23,19 +23,19 @@ public class LittleBlockRenderHelper {
     public static IBlockAccessFake fake = null;
 
     public static void renderBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId,
-            RenderBlocks renderer, TileEntityLittleTiles te) {
+            RenderBlocks renderer, TileEntityLittleTilesProxy te) {
         te.isRendering = true;
         int lightValue = Minecraft.getMinecraft().theWorld.getBlockLightValue(x, y, z);
         boolean needThread = false;
 
         Chunk chunk = Minecraft.getMinecraft().theWorld.getChunkFromBlockCoords(x, z);
 
-        TileList<LittleTile> tiles = te.getTiles();
+        TileList tiles = te.getTiles();
         for (LittleTile tile : tiles) {
             ArrayList<CubeObject> cubes = tile.getRenderingCubes();
             boolean threaded = false;
             // if()
-            // threaded = ((LittleTileBlock) tile).block.getRenderType() == 0;
+            // threaded = ((LittleTile) tile).block.getRenderType() == 0;
             // threaded = false;
             if (tile.canBlockBeThreaded()) needThread = true;
             else BlockRenderHelper.renderCubes(world, cubes, x, y, z, block, renderer, null);

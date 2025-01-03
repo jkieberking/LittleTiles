@@ -18,7 +18,7 @@ import com.creativemd.creativecore.common.gui.event.ControlChangedEvent;
 import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.littletiles.LittleTiles;
-import com.creativemd.littletiles.common.utils.LittleTileBlockColored;
+import com.creativemd.littletiles.common.utils.LittleTileColored;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
@@ -71,7 +71,7 @@ public class SubGuiHammer extends SubGui {
         }
         if (block instanceof BlockAir || block == null) block = Blocks.stone;
         GuiColorPlate plate = (GuiColorPlate) getControl("plate");
-        new LittleTileBlockColored(block, meta, plate.color).saveTile(dropstack.stackTagCompound);
+        new LittleTileColored(block, meta, plate.color).saveTile(dropstack.stackTagCompound);
 
         label.avatar = new AvatarItemStack(dropstack);
     }

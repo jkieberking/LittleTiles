@@ -9,7 +9,7 @@ import net.minecraft.util.Vec3;
 
 import com.creativemd.creativecore.common.utils.HashMapList;
 import com.creativemd.littletiles.common.structure.LittleStructure;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
@@ -43,8 +43,8 @@ public class PreviewTile {
         return box;
     }
 
-    public LittleTile placeTile(EntityPlayer player, ItemStack stack, TileEntityLittleTiles teLT,
-            LittleStructure structure, ArrayList<LittleTile> unplaceableTiles) {
+    public LittleTile placeTile(EntityPlayer player, ItemStack stack, TileEntityLittleTilesProxy teLT,
+                                        LittleStructure structure, ArrayList<LittleTile> unplaceableTiles) {
         // PreviewTile tile = placeTiles.get(j);
         LittleTile LT = preview.getLittleTile(teLT);
         if (LT == null) return null;
@@ -53,11 +53,11 @@ public class PreviewTile {
         LT.boundingBoxes.add(box.copy());
         LT.updateCorner();
 
-        if (structure != null) {
-            LT.isStructureBlock = true;
-            LT.structure = structure;
-            structure.getTiles().add(LT);
-        }
+//        if (structure != null) {
+//            LT.isStructureBlock = true;
+//            LT.structure = structure;
+//            structure.getTiles().add(LT);
+//        }
 
         if (teLT.isSpaceForLittleTile(box.copy())) {
             LT.place();

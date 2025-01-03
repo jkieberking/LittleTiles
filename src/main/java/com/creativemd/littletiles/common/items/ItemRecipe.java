@@ -22,7 +22,7 @@ import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.client.render.ITilesRenderer;
 import com.creativemd.littletiles.common.gui.SubContainerStructure;
 import com.creativemd.littletiles.common.gui.SubGuiStructure;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
@@ -58,10 +58,11 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float hitX, float hitY, float hitZ) {
-        if (player.isSneaking()) {
+        // @TODO old code
+        /*if (player.isSneaking()) {
             if (!world.isRemote) stack.stackTagCompound = null;
             return true;
-        }
+        }*/
 
         // onItemRightClick(stack, world, player);
         /*
@@ -74,7 +75,7 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator {
         // if(stack.stackTagCompound == null)
         // stack.stackTagCompound = new NBTTagCompound();
 
-        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("x")) {
+        /*if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("x")) {
             if (!world.isRemote) {
                 int firstX = stack.stackTagCompound.getInteger("x");
                 int firstY = stack.stackTagCompound.getInteger("y");
@@ -86,7 +87,7 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator {
                 int minZ = Math.min(firstZ, z);
                 int maxZ = Math.max(firstZ, z);
 
-                ArrayList<LittleTile> tiles = new ArrayList<>();
+                TileList tiles = new TileList();
 
                 stack.stackTagCompound.removeTag("x");
                 stack.stackTagCompound.removeTag("y");
@@ -96,13 +97,13 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator {
                     for (int posY = minY; posY <= maxY; posY++) {
                         for (int posZ = minZ; posZ <= maxZ; posZ++) {
                             TileEntity tileEntity = world.getTileEntity(posX, posY, posZ);
-                            if (tileEntity instanceof TileEntityLittleTiles) {
+                            if (tileEntity instanceof TileEntityLittleTilesProxy) {
                                 LittleTileVec offset = new LittleTileVec(
                                         (posX - minX) * 16,
                                         (posY - minY) * 16,
                                         (posZ - minZ) * 16);
-                                TileEntityLittleTiles littleEntity = (TileEntityLittleTiles) tileEntity;
-                                TileList<LittleTile> teTiles = littleEntity.getTiles();
+                                TileEntityLittleTilesProxy littleEntity = (TileEntityLittleTilesProxy) tileEntity;
+                                TileList teTiles = littleEntity.getTiles();
                                 for (LittleTile teTile : teTiles) {
                                     LittleTile tile = teTile.copy();
                                     for (int j = 0; j < tile.boundingBoxes.size(); j++) {
@@ -128,6 +129,7 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator {
             }
             return true;
         }
+        return false;*/
         return false;
     }
 
@@ -179,7 +181,7 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator {
         return new LittleTileSize(maxX - minX, maxY - minY, maxZ - minZ);
     }
 
-    public static ArrayList<LittleTile> loadTiles(TileEntityLittleTiles te, ItemStack stack) {
+    public static ArrayList<LittleTile> loadTiles(TileEntityLittleTilesProxy te, ItemStack stack) {
         ArrayList<LittleTile> result = new ArrayList<>();
         int tiles = stack.stackTagCompound.getInteger("tiles");
         for (int i = 0; i < tiles; i++) {
@@ -191,7 +193,7 @@ public class ItemRecipe extends Item implements ITilesRenderer, IGuiCreator {
         return result;
     }
 
-    public static void saveTiles(World world, ArrayList<LittleTile> tiles, ItemStack stack) {
+    public static void saveTiles(World world, TileList tiles, ItemStack stack) {
         stack.stackTagCompound = new NBTTagCompound();
         stack.stackTagCompound.setInteger("tiles", tiles.size());
         for (int i = 0; i < tiles.size(); i++) {

@@ -10,16 +10,16 @@ import net.minecraft.util.Vec3;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
 
-public class LittleTileBlockColored extends LittleTileBlock {
+public class LittleTileColored extends LittleTile {
 
     public int color;
 
-    public LittleTileBlockColored(Block block, int meta, Vec3 color) {
+    public LittleTileColored(Block block, int meta, Vec3 color) {
         super(block, meta);
         this.color = ColorUtils.RGBToInt(color);
     }
 
-    public LittleTileBlockColored() {
+    public LittleTileColored() {
         super();
     }
 
@@ -35,21 +35,21 @@ public class LittleTileBlockColored extends LittleTileBlock {
         color = nbt.getInteger("color");
     }
 
-    @Override
-    public ArrayList<CubeObject> getRenderingCubes() {
-        ArrayList<CubeObject> cubes = super.getRenderingCubes();
-        int color = this.color;
-        for (CubeObject cube : cubes) {
-            cube.color = color;
-        }
-        return cubes;
-    }
+//    @Override
+//    public ArrayList<CubeObject> getRenderingCubes() {
+//        ArrayList<CubeObject> cubes = super.getRenderingCubes();
+//        int color = this.color;
+//        for (CubeObject cube : cubes) {
+//            cube.color = color;
+//        }
+//        return cubes;
+//    }
 
     @Override
     public void copyExtra(LittleTile tile) {
         super.copyExtra(tile);
-        if (tile instanceof LittleTileBlockColored) {
-            LittleTileBlockColored thisTile = (LittleTileBlockColored) tile;
+        if (tile instanceof LittleTileColored) {
+            LittleTileColored thisTile = (LittleTileColored) tile;
             thisTile.color = color;
         }
     }
@@ -68,20 +68,20 @@ public class LittleTileBlockColored extends LittleTileBlock {
 
     @Override
     public boolean canBeCombined(LittleTile tile) {
-        if (tile instanceof LittleTileBlockColored && super.canBeCombined(tile)) {
-            int color1 = ((LittleTileBlockColored) tile).color;
+        if (tile instanceof LittleTileColored && super.canBeCombined(tile)) {
+            int color1 = ((LittleTileColored) tile).color;
             int color2 = this.color;
             return color1 == color2;
         }
         return false;
     }
 
-    public static LittleTileBlock setColor(LittleTileBlock tile, int color) {
+    public static LittleTile setColor(LittleTile tile, int color) {
         if (color == ColorUtils.WHITE) return removeColor(tile);
-        if (tile instanceof LittleTileBlockColored) {
-            ((LittleTileBlockColored) tile).color = color;
+        if (tile instanceof LittleTileColored) {
+            ((LittleTileColored) tile).color = color;
         } else {
-            LittleTileBlockColored newTile = new LittleTileBlockColored();
+            LittleTileColored newTile = new LittleTileColored();
             tile.assign(newTile);
             newTile.color = color;
             return newTile;
@@ -89,9 +89,9 @@ public class LittleTileBlockColored extends LittleTileBlock {
         return null;
     }
 
-    public static LittleTileBlock removeColor(LittleTileBlock tile) {
-        if (tile instanceof LittleTileBlockColored) {
-            LittleTileBlock newTile = new LittleTileBlock();
+    public static LittleTile removeColor(LittleTile tile) {
+        if (tile instanceof LittleTileColored) {
+            LittleTile newTile = new LittleTile();
             tile.assign(newTile);
             return newTile;
         }

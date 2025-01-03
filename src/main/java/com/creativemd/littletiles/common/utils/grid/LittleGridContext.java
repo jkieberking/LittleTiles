@@ -3,6 +3,7 @@ package com.creativemd.littletiles.common.utils.grid;
 //import com.creativemd.littletiles.LittleTiles;
 //import com.creativemd.littletiles.common.tile.math.LittleUtils;
 //import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
+import com.creativemd.littletiles.common.tile.math.LittleUtils;
 import com.google.common.math.IntMath;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -128,12 +129,13 @@ public class LittleGridContext {
 //        this.rotationCenter = new LittleVec(this.size, this.size, this.size);
     }
 
-//    public void set(NBTTagCompound nbt) {
-//        if (!isDefault || LittleTiles.CONFIG.core.forceToSaveDefaultSize)
-//            nbt.setInteger("grid", size);
-//        else
-//            nbt.removeTag("grid");
-//    }
+    public void set(NBTTagCompound nbt) {
+        // @TODO config
+        if (!isDefault /*|| LittleTiles.CONFIG.core.forceToSaveDefaultSize*/)
+            nbt.setInteger("grid", size);
+        else
+            nbt.removeTag("grid");
+    }
 
     public void setOverall(NBTTagCompound nbt) {
         if (size != overallDefault)
@@ -172,28 +174,28 @@ public class LittleGridContext {
         return (int) Math.floor(grid * pixelSize);
     }
 
-//    public boolean isAtEdge(double pos) {
-//        double result = pos % pixelSize;
-//        return LittleUtils.equals(result, 0) || LittleUtils.equals(result, pixelSize);
-//    }
+    public boolean isAtEdge(double pos) {
+        double result = pos % pixelSize;
+        return LittleUtils.equals(result, 0) || LittleUtils.equals(result, pixelSize);
+    }
 
     public int toGrid(int pos) {
         return pos * size;
     }
 
-//    public long toGridAccurate(double pos) {
-//        pos = LittleUtils.round(pos * size);
-//        if (pos < 0)
-//            return (long) Math.floor(pos);
-//        return (long) pos;
-//    }
+    public long toGridAccurate(double pos) {
+        pos = LittleUtils.round(pos * size);
+        if (pos < 0)
+            return (long) Math.floor(pos);
+        return (long) pos;
+    }
 
-//    public int toGrid(double pos) {
-//        pos = LittleUtils.round(pos * size);
-//        if (pos < 0)
-//            return (int) Math.floor(pos);
-//        return (int) pos;
-//    }
+    public int toGrid(double pos) {
+        pos = LittleUtils.round(pos * size);
+        if (pos < 0)
+            return (int) Math.floor(pos);
+        return (int) pos;
+    }
 
     public LittleGridContext ensureContext(LittleGridContext context) {
         if (context.size > this.size)

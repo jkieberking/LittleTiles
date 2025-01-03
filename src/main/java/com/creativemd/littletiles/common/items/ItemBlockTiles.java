@@ -3,6 +3,8 @@ package com.creativemd.littletiles.common.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.creativemd.littletiles.common.tile.preview.LittlePreview;
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.BlockAir;
@@ -14,6 +16,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
@@ -32,10 +35,10 @@ import com.creativemd.littletiles.common.blocks.BlockTile;
 import com.creativemd.littletiles.common.blocks.ILittleTile;
 import com.creativemd.littletiles.common.packet.LittlePlacePacket;
 import com.creativemd.littletiles.common.structure.LittleStructure;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.LittleTile.LittleTilePosition;
-import com.creativemd.littletiles.common.utils.LittleTileBlock;
+import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.LittleTilePreview;
 import com.creativemd.littletiles.common.utils.PlacementHelper;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
@@ -246,12 +249,12 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
             ArrayList<ChunkCoordinates> coordsToCheck) {
         for (ChunkCoordinates coord : coordsToCheck) {
             TileEntity mainTile = world.getTileEntity(coord.posX, coord.posY, coord.posZ);
-            if (mainTile instanceof TileEntityLittleTiles) {
+            if (mainTile instanceof TileEntityLittleTilesProxy) {
 
                 ArrayList<PreviewTile> tiles = splitted.getValues(coord);
                 if (tiles != null) {
                     for (PreviewTile tile : tiles) if (tile.needsCollisionTest()
-                            && !((TileEntityLittleTiles) mainTile).isSpaceForLittleTile(tile.box))
+                            && !((TileEntityLittleTilesProxy) mainTile).isSpaceForLittleTile(tile.box))
                         return false;
                 }
             } else if (!(world.getBlock(coord.posX, coord.posY, coord.posZ) instanceof BlockTile)
@@ -302,14 +305,15 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
                         world.setBlock(coord.posX, coord.posY, coord.posZ, LittleTiles.blockTile, 0, 3);
 
                     TileEntity te = world.getTileEntity(coord.posX, coord.posY, coord.posZ);
-                    if (te instanceof TileEntityLittleTiles) {
+                    if (te instanceof TileEntityLittleTilesProxy) {
                         // int tiles = 0;
-                        TileEntityLittleTiles teLT = (TileEntityLittleTiles) te;
+                        TileEntityLittleTilesProxy teLT = (TileEntityLittleTilesProxy) te;
 
                         for (PreviewTile placeTile : placeTiles) {
                             LittleTile LT = placeTile.placeTile(player, stack, teLT, structure, unplaceableTiles);
                             if (LT != null) {
-                                if (!soundsToBePlayed.contains(LT.getSound())) soundsToBePlayed.add(LT.getSound());
+                                // @TODO sound
+//                                if (!soundsToBePlayed.contains(LT.getSound())) soundsToBePlayed.add(LT.getSound());
                                 if (structure != null) {
                                     if (pos == null) {
                                         structure.mainTile = LT;
@@ -322,7 +326,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
                             }
                         }
 
-                        if (structure != null) teLT.combineTiles(structure);
+//                        if (structure != null) teLT.combineTiles(structure);
                     }
                     // System.out.println("Placed " + tiles + "/" + placeTiles.size());
                 } // else
@@ -344,10 +348,7 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
     }
 
     public boolean placeBlockAt(EntityPlayer player, ItemStack stack, World world, Vec3 playerPos, Vec3 hitVec,
-            PlacementHelper helper, int x, int y, int z, int side, boolean customPlacement) // , ForgeDirection
-                                                                                            // direction, ForgeDirection
-                                                                                            // direction2)
-    {
+            PlacementHelper helper, int x, int y, int z, int side, boolean customPlacement) {
         ArrayList<PreviewTile> previews = helper.getPreviewTiles(
                 stack,
                 x,
@@ -382,10 +383,10 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
 
             if (!world.isRemote) {
                 for (LittleTile unplaceableTile : unplaceableTiles) {
-                    if (!(unplaceableTile instanceof LittleTileBlock) && !ItemTileContainer.addBlock(
+                    if (!(unplaceableTile instanceof LittleTile) && !ItemTileContainer.addBlock(
                             player,
-                            ((LittleTileBlock) unplaceableTile).block,
-                            ((LittleTileBlock) unplaceableTile).meta,
+                            ((LittleTile) unplaceableTile).getBlock(),
+                            ((LittleTile) unplaceableTile).getMeta(),
                             (float) unplaceableTile.getPercentVolume()))
                         WorldUtils.dropItem(world, unplaceableTile.getDrops(), x, y, z);
                 }
@@ -443,4 +444,17 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
         // No need to flip one single tile!
     }
 
+    public static ItemStack getStackFromPreview(LittleGridContext context, LittlePreview preview) {
+        ItemStack stack = new ItemStack((Block) Block.blockRegistry.getObject("glass"));
+        NBTTagCompound nbt = (NBTTagCompound) preview.getTileData().copy();
+
+        // preview.size.writeToNBT("size", nbt);
+        preview.writeToNBT(nbt);
+
+        // if(preview.isCustomPreview() && !preview.getTypeID().equals(""))
+        // nbt.setString("type", preview.getTypeID());
+        context.set(nbt);
+        stack.setTagCompound(nbt);
+        return stack;
+    }
 }

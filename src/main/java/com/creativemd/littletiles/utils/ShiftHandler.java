@@ -1,6 +1,8 @@
 package com.creativemd.littletiles.utils;
 
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import net.minecraft.client.Minecraft;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
@@ -30,10 +32,10 @@ public abstract class ShiftHandler {
         LittleTileBox oldBox = suggested.copy();
         LittleTileBox newBox = getNewPos(world, x, y, z, suggested);
 
-        // TileEntity te = world.getTileEntity(x, y, z);
-        // if(te instanceof TileEntityLittleTiles)
-        // if(!((TileEntityLittleTiles)te).isSpaceForLittleTile(newBox.getBox()))
-        // return oldBox;
+         TileEntity te = world.getTileEntity(x, y, z);
+         if(te instanceof TileEntityLittleTilesProxy)
+         if(!((TileEntityLittleTilesProxy)te).isSpaceForLittleTile(newBox.getBox()))
+         return oldBox;
 
         if (newBox != null) return newBox;
         return oldBox;

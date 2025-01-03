@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.packet.LittleBlockPacket;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -44,7 +44,7 @@ public class ItemLittleSaw extends Item {
             float hitX, float hitY, float hitZ) {
 
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityLittleTiles) {
+        if (tileEntity instanceof TileEntityLittleTilesProxy) {
             if (world.isRemote) {
                 NBTTagCompound nbt = new NBTTagCompound();
                 nbt.setInteger("side", side);

@@ -33,95 +33,95 @@ public class LittleChair extends LittleStructure {
 
     }
 
-    public LittleTileVec getHighestCenterPoint() {
-        int minYPos = Integer.MAX_VALUE;
+//    public LittleTileVec getHighestCenterPoint() {
+//        int minYPos = Integer.MAX_VALUE;
+//
+//        int minX = Integer.MAX_VALUE;
+//        int minY = Integer.MAX_VALUE;
+//        int minZ = Integer.MAX_VALUE;
+//
+//        int maxYPos = Integer.MIN_VALUE;
+//
+//        int maxX = Integer.MIN_VALUE;
+//        int maxY = Integer.MIN_VALUE;
+//        int maxZ = Integer.MIN_VALUE;
+//
+//        HashMapList<ChunkCoordinates, LittleTile> coords = getTilesSortedPerBlock();
+//        if (coords.sizeOfValues() == 0) return null;
+//        for (int i = 0; i < coords.size(); i++) {
+//            ChunkCoordinates coord = coords.getKey(i);
+//            for (int j = 0; j < coords.getValues(i).size(); j++) {
+//                for (int h = 0; h < coords.getValues(i).get(j).boundingBoxes.size(); h++) {
+//                    LittleTileBox box = coords.getValues(i).get(j).boundingBoxes.get(h);
+//                    minX = Math.min(minX, coord.posX * 16 + box.minX);
+//                    minY = Math.min(minY, coord.posY * 16 + box.minY);
+//                    minZ = Math.min(minZ, coord.posZ * 16 + box.minZ);
+//
+//                    maxX = Math.max(maxX, coord.posX * 16 + box.maxX);
+//                    maxY = Math.max(maxY, coord.posY * 16 + box.maxY);
+//                    maxZ = Math.max(maxZ, coord.posZ * 16 + box.maxZ);
+//                }
+//                minYPos = Math.min(minYPos, coord.posY);
+//                maxYPos = Math.max(maxYPos, coord.posY);
+//            }
+//            /*
+//             * minX = Math.min(minX, coord.posX); minY = Math.min(minY, coord.posY); minZ = Math.min(minZ, coord.posZ);
+//             * maxX = Math.max(maxX, coord.posX); maxY = Math.max(maxY, coord.posY); maxZ = Math.max(maxZ, coord.posZ);
+//             */
+//        }
+//
+//        // double test = Math.floor(((minX+maxX)/16D/2D));
+//        int centerX = (int) Math.floor((minX + maxX) / 16D / 2D);
+//        int centerY = (int) Math.floor((minY + maxY) / 16D / 2D);
+//        int centerZ = (int) Math.floor((minZ + maxZ) / 16D / 2D);
+//
+//        int centerTileX = (int) (Math.floor(minX + maxX) / 2D) - centerX * 16;
+//        int centerTileY = (int) (Math.floor(minY + maxY) / 2D) - centerY * 16;
+//        int centerTileZ = (int) (Math.floor(minZ + maxZ) / 2D) - centerZ * 16;
+//
+//        LittleTileVec position = new LittleTileVec((minX + maxX) / 2, minYPos * 16, (minZ + maxZ) / 2);
+//        // position.y = ;
+//        for (int y = minYPos; y <= maxYPos; y++) {
+//            ArrayList<LittleTile> tilesInCenter = coords.getValues(new ChunkCoordinates(centerX, y, centerZ));
+//            if (tilesInCenter != null) {
+//                LittleTileBox box = new LittleTileBox(
+//                        centerTileX,
+//                        LittleTile.minPos,
+//                        centerTileZ,
+//                        centerTileX + 1,
+//                        LittleTile.maxPos,
+//                        centerTileZ + 1);
+//                // int highest = LittleTile.minPos;
+//                for (LittleTile LittleTile : tilesInCenter) {
+//                    for (int j = 0; j < LittleTile.boundingBoxes.size(); j++) {
+//                        LittleTileBox littleBox = LittleTile.boundingBoxes.get(j);
+//                        if (box.intersectsWith(littleBox)) {
+//                            position.y = Math.max(y * 16 + littleBox.maxY, position.y);
+//                            // highest = Math.max(highest, littleBox.maxY);
+//                        }
+//                    }
+//                }
+//
+//            }
+//        }
+//
+//        return position;
+//    }
 
-        int minX = Integer.MAX_VALUE;
-        int minY = Integer.MAX_VALUE;
-        int minZ = Integer.MAX_VALUE;
-
-        int maxYPos = Integer.MIN_VALUE;
-
-        int maxX = Integer.MIN_VALUE;
-        int maxY = Integer.MIN_VALUE;
-        int maxZ = Integer.MIN_VALUE;
-
-        HashMapList<ChunkCoordinates, LittleTile> coords = getTilesSortedPerBlock();
-        if (coords.sizeOfValues() == 0) return null;
-        for (int i = 0; i < coords.size(); i++) {
-            ChunkCoordinates coord = coords.getKey(i);
-            for (int j = 0; j < coords.getValues(i).size(); j++) {
-                for (int h = 0; h < coords.getValues(i).get(j).boundingBoxes.size(); h++) {
-                    LittleTileBox box = coords.getValues(i).get(j).boundingBoxes.get(h);
-                    minX = Math.min(minX, coord.posX * 16 + box.minX);
-                    minY = Math.min(minY, coord.posY * 16 + box.minY);
-                    minZ = Math.min(minZ, coord.posZ * 16 + box.minZ);
-
-                    maxX = Math.max(maxX, coord.posX * 16 + box.maxX);
-                    maxY = Math.max(maxY, coord.posY * 16 + box.maxY);
-                    maxZ = Math.max(maxZ, coord.posZ * 16 + box.maxZ);
-                }
-                minYPos = Math.min(minYPos, coord.posY);
-                maxYPos = Math.max(maxYPos, coord.posY);
-            }
-            /*
-             * minX = Math.min(minX, coord.posX); minY = Math.min(minY, coord.posY); minZ = Math.min(minZ, coord.posZ);
-             * maxX = Math.max(maxX, coord.posX); maxY = Math.max(maxY, coord.posY); maxZ = Math.max(maxZ, coord.posZ);
-             */
-        }
-
-        // double test = Math.floor(((minX+maxX)/16D/2D));
-        int centerX = (int) Math.floor((minX + maxX) / 16D / 2D);
-        int centerY = (int) Math.floor((minY + maxY) / 16D / 2D);
-        int centerZ = (int) Math.floor((minZ + maxZ) / 16D / 2D);
-
-        int centerTileX = (int) (Math.floor(minX + maxX) / 2D) - centerX * 16;
-        int centerTileY = (int) (Math.floor(minY + maxY) / 2D) - centerY * 16;
-        int centerTileZ = (int) (Math.floor(minZ + maxZ) / 2D) - centerZ * 16;
-
-        LittleTileVec position = new LittleTileVec((minX + maxX) / 2, minYPos * 16, (minZ + maxZ) / 2);
-        // position.y = ;
-        for (int y = minYPos; y <= maxYPos; y++) {
-            ArrayList<LittleTile> tilesInCenter = coords.getValues(new ChunkCoordinates(centerX, y, centerZ));
-            if (tilesInCenter != null) {
-                LittleTileBox box = new LittleTileBox(
-                        centerTileX,
-                        LittleTile.minPos,
-                        centerTileZ,
-                        centerTileX + 1,
-                        LittleTile.maxPos,
-                        centerTileZ + 1);
-                // int highest = LittleTile.minPos;
-                for (LittleTile littleTile : tilesInCenter) {
-                    for (int j = 0; j < littleTile.boundingBoxes.size(); j++) {
-                        LittleTileBox littleBox = littleTile.boundingBoxes.get(j);
-                        if (box.intersectsWith(littleBox)) {
-                            position.y = Math.max(y * 16 + littleBox.maxY, position.y);
-                            // highest = Math.max(highest, littleBox.maxY);
-                        }
-                    }
-                }
-
-            }
-        }
-
-        return position;
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, LittleTile tile, int x, int y, int z, EntityPlayer player, int side,
-            float moveX, float moveY, float moveZ) {
-        if (!world.isRemote) {
-            LittleTileVec vec = getHighestCenterPoint();
-            if (vec != null) {
-                EntitySit sit = new EntitySit(world, vec.getPosX(), vec.getPosY(), vec.getPosZ());
-                player.mountEntity(sit);
-                world.spawnEntityInWorld(sit);
-            }
-
-        }
-        return true;
-    }
+//    @Override
+//    public boolean onBlockActivated(World world, LittleTile tile, int x, int y, int z, EntityPlayer player, int side,
+//                                    float moveX, float moveY, float moveZ) {
+//        if (!world.isRemote) {
+//            LittleTileVec vec = getHighestCenterPoint();
+//            if (vec != null) {
+//                EntitySit sit = new EntitySit(world, vec.getPosX(), vec.getPosY(), vec.getPosZ());
+//                player.mountEntity(sit);
+//                world.spawnEntityInWorld(sit);
+//            }
+//
+//        }
+//        return true;
+//    }
 
     @Override
     @SideOnly(Side.CLIENT)

@@ -2,11 +2,12 @@ package com.creativemd.littletiles.client.render;
 
 import java.util.ArrayList;
 
+import com.creativemd.creativecore.common.utils.CubeObject;
 import net.minecraft.client.renderer.Tessellator;
 
 public class LittleBlockVertex {
 
-    // public CubeObject cube;
+     public CubeObject cube;
 
     public boolean enableAO;
 

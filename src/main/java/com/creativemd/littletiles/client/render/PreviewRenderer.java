@@ -1,10 +1,19 @@
 package com.creativemd.littletiles.client.render;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.cleanroommc.modularui.utils.Color;
+import com.creativemd.littletiles.LittleTiles;
+import com.creativemd.littletiles.client.render.tile.LittleRenderBox;
+import com.creativemd.littletiles.common.action.LittleAction;
+import com.creativemd.littletiles.common.api.ILittlePlacer;
 import com.creativemd.littletiles.common.api.ILittleTool;
+import com.creativemd.littletiles.common.tile.place.PlacePreview;
 import com.creativemd.littletiles.common.utils.place.IMarkMode;
+import com.creativemd.littletiles.common.utils.place.PlacementMode;
 import com.creativemd.littletiles.common.utils.place.PlacementPosition;
+import com.creativemd.littletiles.common.utils.place.PlacementPreview;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -12,11 +21,8 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -38,9 +44,13 @@ import com.creativemd.littletiles.utils.ShiftHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL15;
 
 @SideOnly(Side.CLIENT)
 public class PreviewRenderer {
+
+    public static final ResourceLocation WHITE_TEXTURE = new ResourceLocation(LittleTiles.modid, "textures/preview.png");
 
     public static IMarkMode marked;
 
@@ -97,12 +107,12 @@ public class PreviewRenderer {
         if (posZ != (int) markedHit.hitVec.zCoord) markedHit.blockZ += ((int) markedHit.hitVec.zCoord) - posZ;
     }
 
-    public void processMarkKey(EntityPlayer player, ILittleTool iTile, ItemStack stack /*PlacementPreview preview */) {
+    public void processMarkKey(EntityPlayer player, ILittleTool iTile, ItemStack stack, PlacementPreview preview ) {
         while (LittleTilesClient.mark.isPressed()) {
             if (marked == null) {
                 // @TODO setup onmark for position/etc...
                 PlacementHelper placementHelper = PlacementHelper.getInstance(player);
-                marked = iTile.onMark(player, stack , placementHelper.getPosition(player.worldObj, mc.objectMouseOver, iTile.getPositionContext(stack), iTile, stack) /*, mc.objectMouseOver, preview */);
+                marked = iTile.onMark(player, stack , placementHelper.getPosition(player.worldObj, mc.objectMouseOver, iTile.getPositionContext(stack), iTile, stack) , mc.objectMouseOver, preview );
                 player.addChatMessage(new ChatComponentText("Marked!"));
                 player.addChatMessage(new ChatComponentText("Marked position is: " + marked.getPosition().getPos().toString()));
 //                if (GuiScreen.isCtrlKeyDown())
@@ -120,240 +130,99 @@ public class PreviewRenderer {
         }
     }
 
+    public static boolean isFixed(EntityPlayer player, ItemStack stack, ILittlePlacer iTile) {
+        // @TODO implement snap to grid
+//        if (iTile.snapToGridByDefault(stack))
+//            return !LittleAction.isUsingSecondMode(player) && marked == null;
+        return marked == null; //LittleTiles.CONFIG.building.invertStickToGrid != LittleAction.isUsingSecondMode(player) && marked == null;
+    }
+
+    public static boolean isCentered(EntityPlayer player, ItemStack stack, ILittlePlacer iTile) {
+// @TODO implement snap to grid
+        //        if (iTile.snapToGridByDefault(stack))
+//            return LittleAction.isUsingSecondMode(player) && marked == null;
+        return marked != null;// LittleTiles.CONFIG.building.invertStickToGrid == LittleAction.isUsingSecondMode(player) || marked != null;
+    }
+
     @SubscribeEvent
     public void tick(RenderHandEvent event) {
         if (mc.thePlayer != null && mc.inGameHasFocus && !mc.gameSettings.hideGUI) {
-                World world = mc.theWorld;
-                EntityPlayer player = mc.thePlayer;
-                ItemStack stack = mc.thePlayer.getHeldItem();
+            World world = mc.theWorld;
+            EntityPlayer player = mc.thePlayer;
+            ItemStack stack = mc.thePlayer.getHeldItem();
 
 //                if (!LittleAction.canPlace(player))
 //                    return;
-
+//
 //                handleUndoAndRedo(player);
 
-            if (stack.getItem() instanceof ILittleTool &&
+            if (stack != null && stack.getItem() instanceof ILittleTool &&
                 (marked != null || (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectType.BLOCK /* @TODO don't think we need this?: && mc.objectMouseOver.sideHit != null */))
             ) {
                 PlacementHelper helper = PlacementHelper.getInstance(mc.thePlayer);
-                PlacementPosition position = marked != null ? marked.getPosition() : helper.getPosition(world, mc.objectMouseOver, ((ILittleTool) stack.getItem()).getPositionContext(stack), (ILittleTool) stack.getItem(), stack);
+                PlacementPosition position = helper.getPosition(world, mc.objectMouseOver, ((ILittleTool) stack.getItem()).getPositionContext(stack), (ILittleTool) stack.getItem(), stack); // marked != null ? marked.getPosition() : helper.getPosition(world, mc.objectMouseOver, ((ILittleTool) stack.getItem()).getPositionContext(stack), (ILittleTool) stack.getItem(), stack);
 
-                ((ILittleTool) stack.getItem()).tick(player, stack, position /* mc.objectMouseOver */);
+                double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.partialTicks;
+                double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.partialTicks;
+                double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.partialTicks;
 
-                processMarkKey(player, (ILittleTool) stack.getItem(), stack);
+                ((ILittleTool) stack.getItem()).tick(player, stack, position, mc.objectMouseOver);
 
+                if (PlacementHelper.isLittlePlacer(stack)) {
+                    ILittlePlacer iPlacer = PlacementHelper.getLittlePlacerInterface(stack);
+                    PlacementMode mode = iPlacer.getPlacementMode(stack);
 
-                if (GameSettings.isKeyDown(LittleTilesClient.flip) && !LittleTilesClient.pressedFlip) {
-                    LittleTilesClient.pressedFlip = true;
-                    int i4 = MathHelper.floor_double((double) (mc.thePlayer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-                    ForgeDirection direction = null;
-                    switch (i4) {
-                        case 0:
-                            direction = ForgeDirection.SOUTH;
-                            break;
-                        case 1:
-                            direction = ForgeDirection.WEST;
-                            break;
-                        case 2:
-                            direction = ForgeDirection.NORTH;
-                            break;
-                        case 3:
-                            direction = ForgeDirection.EAST;
-                            break;
-                    }
-                    if (mc.thePlayer.rotationPitch > 45) direction = ForgeDirection.DOWN;
-                    if (mc.thePlayer.rotationPitch < -45) direction = ForgeDirection.UP;
-                    // System.out.println("f: " + i4 + ", pitch: " + mc.thePlayer.rotationPitch + ", direction: " +
-                    // direction);
-                    LittleFlipPacket packet = new LittleFlipPacket(direction);
-                    packet.executeClient(mc.thePlayer);
-                    PacketHandler.sendPacketToServer(packet);
-                } else if (!GameSettings.isKeyDown(LittleTilesClient.flip)) {
-                    LittleTilesClient.pressedFlip = false;
-                }
+                    if (mode.getPreviewMode() == PlacementMode.PreviewMode.PREVIEWS) {
+                        GL11.glEnable(GL11.GL_BLEND);
 
-                MovingObjectPosition look = mc.objectMouseOver;
-                if (markedHit != null) look = markedHit;
+                        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
+                        GL11.glEnable(GL11.GL_TEXTURE_2D);
+                        mc.renderEngine.bindTexture(WHITE_TEXTURE);
+                        GL11.glDepthMask(false);
 
-                if (look != null && look.typeOfHit == MovingObjectType.BLOCK && mc.thePlayer.getHeldItem() != null) {
+                        boolean allowLowResolution = marked != null ? marked.allowLowResolution() : true;
+                        PlacementPreview result = PlacementHelper
+                            .getPreviews(world, stack, position, isCentered(player, stack, iPlacer), isFixed(player, stack, iPlacer), allowLowResolution, mode);
 
-                    int posX = look.blockX;
-                    int posY = look.blockY;
-                    int posZ = look.blockZ;
+                        if (result != null) {
+                            processMarkKey(player, (ILittleTool) stack.getItem(), stack, result);
+                            List<PlacePreview> placePreviews = result.getPreviews();
 
-                    double x = (double) posX - TileEntityRendererDispatcher.staticPlayerX;
-                    double y = (double) posY - TileEntityRendererDispatcher.staticPlayerY;
-                    double z = (double) posZ - TileEntityRendererDispatcher.staticPlayerZ;
+                            double posX = result.pos.getX() - TileEntityRendererDispatcher.staticPlayerX;
+                            double posY = result.pos.getY() - TileEntityRendererDispatcher.staticPlayerY;
+                            double posZ = result.pos.getZ() - TileEntityRendererDispatcher.staticPlayerZ;
 
-                    ForgeDirection side = ForgeDirection.getOrientation(look.sideHit);
-                    if (!helper.canBePlacedInside(posX, posY, posZ, look.hitVec, side)) {
-                        switch (side) {
-                            case EAST:
-                                x++;
-                                break;
-                            case WEST:
-                                x--;
-                                break;
-                            case UP:
-                                y++;
-                                break;
-                            case DOWN:
-                                y--;
-                                break;
-                            case SOUTH:
-                                z++;
-                                break;
-                            case NORTH:
-                                z--;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                            float alpha = (float) (Math.sin(System.nanoTime() / 200000000F) * 0.2F + 0.5F);
 
-                    if (GameSettings.isKeyDown(LittleTilesClient.mark) && !LittleTilesClient.pressedMark) {
-                        LittleTilesClient.pressedMark = true;
-                        if (markedHit == null) {
-
-                            LittleTileVec vec = helper
-                                .getHitVec(look.hitVec, look.blockX, look.blockY, look.blockZ, side, false, false);
-                            Vec3 hitVec = Vec3.createVectorHelper(vec.getPosX(), vec.getPosY(), vec.getPosZ());
-
-                            int newX = look.blockX;
-                            int newY = look.blockY;
-                            int newZ = look.blockZ;
-                            if (!helper.canBePlacedInside(newX, newY, newZ, look.hitVec, side)) {
-                                switch (side) {
-                                    case EAST:
-                                        newX++;
-                                        break;
-                                    case WEST:
-                                        newX--;
-                                        break;
-                                    case UP:
-                                        newY++;
-                                        break;
-                                    case DOWN:
-                                        newY--;
-                                        break;
-                                    case SOUTH:
-                                        newZ++;
-                                        break;
-                                    case NORTH:
-                                        newZ--;
-                                        break;
-                                    default:
-                                        break;
-                                }
+                            for (int i = 0; i < placePreviews.size(); i++) {
+                                PlacePreview preview = placePreviews.get(i);
+                                List<LittleRenderBox> cubes = preview.getPreviews(result.context);
+                                for (LittleRenderBox cube : cubes)
+                                    cube.renderPreview(posX, posY, posZ, (int) (alpha * iPlacer.getPreviewAlphaFactor() * 255));
                             }
-                            hitVec = hitVec.addVector(newX, newY, newZ);
-                            markedHit = new MovingObjectPosition(
-                                newX,
-                                newY,
-                                newZ/* look.blockX, look.blockY, look.blockZ */,
-                                look.sideHit,
-                                hitVec);
-                            return;
-                        } else markedHit = null;
-                    } else if (!GameSettings.isKeyDown(LittleTilesClient.mark)) {
-                        LittleTilesClient.pressedMark = false;
-                    }
 
-                    // direction = ForgeDirection.UP;
-                    // direction2 = ForgeDirection.EAST;
+                            if (position.positingCubes != null)
+                                for (LittleRenderBox cube : position.positingCubes)
+                                    cube.renderPreview(posX, posY, posZ, (int) (alpha * Color.getAlpha(cube.color) * iPlacer.getPreviewAlphaFactor() * 255));
 
-                    // Rotate Block
-                    if (GameSettings.isKeyDown(LittleTilesClient.up) && !LittleTilesClient.pressedUp) {
-                        LittleTilesClient.pressedUp = true;
-                        if (markedHit != null)
-                            moveMarkedHit(mc.thePlayer.isSneaking() ? ForgeDirection.UP : ForgeDirection.EAST);
-                        else processKey(ForgeDirection.UP);
-                    } else if (!GameSettings.isKeyDown(LittleTilesClient.up)) LittleTilesClient.pressedUp = false;
-
-                    if (GameSettings.isKeyDown(LittleTilesClient.down) && !LittleTilesClient.pressedDown) {
-                        LittleTilesClient.pressedDown = true;
-                        if (markedHit != null)
-                            moveMarkedHit(mc.thePlayer.isSneaking() ? ForgeDirection.DOWN : ForgeDirection.WEST);
-                        else processKey(ForgeDirection.DOWN);
-                    } else if (!GameSettings.isKeyDown(LittleTilesClient.down)) LittleTilesClient.pressedDown = false;
-
-                    if (GameSettings.isKeyDown(LittleTilesClient.right) && !LittleTilesClient.pressedRight) {
-                        LittleTilesClient.pressedRight = true;
-                        if (markedHit != null) moveMarkedHit(ForgeDirection.SOUTH);
-                        else processKey(ForgeDirection.SOUTH);
-                    } else if (!GameSettings.isKeyDown(LittleTilesClient.right)) LittleTilesClient.pressedRight = false;
-
-                    if (GameSettings.isKeyDown(LittleTilesClient.left) && !LittleTilesClient.pressedLeft) {
-                        LittleTilesClient.pressedLeft = true;
-                        if (markedHit != null) moveMarkedHit(ForgeDirection.NORTH);
-                        else processKey(ForgeDirection.NORTH);
-                    } else if (!GameSettings.isKeyDown(LittleTilesClient.left)) LittleTilesClient.pressedLeft = false;
-
-                    GL11.glEnable(GL11.GL_BLEND);
-                    OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-                    GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
-                    GL11.glLineWidth(2.0F);
-                    GL11.glDisable(GL11.GL_TEXTURE_2D);
-                    GL11.glDepthMask(false);
-
-                    ArrayList<PreviewTile> previews;
-
-                    previews = helper.getPreviewTiles(mc.thePlayer.getHeldItem(), look, markedHit != null); // ,
-                    // direction,
-                    // direction2);
-
-                    for (PreviewTile previewTile : previews) {
-                        GL11.glPushMatrix();
-                        LittleTileBox previewBox = previewTile.getPreviewBox();
-                        CubeObject cube = previewBox.getCube();
-                        Vec3 size = previewBox.getSizeD();
-                        double cubeX = x + cube.minX + size.xCoord / 2D;
-                        // if(posX < 0 && side != ForgeDirection.WEST && side != ForgeDirection.EAST)
-                        // cubeX = x+(1-cube.minX)+size.getPosX()/2D;
-                        double cubeY = y + cube.minY + size.yCoord / 2D;
-                        // if(posY < 0 && side != ForgeDirection.DOWN)
-                        // cubeY = y-cube.minY+size.getPosY()/2D;
-                        double cubeZ = z + cube.minZ + size.zCoord / 2D;
-                        // if(posZ < 0 && side != ForgeDirection.NORTH)
-                        // cubeZ = z-cube.minZ+size.getPosZ()/2D;
-                        /*
-                         * double cubeX = x; if(posX < 0) x -= 1; double cubeY = y; double cubeZ = z;
-                         */
-                        Vec3 color = previewTile.getPreviewColor();
-                        RenderHelper3D.renderBlock(
-                            cubeX,
-                            cubeY,
-                            cubeZ,
-                            size.xCoord,
-                            size.yCoord,
-                            size.zCoord,
-                            0,
-                            0,
-                            0,
-                            color.xCoord,
-                            color.yCoord,
-                            color.zCoord,
-                            Math.sin(System.nanoTime() / 200000000D) * 0.2 + 0.5);
-                        GL11.glPopMatrix();
-                    }
-
-                    if (markedHit == null && mc.thePlayer.isSneaking()) {
-                        ArrayList<ShiftHandler> shifthandlers = new ArrayList<>();
-
-                        for (PreviewTile preview : previews)
-                            if (preview.preview != null) shifthandlers.addAll(preview.preview.shifthandlers);
-
-                        for (ShiftHandler shifthandler : shifthandlers) {
-                            // GL11.glPushMatrix();
-                            shifthandler.handleRendering(mc, x, y, z);
-                            // GL11.glPopMatrix();
                         }
+
+                        GL11.glDepthMask(false);
+                        GL11.glEnable(GL11.GL_TEXTURE_2D);
+                        GL11.glDisable(GL11.GL_BLEND);
                     }
 
-                    GL11.glDepthMask(true);
-                    GL11.glEnable(GL11.GL_TEXTURE_2D);
-                    GL11.glDisable(GL11.GL_BLEND);
+
+                } else {
+                    processMarkKey(player, (ILittleTool) stack.getItem(), stack, null);
                 }
+                ((ILittleTool) stack.getItem()).render(player, stack, x, y, z);
+                if (marked != null) {
+                    marked.render(((ILittleTool) stack.getItem()).getPositionContext(stack), x, y, z);
+                }
+                } else {
+                marked = null;
             }
         }
     }

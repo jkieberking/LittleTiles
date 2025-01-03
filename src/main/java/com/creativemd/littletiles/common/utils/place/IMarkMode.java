@@ -6,17 +6,19 @@ package com.creativemd.littletiles.common.utils.place;
 //import net.minecraftforge.fml.relauncher.Side;
 //import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+
 // @TODO implement markmode interface
 public interface IMarkMode {
 
-//    public boolean allowLowResolution();
+    public boolean allowLowResolution();
 //
     public PlacementPosition getPosition();
 //
 //    @SideOnly(Side.CLIENT)
 //    public SubGui getConfigurationGui();
 //
-//    public void render(LittleGridContext positionContext, double x, double y, double z);
+    public void render(LittleGridContext positionContext, double x, double y, double z);
 //
 //    public void move(LittleGridContext positionContext, EnumFacing facing);
 //

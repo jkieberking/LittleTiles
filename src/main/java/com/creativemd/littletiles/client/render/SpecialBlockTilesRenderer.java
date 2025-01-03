@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 import com.creativemd.creativecore.client.block.BlockRenderHelper;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.littletiles.client.LittleTilesClient;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.small.LittleTileVec;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -46,14 +46,13 @@ public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId,
             RenderBlocks renderer) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityLittleTiles) {
-            TileEntityLittleTiles little = (TileEntityLittleTiles) tileEntity;
-            // long time = System.currentTimeMillis();
-            // System.out.println("Rendering " + little.tiles.size() + " tiles!");
+        if (tileEntity instanceof TileEntityLittleTilesProxy) {
+            TileEntityLittleTilesProxy little = (TileEntityLittleTilesProxy) tileEntity;
+             long time = System.currentTimeMillis();
+             System.out.println("Rendering " + little.getTiles().size() + " tiles!");
 
             LittleBlockRenderHelper.renderBlock(world, x, y, z, block, modelId, renderer, little);
-            // System.out.println("Rendered " + little.tiles.size() + " tiles! " + (System.currentTimeMillis()-time) + "
-            // ms");
+             System.out.println("Rendered " + little.getTiles().size() + " tiles! " + (System.currentTimeMillis()-time) + " ms");
         }
 
         /*
@@ -146,8 +145,9 @@ public class SpecialBlockTilesRenderer extends TileEntitySpecialRenderer
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTime) {
-        if (tileEntity instanceof TileEntityLittleTiles) {
-            TileEntityLittleTiles te = (TileEntityLittleTiles) tileEntity;
+        // @TODO remove this, not used in 1.12
+        if (tileEntity instanceof TileEntityLittleTilesProxy) {
+            TileEntityLittleTilesProxy te = (TileEntityLittleTilesProxy) tileEntity;
             for (int i = 0; i < te.customRenderingTiles.size(); i++) {
                 LittleTileVec cornerVec = te.customRenderingTiles.get(i).cornerVec;
                 te.customRenderingTiles.get(i).renderTick(

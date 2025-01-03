@@ -11,7 +11,7 @@ import com.creativemd.littletiles.common.utils.LittleTile;
  * This stores all LittleTiles bound to an block (meta). Used for vanilla blocks, but can also be used by modders. This
  * is an easier way than implementing the interface, but you cannot add specialized configurations NOTE: not implemented
  * yet
- * 
+ *
  * @author CreativeMD
  *
  */

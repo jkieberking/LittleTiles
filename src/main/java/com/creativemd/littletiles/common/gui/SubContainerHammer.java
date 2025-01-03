@@ -15,8 +15,8 @@ import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.items.ItemTileContainer;
 import com.creativemd.littletiles.common.utils.LittleTile;
-import com.creativemd.littletiles.common.utils.LittleTileBlock;
-import com.creativemd.littletiles.common.utils.LittleTileBlockColored;
+import com.creativemd.littletiles.common.utils.LittleTile;
+import com.creativemd.littletiles.common.utils.LittleTileColored;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 
 public class SubContainerHammer extends SubContainer {
@@ -50,11 +50,11 @@ public class SubContainerHammer extends SubContainer {
                     dropstack.stackTagCompound = new NBTTagCompound();
                     size.writeToNBT("size", dropstack.stackTagCompound);
                     LittleTile tile;
-                    if (value.hasKey("color")) tile = new LittleTileBlockColored(
+                    if (value.hasKey("color")) tile = new LittleTileColored(
                             block,
                             stack.getItemDamage(),
                             ColorUtils.IntToRGB(value.getInteger("color")));
-                    else tile = new LittleTileBlock(block, stack.getItemDamage());
+                    else tile = new LittleTile(block, stack.getItemDamage());
                     tile.saveTile(dropstack.stackTagCompound);
 
                     float missingTiles = blocks - tiles * size.getPercentVolume();

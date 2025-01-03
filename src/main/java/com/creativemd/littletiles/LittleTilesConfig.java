@@ -17,7 +17,10 @@ package com.creativemd.littletiles;
 //import net.minecraft.util.text.translation.I18n;
 //import net.minecraftforge.fml.relauncher.Side;
 
+import com.creativemd.littletiles.common.action.LittleActionException;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class LittleTilesConfig {
 
@@ -283,4 +286,21 @@ public class LittleTilesConfig {
 //                RenderingThread.initThreads(renderingThreadCount);
 //        }
 //    }
+
+    public static class NotAllowedToPlaceException extends LittleActionException {
+
+//        public LittleBuildingConfig config;
+
+        public NotAllowedToPlaceException(EntityPlayer player) {
+            super("exception.permission.place");
+//            config = LittleTiles.CONFIG.build.get(player);
+        }
+
+        @Override
+        public String getLocalizedMessage() {
+            // @TODO max placed blocks
+            return I18n.format(getMessage()/*, config.maxPlaceBlocks*/);
+        }
+
+    }
 }

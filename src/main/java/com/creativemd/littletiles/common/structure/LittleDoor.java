@@ -285,13 +285,13 @@ public class LittleDoor extends LittleStructure {
 
         if (ItemBlockTiles.placeTiles(world, player, previews, structure, x, y, z, null, null)) {
             ArrayList<LittleTile> tiles = getTiles();
-            for (LittleTile littleTile : tiles) {
-                littleTile.te.update();
+            for (LittleTile LittleTile : tiles) {
+                LittleTile.te.update();
             }
             tiles.clear();
             tiles = structure.getTiles();
             for (LittleTile tile : tiles) {
-                tile.te.combineTiles();
+                tile.te.combineTiles(structure);
             }
             return true;
         }
@@ -300,7 +300,7 @@ public class LittleDoor extends LittleStructure {
 
     @Override
     public boolean onBlockActivated(World world, LittleTile tile, int x, int y, int z, EntityPlayer player, int side,
-            float moveX, float moveY, float moveZ) {
+                                    float moveX, float moveY, float moveZ) {
         if (axis != null) {
             if (!hasLoaded()) {
                 player.addChatComponentMessage(
@@ -437,8 +437,8 @@ public class LittleDoor extends LittleStructure {
             else if (tryToPlacePreviews(world, player, mainX, mainY, mainZ, rotation.getOpposite(), previews, inverse))
                 return true;
 
-            for (LittleTile littleTile : tiles) {
-                littleTile.te.addTile(littleTile);
+            for (LittleTile LittleTile : tiles) {
+                LittleTile.te.addTile(LittleTile);
             }
             return true;
 

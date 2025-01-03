@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.creativemd.littletiles.LittleTiles;
+import com.creativemd.littletiles.common.parent.IParentTileList;
+import com.creativemd.littletiles.common.utils.LittleTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -17,7 +20,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
@@ -32,24 +34,73 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.littletiles.client.LittleTilesClient;
 import com.creativemd.littletiles.common.packet.LittleBlockPacket;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
-import com.creativemd.littletiles.common.utils.LittleTileBlock;
+import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.LittleTileTileEntity;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.small.LittleTileVec;
 import com.creativemd.littletiles.utils.TileList;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockTile extends BlockContainer {
 
+    private static boolean loadingTileEntityFromWorld = false;
+    private static final TEResult FAILED = new TEResult(null, null, null);
+
     public BlockTile(Material material) {
         super(material);
         setCreativeTab(CreativeTabs.tabDecorations);
     }
+
+    public static class TEResult {
+
+        public final TileEntityLittleTilesProxy te;
+        public final IParentTileList parent;
+        public final LittleTile tile;
+
+        public TEResult(TileEntityLittleTilesProxy te, IParentTileList parent, LittleTile tile) {
+            this.te = te;
+            this.parent = parent;
+            this.tile = tile;
+        }
+
+        public boolean isComplete() {
+            return te != null && tile != null;
+        }
+    }
+
+//    public static TileEntityLittleTilesProxy loadTe(IBlockAccess world, BlockPos pos) {
+//        if (world == null)
+//            return null;
+//        loadingTileEntityFromWorld = true;
+//        TileEntity tileEntity = null;
+//        try {
+//            tileEntity = world.getTileEntity(pos);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//        loadingTileEntityFromWorld = false;
+//        if (tileEntity instanceof TileEntityLittleTilesProxy && ((TileEntityLittleTilesProxy) tileEntity).hasLoaded())
+//            return (TileEntityLittleTilesProxy) tileEntity;
+//        return null;
+//    }
+
+//    public static TEResult loadTeAndTile(IBlockAccess world, BlockPos pos, EntityPlayer player) {
+//        return loadTeAndTile(world, pos, player, TickUtilsProxy.getPartialTickTime());
+//    }
+//
+//    public static TEResult loadTeAndTile(IBlockAccess world, BlockPos pos, EntityPlayer player, float partialTickTime) {
+//        TileEntityLittleTilesProxy te = loadTe(world, pos);
+//        if (te != null) {
+//            PairProxy<IParentTileList, LittleTile> pair = te.getFocusedTile(player, partialTickTime);
+//            if (pair != null)
+//                return new TEResult(te, pair.key, pair.value);
+//        }
+//        return FAILED;
+//    }
 
     @SideOnly(Side.CLIENT)
     public static Minecraft mc;
@@ -98,9 +149,9 @@ public class BlockTile extends BlockContainer {
             for (int x2 = mX; x2 < bb.maxX; x2++) {
                 for (int z2 = mZ; z2 < bb.maxZ; z2++) {
                     TileEntity te = world.getTileEntity(x, y, z2);
-                    if (te instanceof TileEntityLittleTiles) {
-                        TileEntityLittleTiles littleTE = (TileEntityLittleTiles) te;
-                        TileList<LittleTile> tiles = littleTE.getTiles();
+                    if (te instanceof TileEntityLittleTilesProxy) {
+                        TileEntityLittleTilesProxy littleTE = (TileEntityLittleTilesProxy) te;
+                        TileList tiles = littleTE.getTiles();
                         for (LittleTile tile : tiles) {
                             if (tile.isLadder()) {
                                 for (int j = 0; j < tile.boundingBoxes.size(); j++) {
@@ -142,8 +193,8 @@ public class BlockTile extends BlockContainer {
     @Override
     public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z) {
         if (loadTileEntity(world, x, y, z) && tempEntity.updateLoadedTile(player)
-                && tempEntity.loadedTile instanceof LittleTileBlock) {
-            return ((LittleTileBlock) tempEntity.loadedTile).block
+                && tempEntity.loadedTile instanceof LittleTile) {
+            return ((LittleTile) tempEntity.loadedTile).getBlock()
                     .getPlayerRelativeBlockHardness(player, world, x, y, z);
         }
         return super.getBlockHardness(world, x, y, z);
@@ -272,24 +323,24 @@ public class BlockTile extends BlockContainer {
         return false;
     }
 
-    @Override
-    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-            if (loadTileEntity(world, x, y, z) && tempEntity.updateLoadedTile(player)) {
-                try {
-                    tempEntity.loadedTile.destroy();
-                    NBTTagCompound nbt = new NBTTagCompound();
-                    tempEntity.writeToNBT(nbt);
-                    PacketHandler.sendPacketToServer(new LittleBlockPacket(x, y, z, player, 1));
-                    tempEntity.updateRender();
-                } catch (Exception ignored) {
-
-                }
-            }
-
-        }
-        return true;
-    }
+//    @Override
+//    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
+//        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+//            if (loadTileEntity(world, x, y, z) && tempEntity.updateLoadedTile(player)) {
+//                try {
+//                    tempEntity.loadedTile.destroy();
+//                    NBTTagCompound nbt = new NBTTagCompound();
+//                    tempEntity.writeToNBT(nbt);
+//                    PacketHandler.sendPacketToServer(new LittleBlockPacket(x, y, z, player, 1));
+//                    tempEntity.updateRender();
+//                } catch (Exception ignored) {
+//
+//                }
+//            }
+//
+//        }
+//        return true;
+//    }
 
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
@@ -330,18 +381,18 @@ public class BlockTile extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public IIcon overrideIcon;
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer) {
-        try { // Why try? because the loaded tile can change while setting this icon
-            if (loadTileEntity(worldObj, target.blockX, target.blockY, target.blockZ)
-                    && tempEntity.updateLoadedTile(mc.thePlayer))
-                overrideIcon = tempEntity.loadedTile.getIcon(target.sideHit);
-        } catch (Exception ignored) {
-
-        }
-        return false;
-    }
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer) {
+//        try { // Why try? because the loaded tile can change while setting this icon
+//            if (loadTileEntity(worldObj, target.blockX, target.blockY, target.blockZ)
+//                    && tempEntity.updateLoadedTile(mc.thePlayer))
+//                overrideIcon = tempEntity.loadedTile.getIcon(target.sideHit);
+//        } catch (Exception ignored) {
+//
+//        }
+//        return false;
+//    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -360,7 +411,8 @@ public class BlockTile extends BlockContainer {
                             double d2 = (double) z + ((double) k1 + box.maxZ) / (double) b0;
                             EntityDiggingFX fx = (new EntityDiggingFX(world, d0, d1, d2, 0, 0, 0, this, meta))
                                     .applyColourMultiplier(x, y, z);
-                            fx.setParticleIcon(tempEntity.loadedTile.getIcon(0));
+                            // @TODO check getIcon() arguments
+                            fx.setParticleIcon(tempEntity.loadedTile.getBlock().getIcon(1,1));
                             effectRenderer.addEffect(fx);
                         }
                     }
@@ -475,10 +527,10 @@ public class BlockTile extends BlockContainer {
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {
-        return new TileEntityLittleTiles();
+        return new TileEntityLittleTilesProxy(world, meta);
     }
 
-    public static TileEntityLittleTiles tempEntity;
+    public static TileEntityLittleTilesProxy tempEntity;
 
     public static boolean loadTileEntity(IBlockAccess world, int x, int y, int z) {
         if (world == null) {
@@ -486,26 +538,43 @@ public class BlockTile extends BlockContainer {
             return false;
         }
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityLittleTiles) tempEntity = (TileEntityLittleTiles) tileEntity;
+        if (tileEntity instanceof TileEntityLittleTilesProxy) tempEntity = (TileEntityLittleTilesProxy) tileEntity;
         else tempEntity = null;
         return tempEntity != null;
     }
 
     public static TileEntity getTileEntityInWorld(IBlockAccess world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityLittleTiles
-                && ((TileEntityLittleTiles) tileEntity).loadedTile instanceof LittleTileTileEntity) {
-            return ((LittleTileTileEntity) ((TileEntityLittleTiles) tileEntity).loadedTile).tileEntity;
+        if (tileEntity instanceof TileEntityLittleTilesProxy
+                && ((TileEntityLittleTilesProxy) tileEntity).loadedTile instanceof LittleTileTileEntity) {
+            return ((LittleTileTileEntity) ((TileEntityLittleTilesProxy) tileEntity).loadedTile).tileEntity;
         }
         return tileEntity;
     }
 
     public static LittleTile getLittleTileInWorld(IBlockAccess world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityLittleTiles) {
-            return ((TileEntityLittleTiles) tileEntity).loadedTile;
+        if (tileEntity instanceof TileEntityLittleTilesProxy) {
+            return ((TileEntityLittleTilesProxy) tileEntity).loadedTile;
         }
         return null;
     }
-
+//
+//    public staticB getState(int id) {
+//        switch (id) {
+//            case 0:
+//                return LittleTiles.blockTileNoTicking.getDefaultState();
+//            case 1:
+//                return LittleTiles.blockTileTicking.getDefaultState();
+//            case 2:
+//                return LittleTiles.blockTileNoTickingRendered.getDefaultState();
+//            case 3:
+//                return LittleTiles.blockTileTickingRendered.getDefaultState();
+//        }
+//        return null;
+//    }
+//
+//    public static Block getBlockByAttribute(int attribute) {
+//        return getState(LittleStructureAttribute.ticking(attribute), LittleStructureAttribute.tickRendering(attribute));
+//    }
 }

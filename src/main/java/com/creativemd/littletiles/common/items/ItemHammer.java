@@ -17,7 +17,7 @@ import com.creativemd.creativecore.core.CreativeCore;
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.gui.SubContainerHammer;
 import com.creativemd.littletiles.common.gui.SubGuiHammer;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -52,12 +52,12 @@ public class ItemHammer extends Item implements IGuiCreator {
             float hitX, float hitY, float hitZ) {
         if (!world.isRemote && player.isSneaking()) {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
-            if (tileEntity instanceof TileEntityLittleTiles) {
-                if (((TileEntityLittleTiles) tileEntity).getTiles().size() <= 1) {
+            if (tileEntity instanceof TileEntityLittleTilesProxy) {
+                if (((TileEntityLittleTilesProxy) tileEntity).getTiles().size() <= 1) {
                     LittleTiles.blockTile.dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
                 } else {
                     ItemStack drop = new ItemStack(LittleTiles.multiTiles);
-                    ItemRecipe.saveTiles(world, ((TileEntityLittleTiles) tileEntity).getTiles(), drop);
+                    ItemRecipe.saveTiles(world, ((TileEntityLittleTilesProxy) tileEntity).getTiles(), drop);
                     WorldUtils.dropItem(world, drop, x, y, z);
                 }
                 world.setBlockToAir(x, y, z);

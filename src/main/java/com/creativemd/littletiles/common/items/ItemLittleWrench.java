@@ -16,7 +16,7 @@ import com.creativemd.creativecore.core.CreativeCore;
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.gui.SubContainerWrench;
 import com.creativemd.littletiles.common.gui.SubGuiWrench;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -51,16 +51,16 @@ public class ItemLittleWrench extends Item implements IGuiCreator {
         return stack;
     }
 
-    @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
-            float hitX, float hitY, float hitZ) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityLittleTiles) {
-            if (!world.isRemote) ((TileEntityLittleTiles) tileEntity).combineTiles();
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+//            float hitX, float hitY, float hitZ) {
+//        TileEntity tileEntity = world.getTileEntity(x, y, z);
+//        if (tileEntity instanceof TileEntityLittleTilesProxy) {
+//            if (!world.isRemote) ((TileEntityLittleTilesProxy) tileEntity).combineTiles();
+//            return true;
+//        }
+//        return false;
+//    }
 
     @Override
     @SideOnly(Side.CLIENT)

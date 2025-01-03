@@ -3,6 +3,7 @@ package com.creativemd.littletiles.common.structure;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.creativemd.littletiles.common.utils.LittleTile;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,7 +18,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.creativecore.common.utils.HashMapList;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTiles;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.LittleTile.LittleTilePosition;
 import com.creativemd.littletiles.common.utils.small.LittleTileCoord;
@@ -181,8 +182,8 @@ public abstract class LittleStructure {
             for (int i = 0; i < tiles.size(); i++) {
                 if (tiles.get(i).isStructureBlock) {
                     tiles.get(i).updateCorner();
-                    new LittleTileCoord(mainTile.te, tiles.get(i).te.getCoord(), tiles.get(i).cornerVec.copy())
-                            .writeToNBT("i" + i, nbt);
+//                    new LittleTileCoord(mainTile.te, tiles.get(i).te.getCoord(), tiles.get(i).cornerVec.copy())
+//                            .writeToNBT("i" + i, nbt);
                     // new LittleTilePosition().writeToNBT("i" + i, nbt);
                 }
                 // tiles.get(i).pos.writeToNBT("i" + i, nbt);
@@ -211,8 +212,8 @@ public abstract class LittleStructure {
         if (!(chunk instanceof EmptyChunk)) {
             // chunk.isChunkLoaded
             TileEntity tileEntity = world.getTileEntity(coord.posX, coord.posY, coord.posZ);
-            if (tileEntity instanceof TileEntityLittleTiles) {
-                LittleTile tile = ((TileEntityLittleTiles) tileEntity).getTile(pos.position);
+            if (tileEntity instanceof TileEntityLittleTilesProxy) {
+                LittleTile tile = ((TileEntityLittleTilesProxy) tileEntity).getTile(pos.position);
                 if (tile != null && tile.isStructureBlock) {
                     if (!tiles.contains(tile)) tiles.add(tile);
                     tile.structure = this;
@@ -240,33 +241,33 @@ public abstract class LittleStructure {
 
     // ====================LittleTile-Stuff====================
 
-    public void onLittleTileDestory() {
-        ArrayList<LittleTile> tiles = getTiles();
-        for (LittleTile tile : tiles) {
-            tile.te.removeTile(tile);
-            // tiles.get(i).destroy();
-        }
-    }
+//    public void onLittleTileDestory() {
+//        ArrayList<LittleTile> tiles = getTiles();
+//        for (LittleTile tile : tiles) {
+//            tile.te.removeTile(tile);
+//            // tiles.get(i).destroy();
+//        }
+//    }
 
     public ItemStack getStructureDrop() {
         return dropStack;
     }
 
     public boolean onBlockActivated(World world, LittleTile tile, int x, int y, int z, EntityPlayer player, int side,
-            float moveX, float moveY, float moveZ) {
+                                    float moveX, float moveY, float moveZ) {
         return false;
     }
 
     // ====================SORTING====================
 
-    public HashMapList<ChunkCoordinates, LittleTile> getTilesSortedPerBlock() {
-        HashMapList<ChunkCoordinates, LittleTile> coords = new HashMapList<>();
-        ArrayList<LittleTile> tiles = getTiles();
-        for (LittleTile tile : tiles) {
-            coords.add(tile.te.getCoord(), tile);
-        }
-        return coords;
-    }
+//    public HashMapList<ChunkCoordinates, LittleTile> getTilesSortedPerBlock() {
+//        HashMapList<ChunkCoordinates, LittleTile> coords = new HashMapList<>();
+//        ArrayList<LittleTile> tiles = getTiles();
+//        for (LittleTile tile : tiles) {
+////            coords.add(tile.te.getCoord(), tile);
+//        }
+//        return coords;
+//    }
 
     public void onFlip(World world, EntityPlayer player, ItemStack stack, ForgeDirection direction) {}
 

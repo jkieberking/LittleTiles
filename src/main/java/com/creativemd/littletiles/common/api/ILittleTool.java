@@ -11,10 +11,13 @@ package com.creativemd.littletiles.common.api;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.place.IMarkMode;
 import com.creativemd.littletiles.common.utils.place.PlacementPosition;
+import com.creativemd.littletiles.common.utils.place.PlacementPreview;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 //import net.minecraft.util.EnumFacing.Axis;
 //import net.minecraft.util.math.RayTraceResult;
 //import net.minecraft.world.World;
@@ -36,35 +39,37 @@ public interface ILittleTool {
 //        return true;
 //    }
 //
+
     @SideOnly(Side.CLIENT)
-    public IMarkMode onMark(EntityPlayer player, ItemStack stack, PlacementPosition position /*, RayTraceResult result, PlacementPreview previews */);
-//    {
-//        if (previews != null)
-//            return new MarkMode(player, position, previews);
+    public default IMarkMode onMark(EntityPlayer player, ItemStack stack, PlacementPosition position, MovingObjectPosition result, PlacementPreview previews) {
+//          @TODO mark mode
+        //        if (previews != null)
+//            return new MarkMod(player, position, previews);
 //        return null;
-//    }
-//
+        return null;
+    }
+
     @SideOnly(Side.CLIENT)
-    public default void tick(EntityPlayer player, ItemStack stack, PlacementPosition position /*, RayTraceResult result */) {}
-//
-//    @SideOnly(Side.CLIENT)
-//    public default void render(EntityPlayer player, ItemStack stack, double x, double y, double z) {}
-//
-//    @SideOnly(Side.CLIENT)
-//    public default void onDeselect(World world, ItemStack stack, EntityPlayer player) {}
-//
-//    @SideOnly(Side.CLIENT)
-//    public default boolean onRightClick(World world, EntityPlayer player, ItemStack stack, PlacementPosition position, RayTraceResult result) {
-//        return true;
-//    }
-//
-//    @SideOnly(Side.CLIENT)
-//    public default void onClickAir(EntityPlayer player, ItemStack stack) {}
-//
-//    @SideOnly(Side.CLIENT)
-//    public default boolean onClickBlock(World world, EntityPlayer player, ItemStack stack, PlacementPosition position, RayTraceResult result) {
-//        return false;
-//    }
+    public default void tick(EntityPlayer player, ItemStack stack, PlacementPosition position , MovingObjectPosition movingObjectPosition ) {}
+
+    @SideOnly(Side.CLIENT)
+    public default void render(EntityPlayer player, ItemStack stack, double x, double y, double z) {}
+
+    @SideOnly(Side.CLIENT)
+    public default void onDeselect(World world, ItemStack stack, EntityPlayer player) {}
+
+    @SideOnly(Side.CLIENT)
+    public default boolean onRightClick(World world, EntityPlayer player, ItemStack stack, PlacementPosition position, MovingObjectPosition movingObjectPosition) {
+        return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public default void onClickAir(EntityPlayer player, ItemStack stack) {}
+
+    @SideOnly(Side.CLIENT)
+    public default boolean onClickBlock(World world, EntityPlayer player, ItemStack stack, PlacementPosition position, MovingObjectPosition movingObjectPosition) {
+        return false;
+    }
 //
 //    @SideOnly(Side.CLIENT)
 //    public default boolean onMouseWheelClickBlock(World world, EntityPlayer player, ItemStack stack, PlacementPosition position, RayTraceResult result) {
