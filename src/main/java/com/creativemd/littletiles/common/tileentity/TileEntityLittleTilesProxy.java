@@ -5,6 +5,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.parent.ParentTileList;
 import com.creativemd.littletiles.common.tile.registry.LittleTileRegistry;
 import com.creativemd.littletiles.common.utils.grid.IGridBased;
@@ -100,62 +101,48 @@ public class TileEntityLittleTilesProxy extends TileEntityCreativeProxy implemen
 
     public boolean removeTile(LittleTile tile) {
         boolean result = tiles.remove(tile);
-        updateTiles(true);
+        updateTiles();
         return result;
     }
 
     public void addTiles(ArrayList<LittleTile> tiles) {
         this.tiles.addAll(tiles);
-        updateTiles(true);
+        updateTiles();
     }
 
     public boolean addTile(LittleTile tile) {
         boolean result = tiles.add(tile);
-        updateTiles(true);
+        updateTiles();
         return result;
     }
 
-    public void updateTiles(boolean updateNeighbour) {
-//        tiles.removeEmptyLists();
-//        notifyStructure();
+    // @TODO update this to 1.12 code maybe?
+    public void updateTiles() {
+        if (worldObj != null) {
+            update();
+            updateNeighbor();
+        }
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) updateCustomRenderer();
 
-//        sideCache.reset();
-
-//        if (worldObj != null) {
-//            updateBlock();
-//            if (updateNeighbour)
-//                updateNeighbour();
-//            updateLighting();
-//        }
-
-//        if (isClientSide())
-//            render.tilesChanged();
-//
-//        if (!worldObj.isRemote && tiles.isCompletelyEmpty())
-//            world.setBlockToAir(getPos());
-
-        // @TODO creative
-//        if (worldObj instanceof Creative)
-//            ((CreativeWorld) world).hasChanged = true;
-
-//        customTilesUpdate();
     }
-//
-//    @SideOnly(Side.CLIENT)
-//    public void updateCustomRenderer() {
-//        customRenderingTiles.clear();
-//        for (LittleTile tile : tiles) {
-//            if (tile.needCustomRendering()) customRenderingTiles.add(tile);
-//        }
-//    }
-//
-//    public void updateNeighbor() {
-//        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) markFullRenderUpdate();
-//        for (LittleTile tile : tiles) {
-//            tile.onNeighborChangeInside();
-//        }
-//        worldObj.notifyBlockChange(xCoord, yCoord, zCoord, LittleTiles.blockTile);
-//    }
+
+    // @TODO update this to 1.12 code maybe?
+    @SideOnly(Side.CLIENT)
+    public void updateCustomRenderer() {
+        customRenderingTiles.clear();
+        for (LittleTile tile : tiles) {
+            if (tile.needCustomRendering()) customRenderingTiles.add(tile);
+        }
+    }
+
+    // @TODO update this to 1.12 code maybe?
+    public void updateNeighbor() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) markFullRenderUpdate();
+        for (LittleTile tile : tiles) {
+            tile.onNeighborChangeInside();
+        }
+        worldObj.notifyBlockChange(xCoord, yCoord, zCoord, LittleTiles.blockTile);
+    }
 //
 //    @Override
 //    @SideOnly(Side.CLIENT)
@@ -262,56 +249,16 @@ public class TileEntityLittleTilesProxy extends TileEntityCreativeProxy implemen
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-
-        if (tiles == null)
-            init();
-
-        context = LittleGridContext.get(nbt);
-
-        // @TODO I think this is for structures
-//        if (nbt.hasKey("tilesCount")) {
-//            if (!tiles.isCompletelyEmpty())
-//                tiles.clearEverything();
-//            int count = nbt.getInteger("tilesCount");
-//            HashMap<LittleIdentifierRelative, StructureTileList> structures = new HashMap<>();
-//            for (int i = 0; i < count; i++) {
-//                NBTTagCompound tileNBT = new NBTTagCompound();
-//                tileNBT = nbt.getCompoundTag("t" + i);
-//                sortOldTiles(tileNBT, structures);
-//            }
-//            for (StructureTileList child : structures.values())
-//                tiles.addStructure(child.getIndex(), child);
-//        } else if (nbt.hasKey("tiles")) {
-//            if (!tiles.isCompletelyEmpty())
-//                tiles.clearEverything();
-//            NBTTagList list = nbt.getTagList("tiles", 10);
-//            HashMap<LittleIdentifierRelative, StructureTileList> structures = new HashMap<>();
-//            for (int i = 0; i < list.tagCount(); i++) {
-//                NBTTagCompound ltNBT = list.getCompoundTagAt(i);
-//                if (ltNBT.hasKey("boxes")) {
-//                    LittleTile create = LittleTileRegistry.getTypeFromNBT(ltNBT).createTile();
-//                    if (create != null) {
-//                        List<NBTTagCompound> nbts = create.extractNBTFromGroup(ltNBT);
-//                        for (int j = 0; j < nbts.size(); j++)
-//                            sortOldTiles(nbts.get(j), structures);
-//                    }
-//                } else
-//                    sortOldTiles(ltNBT, structures);
-//            }
-//            for (StructureTileList child : structures.values()) {
-//                StructureTileList.updateStatus(child);
-//                tiles.addStructure(child.getIndex(), child);
-//            }
-//
-//        } else
-            tiles.read(nbt.getCompoundTag("content"));
-
-        if (worldObj != null && !worldObj.isRemote) {
-            updateBlock();
-            customTilesUpdate();
+        if (tiles != null) tiles.clear();
+        tiles = new TileList();
+        int count = nbt.getInteger("tilesCount");
+        for (int i = 0; i < count; i++) {
+            NBTTagCompound tileNBT = nbt.getCompoundTag("t" + i);
+            LittleTile tile = LittleTile.CreateandLoadTile(this, worldObj, tileNBT);
+            if (tile != null) tiles.add(tile);
         }
-
-        deleteTempWorld();
+        updateTiles();
+        // update();
     }
 
     protected void customTilesUpdate() {
@@ -606,7 +553,7 @@ public class TileEntityLittleTilesProxy extends TileEntityCreativeProxy implemen
 
         readFromNBT(nbt);
         if (!chunkUpdate)
-            updateTiles(false);
+            updateTiles();
 
 //        if (isClientSide())
 //            render.afterClientReceivesUpdate();

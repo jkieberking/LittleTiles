@@ -8,14 +8,19 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.creativemd.creativecore.common.gui.controls.GuiAvatarLabel;
+import com.creativemd.creativecore.common.gui.controls.GuiColorPlate;
 import com.creativemd.littletiles.client.render.tile.RenderBox;
+import com.creativemd.littletiles.common.blocks.BlockLTColored;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.place.PlacementMode;
 import com.creativemd.littletiles.common.utils.place.PlacementPosition;
+import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -60,6 +65,29 @@ public class ItemLittleGrabber extends Item implements /*ICreativeRendered,*/ IL
         setMaxStackSize(1);
         this.setMaxStackSize(1);
         this.setCreativeTab(CreativeTabs.tabMisc);
+    }
+
+    public void initGrabber() {
+//            GuiAvatarLabel label = (GuiAvatarLabel) getControl("avatar");
+
+            LittleTileSize size = new LittleTileSize(1, 1, 1);
+
+            ItemStack dropstack = new ItemStack(LittleTiles.blockTile);
+            dropstack.stackTagCompound = new NBTTagCompound();
+            size.writeToNBT("size", dropstack.stackTagCompound);
+            Block block = null;
+            int meta = 0;
+            // configure block
+//            ItemStack slotStack = container.getSlots().get(0).getStack();
+//            if (slotStack != null) {
+//                block = Block.getBlockFromItem(slotStack.getItem());
+//                meta = slotStack.getItemDamage();
+//            }
+            if (block instanceof BlockAir || block == null) block = Blocks.stone;
+//            GuiColorPlate plate = (GuiColorPlate) getControl("plate");
+//            new BlockLTColored(/*block, meta, plate.color*/).saveTile(dropstack.stackTagCompound);
+            // new LittleTileBlockColored(block, meta, plate.color)
+//            label.avatar = new AvatarItemStack(dropstack);
     }
 
     @Override

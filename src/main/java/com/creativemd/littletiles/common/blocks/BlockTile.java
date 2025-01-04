@@ -7,6 +7,7 @@ import java.util.Random;
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.parent.IParentTileList;
 import com.creativemd.littletiles.common.utils.LittleTile;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -20,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
@@ -71,36 +73,6 @@ public class BlockTile extends BlockContainer {
             return te != null && tile != null;
         }
     }
-
-//    public static TileEntityLittleTilesProxy loadTe(IBlockAccess world, BlockPos pos) {
-//        if (world == null)
-//            return null;
-//        loadingTileEntityFromWorld = true;
-//        TileEntity tileEntity = null;
-//        try {
-//            tileEntity = world.getTileEntity(pos);
-//        } catch (Exception e) {
-//            return null;
-//        }
-//        loadingTileEntityFromWorld = false;
-//        if (tileEntity instanceof TileEntityLittleTilesProxy && ((TileEntityLittleTilesProxy) tileEntity).hasLoaded())
-//            return (TileEntityLittleTilesProxy) tileEntity;
-//        return null;
-//    }
-
-//    public static TEResult loadTeAndTile(IBlockAccess world, BlockPos pos, EntityPlayer player) {
-//        return loadTeAndTile(world, pos, player, TickUtilsProxy.getPartialTickTime());
-//    }
-//
-//    public static TEResult loadTeAndTile(IBlockAccess world, BlockPos pos, EntityPlayer player, float partialTickTime) {
-//        TileEntityLittleTilesProxy te = loadTe(world, pos);
-//        if (te != null) {
-//            PairProxy<IParentTileList, LittleTile> pair = te.getFocusedTile(player, partialTickTime);
-//            if (pair != null)
-//                return new TEResult(te, pair.key, pair.value);
-//        }
-//        return FAILED;
-//    }
 
     @SideOnly(Side.CLIENT)
     public static Minecraft mc;
@@ -323,24 +295,24 @@ public class BlockTile extends BlockContainer {
         return false;
     }
 
-//    @Override
-//    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
-//        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-//            if (loadTileEntity(world, x, y, z) && tempEntity.updateLoadedTile(player)) {
-//                try {
-//                    tempEntity.loadedTile.destroy();
-//                    NBTTagCompound nbt = new NBTTagCompound();
-//                    tempEntity.writeToNBT(nbt);
-//                    PacketHandler.sendPacketToServer(new LittleBlockPacket(x, y, z, player, 1));
-//                    tempEntity.updateRender();
-//                } catch (Exception ignored) {
-//
-//                }
-//            }
-//
-//        }
-//        return true;
-//    }
+    @Override
+    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+            if (loadTileEntity(world, x, y, z) && tempEntity.updateLoadedTile(player)) {
+                try {
+                    tempEntity.loadedTile.destroy();
+                    NBTTagCompound nbt = new NBTTagCompound();
+                    tempEntity.writeToNBT(nbt);
+                    PacketHandler.sendPacketToServer(new LittleBlockPacket(x, y, z, player, 1));
+                    tempEntity.updateRender();
+                } catch (Exception ignored) {
+
+                }
+            }
+
+        }
+        return true;
+    }
 
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
@@ -381,18 +353,18 @@ public class BlockTile extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public IIcon overrideIcon;
 
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer) {
-//        try { // Why try? because the loaded tile can change while setting this icon
-//            if (loadTileEntity(worldObj, target.blockX, target.blockY, target.blockZ)
-//                    && tempEntity.updateLoadedTile(mc.thePlayer))
-//                overrideIcon = tempEntity.loadedTile.getIcon(target.sideHit);
-//        } catch (Exception ignored) {
-//
-//        }
-//        return false;
-//    }
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer) {
+        try { // Why try? because the loaded tile can change while setting this icon
+            if (loadTileEntity(worldObj, target.blockX, target.blockY, target.blockZ)
+                    && tempEntity.updateLoadedTile(mc.thePlayer))
+                overrideIcon = tempEntity.loadedTile.getIcon(target.sideHit);
+        } catch (Exception ignored) {
+
+        }
+        return false;
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -476,7 +448,7 @@ public class BlockTile extends BlockContainer {
 
     @Override
     public void onNeighborChange(IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ) {
-        if (loadTileEntity(world, x, y, z)) {
+            if (loadTileEntity(world, x, y, z)) {
             // tempEntity.markFullRenderUpdate();
             for (LittleTile tile : tempEntity.getTiles()) {
                 tile.onNeighborChangeOutside();
@@ -559,22 +531,4 @@ public class BlockTile extends BlockContainer {
         }
         return null;
     }
-//
-//    public staticB getState(int id) {
-//        switch (id) {
-//            case 0:
-//                return LittleTiles.blockTileNoTicking.getDefaultState();
-//            case 1:
-//                return LittleTiles.blockTileTicking.getDefaultState();
-//            case 2:
-//                return LittleTiles.blockTileNoTickingRendered.getDefaultState();
-//            case 3:
-//                return LittleTiles.blockTileTickingRendered.getDefaultState();
-//        }
-//        return null;
-//    }
-//
-//    public static Block getBlockByAttribute(int attribute) {
-//        return getState(LittleStructureAttribute.ticking(attribute), LittleStructureAttribute.tickRendering(attribute));
-//    }
 }

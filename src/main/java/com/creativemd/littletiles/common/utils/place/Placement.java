@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.function.BiPredicate;
 
+import com.creativemd.creativecore.common.packet.PacketHandler;
+import com.creativemd.littletiles.client.render.PreviewRenderer;
 import com.creativemd.littletiles.common.action.LittleActionException;
 import com.creativemd.littletiles.common.blocks.BlockTile;
+import com.creativemd.littletiles.common.packet.LittlePlacePacket;
 import com.creativemd.littletiles.common.parent.IParentTileList;
 import com.creativemd.littletiles.common.parent.ParentTileList;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
@@ -19,7 +22,11 @@ import com.creativemd.littletiles.common.utils.grid.IGridBased;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.world.LittleNeighborUpdateCollectorProxy;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.MovingObjectPosition;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.creativemd.littletiles.LittleTiles;
@@ -37,9 +44,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.BlockSnapshot;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Placement {
 
+    private static final Logger log = LogManager.getLogger(Placement.class);
     public final EntityPlayer player;
     public final World world;
     public final PlacementMode mode;
@@ -198,13 +208,13 @@ public class Placement {
         return null;
     }
 
-    public PlacementResult tryPlace() {
-        try {
-            return place();
-        } catch (LittleActionException e) {
-            return null;
-        }
-    }
+//    public PlacementResult tryPlace() {
+//        try {
+//            return place();
+//        } catch (LittleActionException e) {
+//            return null;
+//        }
+//    }
 
     protected PlacementResult placeTiles() throws LittleActionException {
         PlacementResult result = new PlacementResult(pos);
@@ -483,19 +493,14 @@ public class Placement {
                         }
                     }
 
-            // @TODO fix section, uncomment things
             if (hascollideBlock) {
                 boolean requiresCollisionTest = true;
                 // cached here is the tile entity of the block we are trying to place a smaller block in
                 if (cached == null) {
                     if (!(world.getBlock(pos.x, pos.y, pos.z) instanceof BlockTile) && world.getBlock(pos.x, pos.y, pos.z).getMaterial().isReplaceable()) {
                         requiresCollisionTest = false;
-                        world.setBlock(pos.x(), pos.y(), pos.z(), LittleTiles.deafultBlock, 1, 3);
-                        TileEntity newTileEntity = LittleTiles.blockTile.createNewTileEntity(world, 1);
-                        world.setTileEntity(pos.x(), pos.y(), pos.z(), LittleTiles.blockTile.createNewTileEntity(world, 1));
-                        newTileEntity.markDirty();
+                        world.setBlock(pos.x(), pos.y(), pos.z(), LittleTiles.blockTile, 0, 3);
                         world.markBlockForUpdate(pos.x(), pos.y(), pos.z());
-
                     }
 
                     cached = LittleAction.loadTe(player, world, pos, affectedBlocks, mode.shouldConvertBlock(), attribute);
@@ -520,7 +525,6 @@ public class Placement {
                     cached.forceContext(this);
 
                     try {
-                        // @TODO fix this and uncomment
                         cached.updateTilesSecretly((x) -> {
 
                             for (int i = 0; i < previews.length; i++) {

@@ -120,10 +120,10 @@ public class LittleBoxesNoOverlap extends LittleBoxes {
         return new LittleBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-//    @Override
-//    public HashMapList<BlockPos, LittleBox> generateBlockWise() {
-//        return blockMap;
-//    }
+    @Override
+    public HashMapListProxy<BlockPos, LittleBox> generateBlockWise() {
+        return blockMap;
+    }
 
     @Override
     public Iterable<LittleBox> all() {

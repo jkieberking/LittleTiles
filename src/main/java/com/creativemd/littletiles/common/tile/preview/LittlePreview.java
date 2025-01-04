@@ -8,11 +8,13 @@ import com.creativemd.littletiles.common.tile.math.box.LittleBox;
 import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
 import com.creativemd.littletiles.common.tile.place.PlacePreview;
 import com.creativemd.littletiles.common.tile.registry.LittleTileRegistry;
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.compression.LittleNBTCompressionTools;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.outdated.LittleSize;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -87,67 +89,76 @@ public class LittlePreview implements ICombinable {
     }
 //
 //    // ================Preview================
-//
-//    public String getBlockInfo() {
-//        return tileData.getString("block");
-//    }
-//
-//    public String getBlockName() {
-//        String[] parts = tileData.getString("block").split(":");
-//        if (parts.length < 2)
-//            return parts[0];
-//        return parts[0] + ":" + parts[1];
-//    }
-//
-//    public Block getBlock() {
-//        return Block.getBlockFromName(getBlockName());
-//    }
-//
-//    public int getMeta() {
-//        String[] parts = tileData.getString("block").split(":");
-//        if (parts.length == 3)
-//            return Integer.parseInt(parts[2]);
-//        return 0;
-//    }
-//
-//    public boolean hasColor() {
-//        return tileData.hasKey("color");
-//    }
-//
-//    public int getColor() {
-//        if (tileData.hasKey("color"))
-//            return tileData.getInteger("color");
-//        return -1;
-//    }
-//
-//    public void setColor(int color) {
-//        if (ColorUtils.isWhite(color) && !ColorUtils.isTransparent(color)) {
-//            if (tileData.getString("tID").equals("BlockTileColored"))
-//                tileData.setString("tID", "BlockTileBlock");
-//            tileData.removeTag("color");
-//        } else {
-//            if (tileData.getString("tID").equals("BlockTileBlock"))
-//                tileData.setString("tID", "BlockTileColored");
-//            tileData.setInteger("color", color);
-//        }
-//    }
-//
+
+
+
+
+    public String getBlockInfo() {
+        return tileData.getString("block");
+    }
+
+    public String getBlockName() {
+        String[] parts = tileData.getString("block").split(":");
+        if (parts.length < 2)
+            return parts[0];
+        return parts[0] + ":" + parts[1];
+    }
+
+    public Block getBlock() {
+        return Block.getBlockFromName(getBlockName());
+    }
+
+    public int getMeta() {
+        String[] parts = tileData.getString("block").split(":");
+        if (parts.length == 3)
+            return Integer.parseInt(parts[2]);
+        return 0;
+    }
+
+    public boolean hasColor() {
+        return tileData.hasKey("color");
+    }
+
+    public int getColor() {
+        if (tileData.hasKey("color"))
+            return tileData.getInteger("color");
+        return -1;
+    }
+
+    public void setColor(int color) {
+        if (color == ColorUtils.WHITE && !this.isTransparent(color)) {
+            if (tileData.getString("tID").equals("BlockTileColored"))
+                tileData.setString("tID", "BlockTileBlock");
+            tileData.removeTag("color");
+        } else {
+            if (tileData.getString("tID").equals("BlockTileBlock"))
+                tileData.setString("tID", "BlockTileColored");
+            tileData.setInteger("color", color);
+        }
+    }
+
+    // from ColorUtils in 1.12
+    public boolean isTransparent(int color) {
+        int a = color >> 24 & 255;
+        return a < 255;
+    }
+
 //    /** Rendering inventory **/
-    // @TODO configure currently selected cube type
-//    @SideOnly(Side.CLIENT)
-//    public RenderBox getCubeBlock(LittleGridContext context) {
-//        RenderBox cube = box.getRenderingCube(context, getBlock(), getMeta());
-//        cube.color = getColor();
-//        return cube;
-//    }
+
+    @SideOnly(Side.CLIENT)
+    public RenderBox getCubeBlock(LittleGridContext context) {
+        RenderBox cube = box.getRenderingCube(context, getBlock(), getMeta());
+        cube.color = getColor();
+        return cube;
+    }
 
     public boolean isInvisible() {
         return tileData.getBoolean("invisible") /*|| ColorUtils.isInvisible(getColor())*/;
     }
 
-//    public void setInvisibile(boolean invisible) {
-//        tileData.setBoolean("invisible", invisible);
-//    }
+    public void setInvisibile(boolean invisible) {
+        tileData.setBoolean("invisible", invisible);
+    }
 
     public NBTTagCompound getTileData() {
         return tileData;
@@ -231,10 +242,11 @@ public class LittlePreview implements ICombinable {
 //    }
 //
 //    // ================Placing================
-//
-//    /** Used for placing the tile **/
-    public LittleTile getLittleTile() {
-        return LittleTileRegistry.loadTile(tileData);
+
+    public LittleTile getLittleTile(TileEntityLittleTilesProxy te) {
+        LittleTile tile = LittleTileRegistry.loadTile(tileData);
+        tile.te = te;
+        return tile;
     }
 
     public PlacePreview getPlaceableTile(LittleVec offset) {
@@ -508,10 +520,9 @@ public class LittlePreview implements ICombinable {
             }
         } else {
             LittlePreviews previews = getPreview(stack);
-            // @TODO add currently configured set/etc... cube type
-//            for (LittlePreview preview : previews.allPreviews())
-//                if (!preview.isInvisible())
-//                    cubes.add(preview.getCubeBlock(previews.getContext()));
+            for (LittlePreview preview : previews.allPreviews())
+                if (!preview.isInvisible())
+                    cubes.add(preview.getCubeBlock(previews.getContext()));
         }
         return cubes;
     }

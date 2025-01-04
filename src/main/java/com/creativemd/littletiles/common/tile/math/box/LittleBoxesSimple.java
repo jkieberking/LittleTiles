@@ -114,13 +114,13 @@ public class LittleBoxesSimple extends LittleBoxes implements IGridBased, Iterab
         return this;
     }
 
-//    @Override
-//    public HashMapList<BlockPos, LittleBox> generateBlockWise() {
-//        HashMapList<BlockPos, LittleBox> map = new HashMapList<>();
-//        for (LittleBox box : this)
-//            box.split(context, pos, map, null);
-//        return map;
-//    }
+    @Override
+    public HashMapListProxy<BlockPos, LittleBox> generateBlockWise() {
+        HashMapListProxy<BlockPos, LittleBox> map = new HashMapListProxy<>();
+        for (LittleBox box : this)
+            box.split(context, pos, map, null);
+        return map;
+    }
 //
 //    @Override
 //    public void flip(Axis axis, LittleAbsoluteBox absoluteBox) {

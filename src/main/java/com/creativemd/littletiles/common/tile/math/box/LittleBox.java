@@ -128,6 +128,11 @@ public class LittleBox {
                 .toVanillaGrid(maxX), (float) context.toVanillaGrid(maxY), (float) context.toVanillaGrid(maxZ));
     }
 
+    // tmp
+    public AlignedBox getCube() {
+        return new AlignedBox((float) 0, (float) 0, (float) 0, (float) 1, (float) 1, (float) 1);
+    }
+
     // ================Save================
 
     public void changed() {
@@ -1391,5 +1396,16 @@ public class LittleBox {
             double d3 = (z - vec1.z) / d2;
             return d3 >= 0.0D && d3 <= 1.0D ? new Vector3d(vec1.x + d0 * d3, vec1.y + d1 * d3, vec1.z + d2 * d3) : null;
         }
+    }
+
+    // @TODO 1.7 function, remove for backport
+    @Deprecated
+    public void writeToNBT(String name, NBTTagCompound nbt) {
+        nbt.setInteger(name + "minX", minX);
+        nbt.setInteger(name + "minY", minY);
+        nbt.setInteger(name + "minZ", minZ);
+        nbt.setInteger(name + "maxX", maxX);
+        nbt.setInteger(name + "maxY", maxY);
+        nbt.setInteger(name + "maxZ", maxZ);
     }
 }

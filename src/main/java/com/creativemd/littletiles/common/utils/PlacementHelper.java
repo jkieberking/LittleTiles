@@ -188,7 +188,7 @@ public class PlacementHelper {
         if (iTile != null) tiles = iTile.getLittlePreview(stack);
 
         if (tiles != null) {
-            // @TODO fix this for the calling class
+            // @TODO fix this for the calling class, but think this is only needed for original code
 //            LittleTileSize size = getSize(tiles);
             LittleTileSize size = new LittleTileSize(0, 0, 0);
 

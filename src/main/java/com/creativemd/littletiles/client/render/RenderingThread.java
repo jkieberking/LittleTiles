@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.tileentity.TileEntity;
@@ -14,9 +15,8 @@ import net.minecraft.world.World;
 import com.creativemd.creativecore.client.block.IBlockAccessFake;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
-import com.creativemd.littletiles.common.utils.LittleTile;
+import com.creativemd.littletiles.common.utils.LittleTileBlock;
 import com.creativemd.littletiles.utils.TileList;
 
 import cpw.mods.fml.relauncher.Side;
@@ -62,7 +62,9 @@ public class RenderingThread extends Thread {
     public void run() {
         while (active) {
             World world = Minecraft.getMinecraft().theWorld;
-
+            if (!world.isRemote) {
+                return;
+            }
             if (world != null && updateCoords.size() > 0) {
                 ChunkCoordinates coord = updateCoords.get(0);
                 updateCoords.remove(0);
@@ -74,58 +76,57 @@ public class RenderingThread extends Thread {
                         ArrayList<LittleBlockVertex> vertexes = new ArrayList<>();
                         TileList tiles = te.getTiles();
                         for (LittleTile tile : tiles) {
-//                            // @TODO might need this?
-//                            if (tile instanceof LittleTile && tile.canBlockBeThreaded()) {
-//
-//                                ArrayList<CubeObject> cubes = tile.getRenderingCubes();
-//                                // tile.isRendering = true;
-//                                for (CubeObject cube : cubes) {
-//                                    if (cube.block != null) {
-//                                        if (cube.meta != -1) {
-//                                            // if(renderer.blockAccess == null)
-//                                            // continue;
-//                                            // renderer.blockAccess = Minecraft.getMinecraft().theWorld;
-//                                            if (LittleBlockRenderHelper.fake == null) {
-//                                                LittleBlockRenderHelper.fake = new IBlockAccessFake(
-//                                                        Minecraft.getMinecraft().theWorld);// renderer.blockAccess);
-//
-//                                                LittleBlockRenderHelper.renderBlocks.blockAccess = LittleBlockRenderHelper.fake;
-//                                            }
-//
-//                                            if (LittleBlockRenderHelper.fake.world != Minecraft.getMinecraft().theWorld)
-//                                                LittleBlockRenderHelper.fake.world = Minecraft.getMinecraft().theWorld;
-//
-//                                            LittleBlockRenderHelper.renderBlocks.clearOverrideBlockTexture();
-//                                            LittleBlockRenderHelper.renderBlocks.lockBlockBounds = false;
-//                                            LittleBlockRenderHelper.renderBlocks.setRenderBounds(
-//                                                    cube.minX,
-//                                                    cube.minY,
-//                                                    cube.minZ,
-//                                                    cube.maxX,
-//                                                    cube.maxY,
-//                                                    cube.maxZ);
-//                                            LittleBlockRenderHelper.renderBlocks.meta = cube.meta;
-//                                            LittleBlockRenderHelper.fake.overrideMeta = cube.meta;
-//                                            LittleBlockRenderHelper.renderBlocks.color = cube.color;
-//                                            LittleBlockRenderHelper.renderBlocks.lockBlockBounds = true;
-//                                            // LittleBlockRenderHelper.renderBlocks.enableAO = false;
-//                                            LittleBlockRenderHelper.renderBlocks.blockVertex = new LittleBlockVertex();
-//                                            // LittleBlockRenderHelper.renderBlocks.blockVertex.enableAO =
-//                                            // LittleBlockRenderHelper.renderBlocks.enableAO;
-//                                            LittleBlockRenderHelper.renderBlocks
-//                                                    .renderBlockAllFaces(cube.block, te.xCoord, te.yCoord, te.zCoord);
-//                                            vertexes.add(LittleBlockRenderHelper.renderBlocks.blockVertex);
-//                                            LittleBlockRenderHelper.renderBlocks.lockBlockBounds = false;
-//                                            LittleBlockRenderHelper.renderBlocks.color = ColorUtils.WHITE;
-//
-//                                        }
-//                                    }
-//                                }
-//
-//                                // tile.isRendering = false;
-//                                // System.out.println("Rendered " + i + " tile of " + te.tiles.size());
-//
-//                            }
+                            if (tile instanceof LittleTileBlock && tile.canBlockBeThreaded()) {
+
+                                ArrayList<CubeObject> cubes = tile.getRenderingCubes();
+                                // tile.isRendering = true;
+                                for (CubeObject cube : cubes) {
+                                    if (cube.block != null) {
+                                        if (cube.meta != -1) {
+                                            // if(renderer.blockAccess == null)
+                                            // continue;
+                                            // renderer.blockAccess = Minecraft.getMinecraft().theWorld;
+                                            if (LittleBlockRenderHelper.fake == null) {
+                                                LittleBlockRenderHelper.fake = new IBlockAccessFake(
+                                                    Minecraft.getMinecraft().theWorld);// renderer.blockAccess);
+
+                                                LittleBlockRenderHelper.renderBlocks.blockAccess = LittleBlockRenderHelper.fake;
+                                            }
+
+                                            if (LittleBlockRenderHelper.fake.world != Minecraft.getMinecraft().theWorld)
+                                                LittleBlockRenderHelper.fake.world = Minecraft.getMinecraft().theWorld;
+
+                                            LittleBlockRenderHelper.renderBlocks.clearOverrideBlockTexture();
+                                            LittleBlockRenderHelper.renderBlocks.lockBlockBounds = false;
+                                            LittleBlockRenderHelper.renderBlocks.setRenderBounds(
+                                                cube.minX,
+                                                cube.minY,
+                                                cube.minZ,
+                                                cube.maxX,
+                                                cube.maxY,
+                                                cube.maxZ);
+                                            LittleBlockRenderHelper.renderBlocks.meta = cube.meta;
+                                            LittleBlockRenderHelper.fake.overrideMeta = cube.meta;
+                                            LittleBlockRenderHelper.renderBlocks.color = cube.color;
+                                            LittleBlockRenderHelper.renderBlocks.lockBlockBounds = true;
+                                            // LittleBlockRenderHelper.renderBlocks.enableAO = false;
+                                            LittleBlockRenderHelper.renderBlocks.blockVertex = new LittleBlockVertex();
+                                            // LittleBlockRenderHelper.renderBlocks.blockVertex.enableAO =
+                                            // LittleBlockRenderHelper.renderBlocks.enableAO;
+                                            LittleBlockRenderHelper.renderBlocks
+                                                .renderBlockAllFaces(cube.block, te.xCoord, te.yCoord, te.zCoord);
+                                            vertexes.add(LittleBlockRenderHelper.renderBlocks.blockVertex);
+                                            LittleBlockRenderHelper.renderBlocks.lockBlockBounds = false;
+                                            LittleBlockRenderHelper.renderBlocks.color = ColorUtils.WHITE;
+
+                                        }
+                                    }
+                                }
+
+                                // tile.isRendering = false;
+                                // System.out.println("Rendered " + i + " tile of " + te.tiles.size());
+
+                            }
                         }
                         // System.out.println("Done rendering block");
                         setLastRenderedTiles(vertexes, te, coord);
@@ -148,7 +149,7 @@ public class RenderingThread extends Thread {
     }
 
     public synchronized void setLastRenderedTiles(ArrayList<LittleBlockVertex> vertexes, TileEntityLittleTilesProxy te,
-            ChunkCoordinates coord) {
+                                                  ChunkCoordinates coord) {
         while (te.isRendering) {
             try {
                 sleep(1);

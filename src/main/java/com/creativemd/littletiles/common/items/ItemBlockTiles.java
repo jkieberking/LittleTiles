@@ -50,8 +50,12 @@ import com.creativemd.littletiles.utils.PreviewTile;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRenderer {
+
+    private static final Logger log = LogManager.getLogger(ItemBlockTiles.class);
 
     public ItemBlockTiles(Block block) {
         super(block);
@@ -269,7 +273,6 @@ public class ItemBlockTiles extends ItemBlock implements ILittleTile, ITilesRend
         // if(!(world.getBlock(x, y, z) instanceof BlockTile))
         // if (!world.setBlock(x, y, z, LittleTiles.blockTile, 0, 3))
         // return false;
-
         HashMapList<ChunkCoordinates, PreviewTile> splitted = getSplittedTiles(previews, x, y, z);
         if (splitted == null) return false;
 

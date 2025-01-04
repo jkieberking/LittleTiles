@@ -1,5 +1,6 @@
 package com.creativemd.littletiles.common.packet;
 
+import cpw.mods.fml.common.FMLLog;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -86,7 +87,7 @@ public class LittlePlacePacket extends CreativeCorePacket {
 
     @Override
     public void executeServer(EntityPlayer player) {
-        if (PlacementHelper.isLittleBlock(stack)) {
+        if (PlacementHelper.isLittleBlock(stack) || PlacementHelper.isLittlePlacer(stack)) {
             PlacementHelper helper = PlacementHelper.getInstance(player); // new PlacementHelper(player, x, y, z);
             // helper.side = side;
 

@@ -6,26 +6,42 @@ import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.client.LittleTilesClient;
 import com.creativemd.littletiles.common.event.ActionEvent;
 import com.creativemd.littletiles.common.mod.chiselandbits.ChiselsAndBitsManager;
+import com.creativemd.littletiles.common.packet.LittleBlockPacket;
 import com.creativemd.littletiles.common.tile.math.box.LittleBox;
+import com.creativemd.littletiles.common.tile.math.box.LittleBoxes;
+import com.creativemd.littletiles.common.tile.math.box.LittleBoxesNoOverlap;
+import com.creativemd.littletiles.common.tile.math.box.LittleBoxesSimple;
+import com.creativemd.littletiles.common.tile.math.vec.LittleAbsoluteVec;
+import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
+import com.creativemd.littletiles.common.tile.math.vec.LittleVecContext;
+import com.creativemd.littletiles.common.tile.preview.LittleAbsolutePreviews;
 import com.creativemd.littletiles.common.tile.preview.LittlePreview;
 import com.creativemd.littletiles.common.tile.preview.LittlePreviews;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.tooltip.ActionMessage;
+import com.creativemd.littletiles.common.type.HashMapListProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
+import com.creativemd.littletiles.common.utils.compression.LittleNBTCompressionTools;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+import com.creativemd.littletiles.common.utils.place.PlacementMode;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -487,7 +503,7 @@ public abstract class LittleAction extends CreativeCorePacket {
 //    }
 //
 //    public static void writeTileLocation(TileLocation location, ByteBuf buf) {
-//        writePos(buf, location.pos);
+//        LittleBlockPacket.writePos(buf, location.pos);
 //        buf.writeBoolean(location.isStructure);
 //        buf.writeInt(location.index);
 //        int[] boxArray = location.box.getArray();
@@ -502,7 +518,7 @@ public abstract class LittleAction extends CreativeCorePacket {
 //    }
 //
 //    public static TileLocation readTileLocation(ByteBuf buf) {
-//        BlockPos pos = readPos(buf);
+//        BlockPos pos = LittleBlockPacket.readPos(buf);
 //        boolean isStructure = buf.readBoolean();
 //        int index = buf.readInt();
 //        int[] boxArray = new int[buf.readInt()];
@@ -515,7 +531,7 @@ public abstract class LittleAction extends CreativeCorePacket {
 //    }
 //
 //    public static void writeStructureLocation(StructureLocation location, ByteBuf buf) {
-//        writePos(buf, location.pos);
+//        LittleBlockPacket.writePos(buf, location.pos);
 //        buf.writeInt(location.index);
 //        if (location.worldUUID != null) {
 //            buf.writeBoolean(true);
@@ -525,7 +541,7 @@ public abstract class LittleAction extends CreativeCorePacket {
 //    }
 //
 //    public static StructureLocation readStructureLocation(ByteBuf buf) {
-//        BlockPos pos = readPos(buf);
+//        BlockPos pos = LittleBlockPacket.readPos(buf);
 //        int index = buf.readInt();
 //        UUID world = null;
 //        if (buf.readBoolean())
@@ -533,175 +549,175 @@ public abstract class LittleAction extends CreativeCorePacket {
 //        return new StructureLocation(pos, index, world);
 //    }
 //
-//    public static void writePreviews(LittlePreviews previews, ByteBuf buf) {
-//        buf.writeBoolean(previews.isAbsolute());
+    public static void writePreviews(LittlePreviews previews, ByteBuf buf) {
+        buf.writeBoolean(previews.isAbsolute());
 //        buf.writeBoolean(previews.hasStructure());
 //        if (previews.hasStructure())
 //            writeNBT(buf, previews.structureNBT);
-//        if (previews.isAbsolute())
-//            writePos(buf, ((LittleAbsolutePreviews) previews).pos);
-//
-//        writeContext(previews.getContext(), buf);
-//        NBTTagCompound nbt = new NBTTagCompound();
-//        nbt.setTag("list", LittleNBTCompressionTools.writePreviews(previews));
-//
-//        NBTTagList children = new NBTTagList();
-//        for (LittlePreviews child : previews.getChildren())
-//            children.appendTag(LittlePreview.saveChildPreviews(child));
-//        nbt.setTag("children", children);
-//
-//        writeNBT(buf, nbt);
-//    }
-//
-//    public static LittlePreviews readPreviews(ByteBuf buf) {
-//        boolean absolute = buf.readBoolean();
+        if (previews.isAbsolute())
+            LittleBlockPacket.writePos(buf, ((LittleAbsolutePreviews) previews).pos);
+
+        writeContext(previews.getContext(), buf);
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setTag("list", LittleNBTCompressionTools.writePreviews(previews));
+
+        NBTTagList children = new NBTTagList();
+        for (LittlePreviews child : previews.getChildren())
+            children.appendTag(LittlePreview.saveChildPreviews(child));
+        nbt.setTag("children", children);
+
+        writeNBT(buf, nbt);
+    }
+
+    public static LittlePreviews readPreviews(ByteBuf buf) {
+        boolean absolute = buf.readBoolean();
 //        boolean structure = buf.readBoolean();
-//
-//        NBTTagCompound nbt;
-//        LittlePreviews previews;
-//        if (absolute) {
+
+        NBTTagCompound nbt;
+        LittlePreviews previews;
+        if (absolute) {
 //            if (structure)
 //                previews = LittleNBTCompressionTools
-//                    .readPreviews(new LittleAbsolutePreviews(readNBT(buf), readPos(buf), readContext(buf)), (nbt = readNBT(buf)).getTagList("list", 10));
+//                    .readPreviews(new LittleAbsolutePreviews(readNBT(buf), LittleBlockPacket.readPos(buf), readContext(buf)), (nbt = readNBT(buf)).getTagList("list", 10));
 //            else
-//                previews = LittleNBTCompressionTools.readPreviews(new LittleAbsolutePreviews(readPos(buf), readContext(buf)), (nbt = readNBT(buf)).getTagList("list", 10));
-//        } else {
+                previews = LittleNBTCompressionTools.readPreviews(new LittleAbsolutePreviews(LittleBlockPacket.readPos(buf), readContext(buf)), (nbt = readNBT(buf)).getTagList("list", 10));
+        } else {
 //            if (structure)
 //                previews = LittleNBTCompressionTools.readPreviews(new LittlePreviews(readNBT(buf), readContext(buf)), (nbt = readNBT(buf)).getTagList("list", 10));
 //            else
-//                previews = LittleNBTCompressionTools.readPreviews(new LittlePreviews(readContext(buf)), (nbt = readNBT(buf)).getTagList("list", 10));
-//        }
-//
-//        NBTTagList list = nbt.getTagList("children", 10);
-//        for (int i = 0; i < list.tagCount(); i++) {
-//            NBTTagCompound child = list.getCompoundTagAt(i);
-//            previews.addChild(LittlePreviews.getChild(previews.getContext(), child), child.getBoolean("dynamic"));
-//        }
-//        return previews;
-//    }
-//
-//    public static void writePlacementMode(PlacementMode mode, ByteBuf buf) {
-//        writeString(buf, mode.name);
-//    }
-//
-//    public static PlacementMode readPlacementMode(ByteBuf buf) {
-//        return PlacementMode.getModeOrDefault(readString(buf));
-//    }
-//
-//    public static void writeContext(LittleGridContext context, ByteBuf buf) {
-//        buf.writeInt(context.size);
-//    }
-//
-//    public static LittleGridContext readContext(ByteBuf buf) {
-//        return LittleGridContext.get(buf.readInt());
-//    }
-//
-//    public static void writeLittleVecContext(LittleVecContext vec, ByteBuf buf) {
-//        writeLittleVec(vec.getVec(), buf);
-//        writeContext(vec.getContext(), buf);
-//    }
-//
-//    public static LittleVecContext readLittleVecContext(ByteBuf buf) {
-//        return new LittleVecContext(readLittleVec(buf), readContext(buf));
-//    }
-//
-//    public static void writeBoxes(LittleBoxes boxes, ByteBuf buf) {
-//        writePos(buf, boxes.pos);
-//        writeContext(boxes.context, buf);
-//        if (boxes instanceof LittleBoxesSimple) {
-//            buf.writeBoolean(true);
-//            buf.writeInt(boxes.size());
-//            for (LittleBox box : boxes.all())
-//                writeLittleBox(box, buf);
-//        } else {
-//            buf.writeBoolean(false);
-//            HashMapList<BlockPos, LittleBox> map = boxes.generateBlockWise();
-//            buf.writeInt(map.size());
-//            for (Entry<BlockPos, ArrayList<LittleBox>> entry : map.entrySet()) {
-//                writePos(buf, entry.getKey());
-//                buf.writeInt(entry.getValue().size());
-//                for (LittleBox box : entry.getValue())
-//                    writeLittleBox(box, buf);
-//            }
-//        }
-//    }
-//
-//    public static LittleBoxes readBoxes(ByteBuf buf) {
-//        BlockPos pos = readPos(buf);
-//        LittleGridContext context = readContext(buf);
-//        if (buf.readBoolean()) {
-//            LittleBoxes boxes = new LittleBoxesSimple(pos, context);
-//            int length = buf.readInt();
-//            for (int i = 0; i < length; i++)
-//                boxes.add(readLittleBox(buf));
-//            return boxes;
-//        } else {
-//            int posCount = buf.readInt();
-//            HashMapList<BlockPos, LittleBox> map = new HashMapList<>();
-//            for (int i = 0; i < posCount; i++) {
-//                BlockPos posList = readPos(buf);
-//                int boxCount = buf.readInt();
-//                List<LittleBox> blockBoxes = new ArrayList<>();
-//                for (int j = 0; j < boxCount; j++)
-//                    blockBoxes.add(readLittleBox(buf));
-//                map.add(posList, blockBoxes);
-//            }
-//            return new LittleBoxesNoOverlap(pos, context, map);
-//        }
-//    }
-//
-//    public static void writeLittlePos(LittleAbsoluteVec pos, ByteBuf buf) {
-//        writePos(buf, pos.getPos());
-//        writeLittleVecContext(pos.getVecContext(), buf);
-//    }
-//
-//    public static LittleAbsoluteVec readLittlePos(ByteBuf buf) {
-//        return new LittleAbsoluteVec(readPos(buf), readLittleVecContext(buf));
-//    }
-//
-//    public static void writeLittleVec(LittleVec vec, ByteBuf buf) {
-//        buf.writeInt(vec.x);
-//        buf.writeInt(vec.y);
-//        buf.writeInt(vec.z);
-//    }
-//
-//    public static LittleVec readLittleVec(ByteBuf buf) {
-//        return new LittleVec(buf.readInt(), buf.readInt(), buf.readInt());
-//    }
-//
+                previews = LittleNBTCompressionTools.readPreviews(new LittlePreviews(readContext(buf)), (nbt = readNBT(buf)).getTagList("list", 10));
+        }
+
+        NBTTagList list = nbt.getTagList("children", 10);
+        for (int i = 0; i < list.tagCount(); i++) {
+            NBTTagCompound child = list.getCompoundTagAt(i);
+            previews.addChild(LittlePreviews.getChild(previews.getContext(), child), child.getBoolean("dynamic"));
+        }
+        return previews;
+    }
+
+    public static void writePlacementMode(PlacementMode mode, ByteBuf buf) {
+        writeString(buf, mode.name);
+    }
+
+    public static PlacementMode readPlacementMode(ByteBuf buf) {
+        return PlacementMode.getModeOrDefault(readString(buf));
+    }
+
+    public static void writeContext(LittleGridContext context, ByteBuf buf) {
+        buf.writeInt(context.size);
+    }
+
+    public static LittleGridContext readContext(ByteBuf buf) {
+        return LittleGridContext.get(buf.readInt());
+    }
+
+    public static void writeLittleVecContext(LittleVecContext vec, ByteBuf buf) {
+        writeLittleVec(vec.getVec(), buf);
+        writeContext(vec.getContext(), buf);
+    }
+
+    public static LittleVecContext readLittleVecContext(ByteBuf buf) {
+        return new LittleVecContext(readLittleVec(buf), readContext(buf));
+    }
+
+    public static void writeBoxes(LittleBoxes boxes, ByteBuf buf) {
+        LittleBlockPacket.writePos(buf, boxes.pos);
+        writeContext(boxes.context, buf);
+        if (boxes instanceof LittleBoxesSimple) {
+            buf.writeBoolean(true);
+            buf.writeInt(boxes.size());
+            for (LittleBox box : boxes.all())
+                writeLittleBox(box, buf);
+        } else {
+            buf.writeBoolean(false);
+            HashMapListProxy<BlockPos, LittleBox> map = boxes.generateBlockWise();
+            buf.writeInt(map.size());
+            for (Map.Entry<BlockPos, ArrayList<LittleBox>> entry : map.entrySet()) {
+                LittleBlockPacket.writePos(buf, entry.getKey());
+                buf.writeInt(entry.getValue().size());
+                for (LittleBox box : entry.getValue())
+                    writeLittleBox(box, buf);
+            }
+        }
+    }
+
+    public static LittleBoxes readBoxes(ByteBuf buf) {
+        BlockPos pos = LittleBlockPacket.readPos(buf);
+        LittleGridContext context = readContext(buf);
+        if (buf.readBoolean()) {
+            LittleBoxes boxes = new LittleBoxesSimple(pos, context);
+            int length = buf.readInt();
+            for (int i = 0; i < length; i++)
+                boxes.add(readLittleBox(buf));
+            return boxes;
+        } else {
+            int posCount = buf.readInt();
+            HashMapListProxy<BlockPos, LittleBox> map = new HashMapListProxy<>();
+            for (int i = 0; i < posCount; i++) {
+                BlockPos posList = LittleBlockPacket.readPos(buf);
+                int boxCount = buf.readInt();
+                List<LittleBox> blockBoxes = new ArrayList<>();
+                for (int j = 0; j < boxCount; j++)
+                    blockBoxes.add(readLittleBox(buf));
+                map.add(posList, blockBoxes);
+            }
+            return new LittleBoxesNoOverlap(pos, context, map);
+        }
+    }
+
+    public static void writeLittlePos(LittleAbsoluteVec pos, ByteBuf buf) {
+        LittleBlockPacket.writePos(buf, pos.getPos());
+        writeLittleVecContext(pos.getVecContext(), buf);
+    }
+
+    public static LittleAbsoluteVec readLittlePos(ByteBuf buf) {
+        return new LittleAbsoluteVec(LittleBlockPacket.readPos(buf), readLittleVecContext(buf));
+    }
+
+    public static void writeLittleVec(LittleVec vec, ByteBuf buf) {
+        buf.writeInt(vec.x);
+        buf.writeInt(vec.y);
+        buf.writeInt(vec.z);
+    }
+
+    public static LittleVec readLittleVec(ByteBuf buf) {
+        return new LittleVec(buf.readInt(), buf.readInt(), buf.readInt());
+    }
+
 //    public static void writeSelector(TileSelector selector, ByteBuf buf) {
 //        writeNBT(buf, selector.writeNBT(new NBTTagCompound()));
 //    }
-//
+
 //    public static TileSelector readSelector(ByteBuf buf) {
 //        return TileSelector.loadSelector(readNBT(buf));
 //    }
-//
-//    public static void writeLittleBox(LittleBox box, ByteBuf buf) {
-//        int[] array = box.getArray();
-//        buf.writeInt(array.length);
-//        for (int i = 0; i < array.length; i++) {
-//            buf.writeInt(array[i]);
-//        }
-//    }
-//
-//    public static LittleBox readLittleBox(ByteBuf buf) {
-//        int[] array = new int[buf.readInt()];
-//        for (int i = 0; i < array.length; i++) {
-//            array[i] = buf.readInt();
-//        }
-//        return LittleBox.createBox(array);
-//    }
-//
-//    public static void writeActionMessage(ActionMessage message, ByteBuf buf) {
-//        writeString(buf, message.text);
-//        buf.writeInt(message.objects.length);
-//        for (int i = 0; i < message.objects.length; i++) {
-//            ActionMessageObjectType type = ActionMessage.getType(message.objects[i]);
-//            buf.writeInt(type.index());
-//            type.write(message.objects[i], buf);
-//        }
-//    }
+
+    public static void writeLittleBox(LittleBox box, ByteBuf buf) {
+        int[] array = box.getArray();
+        buf.writeInt(array.length);
+        for (int i = 0; i < array.length; i++) {
+            buf.writeInt(array[i]);
+        }
+    }
+
+    public static LittleBox readLittleBox(ByteBuf buf) {
+        int[] array = new int[buf.readInt()];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = buf.readInt();
+        }
+        return LittleBox.createBox(array);
+    }
+
+    public static void writeActionMessage(ActionMessage message, ByteBuf buf) {
+        writeString(buf, message.text);
+        buf.writeInt(message.objects.length);
+        for (int i = 0; i < message.objects.length; i++) {
+            ActionMessage.ActionMessageObjectType type = ActionMessage.getType(message.objects[i]);
+            buf.writeInt(type.index());
+            type.write(message.objects[i], buf);
+        }
+    }
 //
 //    public static ActionMessage readActionMessage(ByteBuf buf) {
 //        String text = readString(buf);

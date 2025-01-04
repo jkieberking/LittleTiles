@@ -6,6 +6,7 @@ package com.creativemd.littletiles.common.utils.place;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.littletiles.client.render.tile.LittleRenderBox;
 import com.creativemd.littletiles.common.action.LittleAction;
+import com.creativemd.littletiles.common.packet.LittleBlockPacket;
 import com.creativemd.littletiles.common.tile.math.vec.LittleAbsoluteVec;
 import com.creativemd.littletiles.common.tile.math.vec.LittleVecContext;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
@@ -52,9 +53,7 @@ public class PlacementPosition extends LittleAbsoluteVec {
 //        this.facing = result.sideHit;
 //    }
 //
-//    public static PlacementPosition readFromBytes(ByteBuf buf) {
-//        return new PlacementPosition(CreativeCorePacket.readPos(buf), LittleAction.readLittleVecContext(buf), CreativeCorePacket.readFacing(buf));
-//    }
+
 //
 //    public void assign(LittleAbsoluteVec pos) {
 //        this.pos = pos.getPos();
@@ -78,12 +77,20 @@ public class PlacementPosition extends LittleAbsoluteVec {
 //        removeInternalBlockOffset();
 //    }
 
-//    public void writeToBytes(ByteBuf buf) {
-//        CreativeCorePacket.writePos(buf, pos);
-//        LittleAction.writeLittleVecContext(contextVec, buf);
-//        CreativeCorePacket.writeFacing(buf, facing);
-//    }
-//
+    public void writeToBytes(ByteBuf buf) {
+        LittleBlockPacket.writePos(buf, pos);
+        LittleAction.writeLittleVecContext(contextVec, buf);
+        LittleBlockPacket.writeFacing(buf, facing);
+    }
+
+    public static PlacementPosition readFromBytes(ByteBuf buf) {
+        return new PlacementPosition(
+            LittleBlockPacket.readPos(buf),
+            LittleAction.readLittleVecContext(buf),
+            LittleBlockPacket.readFacing(buf)
+        );
+    }
+
     @Override
     public PlacementPosition copy() {
         return new PlacementPosition(pos, contextVec.copy(), facing);

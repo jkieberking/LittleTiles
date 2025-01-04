@@ -46,7 +46,7 @@ public class PlacePreview {
     }
 
     public List<LittleTile> placeTile(Placement placement, Placement.PlacementBlock block, IParentTileList parent, /*LittleStructure structure,*/ boolean requiresCollisionTest) throws LittleActionException {
-        LittleTile littleTile = preview.getLittleTile();
+        LittleTile littleTile = preview.getLittleTile(block.getTe());
 
         if (littleTile == null)
             return Collections.EMPTY_LIST;

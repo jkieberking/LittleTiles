@@ -1,5 +1,6 @@
 package com.creativemd.littletiles.common.gui;
 
+import com.creativemd.littletiles.common.utils.LittleTileBlockColored;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.client.gui.FontRenderer;
@@ -18,7 +19,6 @@ import com.creativemd.creativecore.common.gui.event.ControlChangedEvent;
 import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.littletiles.LittleTiles;
-import com.creativemd.littletiles.common.utils.LittleTileColored;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
@@ -71,7 +71,7 @@ public class SubGuiHammer extends SubGui {
         }
         if (block instanceof BlockAir || block == null) block = Blocks.stone;
         GuiColorPlate plate = (GuiColorPlate) getControl("plate");
-        new LittleTileColored(block, meta, plate.color).saveTile(dropstack.stackTagCompound);
+        new LittleTileBlockColored(block, meta, plate.color).saveTile(dropstack.stackTagCompound);
 
         label.avatar = new AvatarItemStack(dropstack);
     }
@@ -87,9 +87,9 @@ public class SubGuiHammer extends SubGui {
     public void onChange(ControlChangedEvent event) {
         GuiColorPlate plate = (GuiColorPlate) getControl("plate");
         plate.color = Vec3.createVectorHelper(
-                (int) ((GuiSteppedSlider) getControl("colorX")).value,
-                (int) ((GuiSteppedSlider) getControl("colorY")).value,
-                (int) ((GuiSteppedSlider) getControl("colorZ")).value);
+            (int) ((GuiSteppedSlider) getControl("colorX")).value,
+            (int) ((GuiSteppedSlider) getControl("colorY")).value,
+            (int) ((GuiSteppedSlider) getControl("colorZ")).value);
         updateLabel();
     }
 

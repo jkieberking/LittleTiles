@@ -26,10 +26,10 @@ public class LittleTileRegistry {
         return invTileIDs.getOrDefault(id, defaultTileType);
     }
 
-//    public static LittleTileType getTileType(Class<? extends LittleTile> clazz) {
-//        return tileIDs.getOrDefault(clazz, defaultTileType);
-//    }
-//
+    public static LittleTileType getTileType(Class<? extends LittleTile> clazz) {
+        return tileIDs.getOrDefault(clazz, defaultTileType);
+    }
+
     /** The id has to be unique and cannot be changed! **/
     public static LittleTileType registerTileType(Class<? extends LittleTile> clazz, String id, Predicate<NBTTagCompound> predicate, boolean saveId) {
         LittleTileType type = new LittleTileType(id, clazz, predicate, saveId);

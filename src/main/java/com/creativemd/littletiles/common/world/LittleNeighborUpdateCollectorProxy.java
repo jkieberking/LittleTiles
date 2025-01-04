@@ -40,7 +40,7 @@ public class LittleNeighborUpdateCollectorProxy extends NeighborUpdateCollectorP
     protected void processPosition(BlockPos pos, HashSet<BlockPos> notifiedBlocks) {
         TileEntity te = world.getTileEntity(pos.x, pos.y, pos.z);
         if (te instanceof TileEntityLittleTilesProxy)
-            ((TileEntityLittleTilesProxy) te).updateTiles(false);
+            ((TileEntityLittleTilesProxy) te).updateTiles();
         super.processPosition(pos, notifiedBlocks);
     }
 

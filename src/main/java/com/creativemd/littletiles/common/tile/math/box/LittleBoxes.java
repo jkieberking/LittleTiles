@@ -3,6 +3,7 @@ package com.creativemd.littletiles.common.tile.math.box;
 import com.creativemd.littletiles.common.parent.IParentTileList;
 import com.creativemd.littletiles.common.tile.math.LittleUtils;
 import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
+import com.creativemd.littletiles.common.type.HashMapListProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.grid.IGridBased;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
@@ -58,7 +59,7 @@ public abstract class LittleBoxes implements IGridBased {
 
     public abstract LittleBox getSurroundingBox();
 
-//    public abstract HashMapList<BlockPos, LittleBox> generateBlockWise();
+    public abstract HashMapListProxy<BlockPos, LittleBox> generateBlockWise();
 
     public abstract Iterable<LittleBox> all();
 

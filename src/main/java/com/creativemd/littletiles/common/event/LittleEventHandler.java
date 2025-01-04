@@ -187,7 +187,9 @@ public class LittleEventHandler {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
         ItemStack stack = player.getHeldItem();
-
+        if (stack == null) {
+            return;
+        }
         MovingObjectPosition movingObjectPosition = Minecraft.getMinecraft().objectMouseOver;
         if (stack.getItem() instanceof ILittleTool) {
 //            if (mc.theWorld.isRemote)
@@ -208,7 +210,7 @@ public class LittleEventHandler {
                     // this block triggers the blocks to be updated in the game
                     if (true /* @TODO check that player can edit: player.canPlayerEdit(blockPos.x(), blockPos.y(), blockPos.z(), -999 *//* not used *//*, stack)*/ && LittleTilesClient.INTERACTION.start(true)) {
                         PlacementMode mode = ((ILittlePlacer) iTile).getPlacementMode(stack).place();
-                        new LittleActionPlaceStack(((ILittlePlacer) iTile).getLittlePreview(stack, false), position, PreviewRenderer
+                        new LittleActionPlaceStack(stack, ((ILittlePlacer) iTile).getLittlePreview(stack, false), position, PreviewRenderer
                             .isCentered(player, stack, (ILittlePlacer) iTile), PreviewRenderer.isFixed(player, stack, (ILittlePlacer) iTile), mode).execute();
 
                         PreviewRenderer.marked = null;

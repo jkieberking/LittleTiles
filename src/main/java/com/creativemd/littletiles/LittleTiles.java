@@ -2,10 +2,12 @@ package com.creativemd.littletiles;
 
 import com.creativemd.littletiles.client.interact.LittleInteractionHandlerClient;
 import com.creativemd.littletiles.client.render.PreviewRenderer;
+import com.creativemd.littletiles.common.action.block.LittleActionPlaceStack;
 import com.creativemd.littletiles.common.event.LittleEventHandler;
 import com.creativemd.littletiles.common.items.*;
 import com.creativemd.littletiles.common.tile.math.box.LittleBox;
 import com.creativemd.littletiles.common.tile.registry.LittleTileRegistry;
+import com.creativemd.littletiles.common.utils.*;
 import com.creativemd.littletiles.server.interact.LittleInteractionHandlerServer;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.block.Block;
@@ -30,9 +32,6 @@ import com.creativemd.littletiles.common.sorting.LittleTileSortingList;
 import com.creativemd.littletiles.common.structure.LittleStructure;
 import com.creativemd.littletiles.common.tileentity.TileEntityLittleTilesProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
-import com.creativemd.littletiles.common.utils.LittleTile;
-import com.creativemd.littletiles.common.utils.LittleTileColored;
-import com.creativemd.littletiles.common.utils.LittleTileTileEntity;
 import com.creativemd.littletiles.server.LittleTilesServer;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -49,7 +48,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class LittleTiles {
 
     private LittleBox box;
-    public static Block deafultBlock;
 
     @Instance(LittleTiles.modid)
     public static LittleTiles instance = new LittleTiles();
@@ -109,9 +107,9 @@ public class LittleTiles {
         GameRegistry.registerItem(rubberMallet, "rubberMallet");
         GameRegistry.registerItem(grabber, "grabber");
 
-        // GameRegistry.registerBlock(coloredBlock, "LTColoredBlock");
-        deafultBlock = GameRegistry.registerBlock(coloredBlock, ItemBlockColored.class, "LTColoredBlock");
-        GameRegistry.registerBlock(blockTile, ItemBlockTiles.class, "BlockLittleTiles");
+//        GameRegistry.registerBlock(coloredBlock, "LTColoredBlock");
+        GameRegistry.registerBlock(blockTile, ItemBlockColored.class, "LTColoredBlock");
+        GameRegistry.registerBlock(coloredBlock, ItemBlockTiles.class, "BlockLittleTiles");
 
         GameRegistry.registerItem(multiTiles, "multiTiles");
 
@@ -119,12 +117,13 @@ public class LittleTiles {
 
         proxy.loadSide();
 
-        LittleTile.registerLittleTile(LittleTile.class, "BlockTileBlock");
+        LittleTile.registerLittleTile(LittleTileBlock.class, "BlockTileBlock");
         // LittleTile.registerLittleTile(LittleTileStructureBlock.class, "BlockTileStructure");
         LittleTile.registerLittleTile(LittleTileTileEntity.class, "BlockTileEntity");
-//        LittleTile.registerLittleTile(LittleTileColored.class, "BlockTileColored");
+        LittleTile.registerLittleTile(LittleTileColored.class, "BlockTileColored");
 
         CreativeCorePacket.registerPacket(LittlePlacePacket.class, "LittlePlace");
+        CreativeCorePacket.registerPacket(LittleActionPlaceStack.class, "LittlePlaceStack");
         CreativeCorePacket.registerPacket(LittleBlockPacket.class, "LittleBlock");
         CreativeCorePacket.registerPacket(LittleRotatePacket.class, "LittleRotate");
         CreativeCorePacket.registerPacket(LittleFlipPacket.class, "LittleFlip");

@@ -6,6 +6,7 @@ import com.creativemd.littletiles.common.action.LittleAction;
 import com.creativemd.littletiles.common.parent.IParentTileList;
 import com.creativemd.littletiles.common.type.PairProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
+import com.creativemd.littletiles.utils.EnumFacingProxy;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -71,6 +72,25 @@ public class LittleBlockPacket extends CreativeCorePacket {
         buf.writeInt(action);
         writeNBT(buf, nbt);
     }
+
+    public static void writePos(ByteBuf buf, BlockPos pos) {
+        buf.writeInt(pos.getX());
+        buf.writeInt(pos.getY());
+        buf.writeInt(pos.getZ());
+    }
+
+    public static void writeFacing(ByteBuf buf, EnumFacing facing) {
+        buf.writeInt(EnumFacingProxy.fromEnumFacing(facing).getIndex());
+    }
+
+    public static EnumFacing readFacing(ByteBuf buf) {
+        return EnumFacing.getFront(buf.readInt());
+    }
+
+    public static BlockPos readPos(ByteBuf buf) {
+        return new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+    }
+
 
     @Override
     public void readBytes(ByteBuf buf) {

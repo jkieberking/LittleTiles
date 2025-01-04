@@ -36,6 +36,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumFacing;
 
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +45,7 @@ import java.util.*;
 
 public class LittleTile implements ICombinable {
 
+    // this classes "boundingBox" got updated to this LittleBox variable from 1.7 -> 1.12
     private LittleBox box;
 
     public TileEntityLittleTilesProxy te;
@@ -63,14 +65,11 @@ public class LittleTile implements ICombinable {
     protected byte cachedTranslucent;
 //    protected IBlockState state = null;
 
-    /** Every LittleTile class has to have this constructor implemented **/
     public LittleTile() {
-        boundingBoxes = new ArrayList<>();
+        boundingBoxes.add(new LittleTileBox(0, 0, 0, 1, 1,1 ));
     }
-
     public LittleTile(Block block, int meta) {
         setBlock(block, meta);
-        boundingBoxes = new ArrayList<>();
     }
 
     public LittleTileType getType() {
@@ -284,6 +283,10 @@ public class LittleTile implements ICombinable {
     public boolean canCombine(ICombinable combinable) {
         return this.canBeCombined((LittleTile) combinable) && ((LittleTile) combinable).canBeCombined(this);
     }
+    public IIcon getIcon(int side) {
+        return block.getIcon(side, meta);
+    }
+
 //
 //    public boolean doesProvideSolidFace(EnumFacing facing) {
 //        return !invisible && box.isFacePartiallyFilled(facing) && !isTranslucent() && block != Blocks.BARRIER;
@@ -366,7 +369,9 @@ public class LittleTile implements ICombinable {
         LittleTileType type = getType();
         if (type.saveId)
             nbt.setString("tID", type.id);
-        nbt.setIntArray("box", box.getArray());
+        if (box != null) {
+            nbt.setIntArray("box", box.getArray());
+        }
     }
 
     public void loadTile(NBTTagCompound nbt) {
@@ -495,12 +500,13 @@ public class LittleTile implements ICombinable {
 //    @Override
     public ArrayList<CubeObject> getRenderingCubes() {
         ArrayList<CubeObject> cubes = new ArrayList<>();
-        for (LittleTileBox boundingBox : boundingBoxes) {
-            CubeObject cube = boundingBox.getCube();
+//        for (LittleTileBox boundingBox : boundingBoxes) {
+//            CubeObject cube = box.getCube();
+            CubeObject cube = new CubeObject((double) .375, (double) 0, (double) .1875, (double) .4375, (double) .0625, (double) .25);
             cube.block = block;
             cube.meta = meta;
             cubes.add(cube);
-        }
+//        }
         return cubes;
     }
 //
@@ -754,7 +760,7 @@ public class LittleTile implements ICombinable {
 
     public LittleTileVec cornerVec;
 
-    public ArrayList<LittleTileBox> boundingBoxes;
+    public ArrayList<LittleTileBox> boundingBoxes = new ArrayList();
 
     public AxisAlignedBB getSelectedBox() {
         if (boundingBoxes.size() > 0) {
@@ -788,7 +794,8 @@ public class LittleTile implements ICombinable {
     // ================Packets================
 
     public void updatePacket(NBTTagCompound nbt) {
-        nbt.setInteger("bSize", boundingBoxes.size());
+
+        nbt.setInteger("bSize", 1);
         for (int i = 0; i < boundingBoxes.size(); i++) {
             boundingBoxes.get(i).writeToNBT("bBox" + i, nbt);
         }
@@ -796,9 +803,10 @@ public class LittleTile implements ICombinable {
 
     public void receivePacket(NBTTagCompound nbt, NetworkManager net) {
         int count = nbt.getInteger("bSize");
-        boundingBoxes.clear();
+        box = null;
         for (int i = 0; i < count; i++) {
-            boundingBoxes.add(new LittleTileBox("bBox" + i, nbt));
+            LittleTileBox littleTileBox = new LittleTileBox("bBox" + i, nbt);
+            box = new LittleBox(littleTileBox.minX, littleTileBox.minY, littleTileBox.minZ, littleTileBox.maxX, littleTileBox.maxY, littleTileBox.maxZ);
         }
         updateCorner();
     }
@@ -823,9 +831,9 @@ public class LittleTile implements ICombinable {
         onNeighborChangeInside();
     }
 
+    // changed from 1.7
     public void updateCorner() {
-        if (boundingBoxes.size() > 0) {
-            LittleTileBox box = boundingBoxes.get(0);
+        if (box != null) {
             cornerVec = new LittleTileVec(box.minX, box.minY, box.minZ);
         } else cornerVec = new LittleTileVec(0, 0, 0);
     }

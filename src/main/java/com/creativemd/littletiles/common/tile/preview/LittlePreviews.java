@@ -356,25 +356,25 @@ public class LittlePreviews implements Iterable<LittlePreview>, IGridBased {
             }
         };
     }
-//
-//    public static LittlePreviews getChild(LittleGridContext context, NBTTagCompound nbt) {
-//        LittlePreviews previews;
-//        if (nbt.hasKey("structure"))
-//            previews = new LittlePreviews(nbt.getCompoundTag("structure"), context);
-//        else
-//            previews = new LittlePreviews(context);
-//
-//        previews = LittleNBTCompressionTools.readPreviews(previews, nbt.getTagList("tiles", 10));
-//        if (nbt.hasKey("children")) {
-//            NBTTagList list = nbt.getTagList("children", 10);
-//            for (int i = 0; i < list.tagCount(); i++) {
-//                NBTTagCompound child = list.getCompoundTagAt(i);
-//                previews.addChild(getChild(context, child), child.getBoolean("dynamic"));
-//            }
-//        }
-//        return previews;
-//    }
-//
+
+    public static LittlePreviews getChild(LittleGridContext context, NBTTagCompound nbt) {
+        LittlePreviews previews;
+        if (nbt.hasKey("structure"))
+            previews = new LittlePreviews(nbt.getCompoundTag("structure"), context);
+        else
+            previews = new LittlePreviews(context);
+
+        previews = LittleNBTCompressionTools.readPreviews(previews, nbt.getTagList("tiles", 10));
+        if (nbt.hasKey("children")) {
+            NBTTagList list = nbt.getTagList("children", 10);
+            for (int i = 0; i < list.tagCount(); i++) {
+                NBTTagCompound child = list.getCompoundTagAt(i);
+                previews.addChild(getChild(context, child), child.getBoolean("dynamic"));
+            }
+        }
+        return previews;
+    }
+
     public static LittlePreviews getPreview(ItemStack stack, boolean allowLowResolution) {
         if (!stack.hasTagCompound())
             return new LittlePreviews(LittleGridContext.get());

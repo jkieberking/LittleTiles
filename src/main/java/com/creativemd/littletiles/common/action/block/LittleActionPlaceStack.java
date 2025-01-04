@@ -11,13 +11,17 @@ import com.creativemd.littletiles.common.tile.preview.LittlePreviews;
 
 import com.creativemd.littletiles.common.utils.PlacementHelper;
 import com.creativemd.littletiles.common.utils.place.*;
+import cpw.mods.fml.common.FMLLog;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.S2FPacketSetSlot;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.Level;
 
 public class LittleActionPlaceStack extends LittleAction {
 
@@ -28,16 +32,18 @@ public class LittleActionPlaceStack extends LittleAction {
     public boolean fixed;
     public PlacementMode mode;
     public LittlePreviews previews;
+    public ItemStack stack;
 
     public PlacementResult placedTiles;
 
-    public LittleActionPlaceStack(LittlePreviews previews, PlacementPosition position, boolean centered, boolean fixed, PlacementMode mode) {
+    public LittleActionPlaceStack(ItemStack stack, LittlePreviews previews, PlacementPosition position, boolean centered, boolean fixed, PlacementMode mode) {
         super();
         this.position = position;
         this.centered = centered;
         this.fixed = fixed;
         this.mode = mode;
         this.previews = previews;
+        this.stack = stack;
     }
 
     public LittleActionPlaceStack() {
@@ -91,8 +97,11 @@ public class LittleActionPlaceStack extends LittleAction {
             if (!player.worldObj.isRemote) {
                 EntityPlayerMP playerMP = (EntityPlayerMP) player;
                 Slot slot = playerMP.openContainer.getSlotFromInventory(playerMP.inventory, playerMP.inventory.currentItem);
-//                playerMP.connection.sendPacket(new SPacketSetSlot(playerMP.openContainer.windowId, slot.slotNumber, playerMP.inventory.getCurrentItem()));
-            }
+                playerMP.playerNetServerHandler.sendPacket(
+                    new S2FPacketSetSlot(
+                        playerMP.openContainer.windowId,
+                        slot.slotNumber,
+                        playerMP.inventory.getCurrentItem()));            }
             return tiles != null;
         }
         return false;
@@ -100,17 +109,24 @@ public class LittleActionPlaceStack extends LittleAction {
 //
 //    @Override
     public void writeBytes(ByteBuf buf) {
-        //@TODO implement
-//        position.writeToBytes(buf);
-//        buf.writeBoolean(centered);
-//        buf.writeBoolean(fixed);
-//        writePlacementMode(mode, buf);
-//        writePreviews(previews, buf);
+        position.writeToBytes(buf);
+        buf.writeBoolean(centered);
+        buf.writeBoolean(fixed);
+        writePlacementMode(mode, buf);
+        writePreviews(previews, buf);
+        writeItemStack(buf, stack);
+
     }
 
     @Override
     public void readBytes(ByteBuf buf) {
-    //@TODO implement
+        PacketBuffer buffer = new PacketBuffer(buf);
+        position = PlacementPosition.readFromBytes(buf);
+        centered = buffer.readBoolean();
+        fixed = buffer.readBoolean();
+        mode = readPlacementMode( buf);
+        previews = readPreviews(buf);
+        stack = readItemStack(buf);
     }
 
     @Override
@@ -121,7 +137,14 @@ public class LittleActionPlaceStack extends LittleAction {
 
     @Override
     public void executeServer(EntityPlayer player) {
-        //@TODO implement
+        if (PlacementHelper.getLittlePlacerInterface(stack) != null) {
+            try {
+                PlacementResult tiles = placeTile(player, stack, player.worldObj, position, centered, fixed, mode);
+            } catch (LittleActionException e) {
+                FMLLog.log(Level.ERROR, "failed to place tile on server!");
+                throw new RuntimeException(e);
+            }
+        }
 
     }
 //
