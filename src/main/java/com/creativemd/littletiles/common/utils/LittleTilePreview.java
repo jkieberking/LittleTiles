@@ -2,6 +2,8 @@ package com.creativemd.littletiles.common.utils;
 
 import java.util.ArrayList;
 
+import com.creativemd.littletiles.common.tile.math.box.LittleBox;
+import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,6 +31,11 @@ public final class LittleTilePreview {
     public LittleTilePreview(LittleTileBox box, NBTTagCompound nbt) {
         this(box.getSize(), nbt);
         this.box = box;
+    }
+
+    public LittleTilePreview(LittleBox box, NBTTagCompound nbt) {
+        this(new LittleTileSize( box.getSize().x,  box.getSize().y,  box.getSize().z), nbt);
+        this.box = box.toLittleTileBox();
     }
 
     public LittleTilePreview(LittleTileSize size, NBTTagCompound nbt) {

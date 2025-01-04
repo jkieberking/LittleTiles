@@ -6,9 +6,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import com.creativemd.littletiles.LittleTiles;
+import com.creativemd.littletiles.common.blocks.BlockTile;
 import com.creativemd.littletiles.common.parent.ParentTileList;
 import com.creativemd.littletiles.common.tile.registry.LittleTileRegistry;
 import com.creativemd.littletiles.common.utils.grid.IGridBased;
+import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.littletiles.common.parent.IParentTileList;
@@ -398,9 +400,9 @@ public class TileEntityLittleTilesProxy extends TileEntityCreativeProxy implemen
     public MovingObjectPosition getMoving(Vec3 pos, Vec3 look, boolean loadTile) {
         MovingObjectPosition hit = null;
         for (LittleTile tile : tiles) {
-            for (int j = 0; j < tile.boundingBoxes.size(); j++) {
-                MovingObjectPosition Temphit = tile.boundingBoxes.get(j).getBox()
-                    .getOffsetBoundingBox(xCoord, yCoord, zCoord).calculateIntercept(pos, look);
+            for (int j = 0; j < 1 /* @TODO multiple bounding boxes tile.boundingBoxes.size()*/; j++) {
+                MovingObjectPosition Temphit = tile.getBox()
+                    .getBox(context, new BlockPos(xCoord, yCoord, zCoord)).calculateIntercept(pos, look);
                 if (Temphit != null) {
                     if (hit == null || hit.hitVec.distanceTo(pos) > Temphit.hitVec.distanceTo(pos)) {
                         hit = Temphit;
@@ -494,14 +496,14 @@ public class TileEntityLittleTilesProxy extends TileEntityCreativeProxy implemen
                         continue;
                     }
 
-                    if (i != j && tiles.get(i).boundingBoxes.size() == 1
-                        && tiles.get(j).boundingBoxes.size() == 1
+                    if (i != j && tiles.get(i).getBox() != null
+                        && tiles.get(j).getBox() != null
                         && tiles.get(i).canBeCombined(tiles.get(j))
                         && tiles.get(j).canBeCombined(tiles.get(i))) {
-                        LittleTileBox box = tiles.get(i).boundingBoxes.get(0)
-                            .combineBoxes(tiles.get(j).boundingBoxes.get(0));
+                        LittleBox box = tiles.get(i).getBox()
+                            .combineBoxes(tiles.get(j).getBox());
                         if (box != null) {
-                            tiles.get(i).boundingBoxes.set(0, box);
+                            tiles.get(i).setBox(box);
                             tiles.get(i).combineTiles(tiles.get(j));
                             tiles.get(i).updateCorner();
                             tiles.remove(j);
@@ -517,37 +519,37 @@ public class TileEntityLittleTilesProxy extends TileEntityCreativeProxy implemen
         update();
     }
 
-    public void combineTiles() {
-        // ArrayList<LittleTile> newTiles = new ArrayList<>();
-        int size = 0;
-        while (size != tiles.size()) {
-            size = tiles.size();
-            int i = 0;
-            while (i < tiles.size()) {
-                int j = 0;
-                while (j < tiles.size()) {
-                    if (i != j && tiles.get(i).boundingBoxes.size() == 1
-                        && tiles.get(j).boundingBoxes.size() == 1
-                        && tiles.get(i).canBeCombined(tiles.get(j))
-                        && tiles.get(j).canBeCombined(tiles.get(i))) {
-                        LittleTileBox box = tiles.get(i).boundingBoxes.get(0)
-                            .combineBoxes(tiles.get(j).boundingBoxes.get(0));
-                        if (box != null) {
-                            tiles.get(i).boundingBoxes.set(0, box);
-                            tiles.get(i).combineTiles(tiles.get(j));
-                            tiles.get(i).updateCorner();
-                            tiles.remove(j);
-                            if (i > j) i--;
-                            continue;
-                        }
-                    }
-                    j++;
-                }
-                i++;
-            }
-        }
-        update();
-    }
+//    public void combineTiles() {
+//        // ArrayList<LittleTile> newTiles = new ArrayList<>();
+//        int size = 0;
+//        while (size != tiles.size()) {
+//            size = tiles.size();
+//            int i = 0;
+//            while (i < tiles.size()) {
+//                int j = 0;
+//                while (j < tiles.size()) {
+//                    if (i != j && tiles.get(i).boundingBoxes.size() == 1
+//                        && tiles.get(j).boundingBoxes.size() == 1
+//                        && tiles.get(i).canBeCombined(tiles.get(j))
+//                        && tiles.get(j).canBeCombined(tiles.get(i))) {
+//                        LittleTileBox box = tiles.get(i).boundingBoxes.get(0)
+//                            .combineBoxes(tiles.get(j).boundingBoxes.get(0));
+//                        if (box != null) {
+//                            tiles.get(i).boundingBoxes.set(0, box);
+//                            tiles.get(i).combineTiles(tiles.get(j));
+//                            tiles.get(i).updateCorner();
+//                            tiles.remove(j);
+//                            if (i > j) i--;
+//                            continue;
+//                        }
+//                    }
+//                    j++;
+//                }
+//                i++;
+//            }
+//        }
+//        update();
+//    }
 
     //    @Override
     public void handleUpdate(NBTTagCompound nbt, boolean chunkUpdate) {

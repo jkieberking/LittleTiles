@@ -128,14 +128,15 @@ public class BlockTile extends BlockContainer {
                         TileEntityLittleTilesProxy littleTE = (TileEntityLittleTilesProxy) te;
                         TileList tiles = littleTE.getTiles();
                         for (LittleTile tile : tiles) {
-                            if (tile.isLadder()) {
-                                for (int j = 0; j < tile.boundingBoxes.size(); j++) {
-                                    LittleTileBox box = tile.boundingBoxes.get(j).copy();
-                                    box.addOffset(new LittleTileVec(x2 * 16, y2 * 16, z2 * 16));
-                                    double expand = 0.0001;
-                                    if (bb.intersectsWith(box.getBox().expand(expand, expand, expand))) return true;
-                                }
-                            }
+                            // @TODO do we need ladder support?
+//                            if (tile.isLadder()) {
+//                                for (int j = 0; j < tile.getRenderBoundingBox().size(); j++) {
+//                                    LittleTileBox box = tile.boundingBoxes.get(j).copy();
+//                                    box.addOffset(new LittleTileVec(x2 * 16, y2 * 16, z2 * 16));
+//                                    double expand = 0.0001;
+//                                    if (bb.intersectsWith(box.getBox().expand(expand, expand, expand))) return true;
+//                                }
+//                            }
 
                         }
                     }
@@ -184,10 +185,10 @@ public class BlockTile extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
-        TEResult result = loadTeAndTile(worldIn, pos, mc.player);
+        TEResult result = loadTeAndTile(world, new BlockPos(x, y, z), mc.thePlayer);
         if (loadTileEntity(world, x, y, z) && tempEntity.updateLoadedTile(mc.thePlayer)) {
             try { // Why try? because the number of tiles can change while this method is called
-                return tempEntity.loadedTile.getSelectedBox(new BlockPos(x, y ,z), ).getOffsetBoundingBox(x, y, z);
+                return tempEntity.loadedTile.getSelectedBox(new BlockPos(x, y ,z), result.te.getContext()).getOffsetBoundingBox(x, y, z);
             } catch (Exception ignored) {
 
             }
@@ -196,18 +197,18 @@ public class BlockTile extends BlockContainer {
     }
 
     public static TEResult loadTeAndTile(IBlockAccess world, BlockPos pos, EntityPlayer player) {
-        return loadTeAndTile(world, pos, player, TickUtilsProxy.getPartialTickTime());
+        return loadTeAndTile(world, pos, player);
     }
 
-    public static TEResult loadTeAndTile(IBlockAccess world, BlockPos pos, EntityPlayer player, float partialTickTime) {
-        TileEntityLittleTilesProxy te = loadTe(world, pos);
-        if (te != null) {
-            PairProxy<IParentTileList, LittleTile> pair = te.getFocusedTile(player, partialTickTime);
-            if (pair != null)
-                return new TEResult(te, pair.key, pair.value);
-        }
-        return FAILED;
-    }
+//    public static TEResult loadTeAndTile(IBlockAccess world, BlockPos pos, EntityPlayer player, float partialTickTime) {
+//        TileEntityLittleTilesProxy te = loadTe(world, pos);
+//        if (te != null) {
+//            PairProxy<IParentTileList, LittleTile> pair = te.getFocusedTile(/*player, partialTickTime*/);
+//            if (pair != null)
+//                return new TEResult(te, pair.key, pair.value);
+//        }
+//        return FAILED;
+//    }
 
     public static TileEntityLittleTilesProxy loadTe(IBlockAccess world, BlockPos pos) {
         if (world == null)
@@ -230,9 +231,8 @@ public class BlockTile extends BlockContainer {
             Entity entity) {
         if (loadTileEntity(world, x, y, z)) {
             for (LittleTile tile : tempEntity.getTiles()) {
-                for (int i = 0; i < tile.boundingBoxes.size(); i++) {
-                    AxisAlignedBB box = tile.boundingBoxes.get(i).getBox().getOffsetBoundingBox(x, y, z);
-                    if (axis.intersectsWith(box)) list.add(box);
+                for (int i = 0; i < 1 /* @TODO is this for structure support?: tile.boundingBoxes.size()*/; i++) {
+//                    @TODO add collisions back: tile.getBox().addCollisionBoxes(context, axis, list, new BlockPos(x, y, z));
                 }
 
             }
@@ -506,15 +506,16 @@ public class BlockTile extends BlockContainer {
             try { // Why try? because the number of tiles can change while this method is called
                 MovingObjectPosition moving = null;
                 for (LittleTile tile : tempEntity.getTiles()) {
-                    for (int i = 0; i < tile.boundingBoxes.size(); i++) {
-                        MovingObjectPosition tempMoving = tile.boundingBoxes.get(i).getBox()
-                                .getOffsetBoundingBox(x, y, z).calculateIntercept(vec1, vec2);
-
-                        if (tempMoving != null) {
-                            if (moving == null || moving.hitVec.distanceTo(vec1) > tempMoving.hitVec.distanceTo(vec1))
-                                moving = tempMoving;
-                        }
-                    }
+//                    @TODO add collisions back
+//                    for (int i = 0; i < tile.boundingBoxes.size(); i++) {
+//                        MovingObjectPosition tempMoving = tile.boundingBoxes.get(i).getBox()
+//                                .getOffsetBoundingBox(x, y, z).calculateIntercept(vec1, vec2);
+//
+//                        if (tempMoving != null) {
+//                            if (moving == null || moving.hitVec.distanceTo(vec1) > tempMoving.hitVec.distanceTo(vec1))
+//                                moving = tempMoving;
+//                        }
+//                    }
 
                 }
 

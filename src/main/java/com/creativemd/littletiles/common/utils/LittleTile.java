@@ -502,7 +502,7 @@ public class LittleTile implements ICombinable {
         ArrayList<CubeObject> cubes = new ArrayList<>();
 //        for (LittleTileBox boundingBox : boundingBoxes) {
 //            CubeObject cube = box.getCube();
-            AlignedBox alignedBox = box.getCube();
+            AlignedBox alignedBox = box.getCube(te.getContext());
             CubeObject cube = new CubeObject(alignedBox.minX, alignedBox.minY, alignedBox.minZ, alignedBox.maxX, alignedBox.maxY, alignedBox.maxZ);
             cube.block = block;
             cube.meta = meta;
@@ -723,7 +723,7 @@ public class LittleTile implements ICombinable {
                 LittleTileBox box = new LittleTileBox(new LittleTileVec("i", nbt), new LittleTileVec("a", nbt));
                 box.addOffset(new LittleTileVec(8, 8, 8));
                 LittleTile tile = new LittleTile(block, meta);
-                tile.boundingBoxes.add(box);
+                tile.setBox(new LittleBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ));
                 tile.cornerVec = box.getMinVec();
                 return tile;
             }
@@ -762,14 +762,15 @@ public class LittleTile implements ICombinable {
     public LittleTileVec cornerVec;
 
     public AxisAlignedBB getSelectedBox() {
-        return box.boun
+        return box.getBox(te.getContext());
     }
 
     public double getPercentVolume() {
         double percent = 0;
-        for (LittleTileBox boundingBox : boundingBoxes) {
-            percent += boundingBox.getSize().getPercentVolume();
-        }
+        // @TODO get volume
+//        for (LittleTileBox boundingBox : boundingBoxes) {
+//            percent += boundingBox.getSize().getPercentVolume();
+//        }
         return percent;
     }
 
@@ -784,8 +785,9 @@ public class LittleTile implements ICombinable {
     public void updatePacket(NBTTagCompound nbt) {
 
         nbt.setInteger("bSize", 1);
-        for (int i = 0; i < boundingBoxes.size(); i++) {
-            boundingBoxes.get(i).writeToNBT("bBox" + i, nbt);
+        // @TODO add back in multiple bounding boxes
+        for (int i = 0; i < 1 /*boundingBoxes.size()*/; i++) {
+            box.writeToNBT("bBox" + i, nbt);
         }
     }
 

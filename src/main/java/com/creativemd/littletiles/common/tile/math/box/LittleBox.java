@@ -12,6 +12,7 @@ import com.creativemd.littletiles.common.type.HashMapListProxy;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.math.RangedBitSetProxy;
 import com.creativemd.littletiles.common.utils.math.RotationProxy;
+import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.vec.SplitRangeBoxes;
 import com.creativemd.littletiles.common.utils.vec.SplitRangeBoxes.SplitRangeBox;
 import com.creativemd.littletiles.utils.EnumFacingProxy;
@@ -1407,5 +1408,9 @@ public class LittleBox {
         nbt.setInteger(name + "maxX", maxX);
         nbt.setInteger(name + "maxY", maxY);
         nbt.setInteger(name + "maxZ", maxZ);
+    }
+
+    public LittleTileBox toLittleTileBox() {
+        return new LittleTileBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

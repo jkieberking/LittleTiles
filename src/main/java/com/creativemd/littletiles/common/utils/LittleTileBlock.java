@@ -3,6 +3,8 @@ package com.creativemd.littletiles.common.utils;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.creativemd.littletiles.common.tile.math.box.AlignedBox;
+import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.BlockAir;
@@ -71,19 +73,22 @@ public class LittleTileBlock extends LittleTile {
         ItemStack stack = new ItemStack(LittleTiles.blockTile);
         stack.stackTagCompound = new NBTTagCompound();
         saveTile(stack.stackTagCompound);
-        boundingBoxes.get(0).getSize().writeToNBT("size", stack.stackTagCompound);
+        this.getBox().writeToNBT("size", stack.stackTagCompound);
         return stack;
     }
 
     @Override
     public ArrayList<CubeObject> getRenderingCubes() {
         ArrayList<CubeObject> cubes = new ArrayList<>();
-        for (com.creativemd.littletiles.common.utils.small.LittleTileBox boundingBox : boundingBoxes) {
-            CubeObject cube = boundingBox.getCube();
+        // @TODO add multiple bounding box
+//        for (LittleTileBox boundingBox : boundingBoxes) {
+            AlignedBox alignedBox = this.getBox().getCube(te.getContext());
+            CubeObject cube = new CubeObject(alignedBox.minX, alignedBox.minY, alignedBox.minZ, alignedBox.maxX, alignedBox.maxY, alignedBox.maxZ);
+
             cube.block = block;
             cube.meta = meta;
             cubes.add(cube);
-        }
+//        }
         return cubes;
     }
 

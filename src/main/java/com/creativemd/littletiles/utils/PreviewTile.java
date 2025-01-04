@@ -49,8 +49,8 @@ public class PreviewTile {
         LittleTile LT = preview.getLittleTile(teLT);
         if (LT == null) return null;
 
-        LT.boundingBoxes.clear();
-        LT.boundingBoxes.add(box.copy());
+        LT.setBox(null);
+        LT.setBox(box.copy().toLittleBox());
         LT.updateCorner();
 
 //        if (structure != null) {

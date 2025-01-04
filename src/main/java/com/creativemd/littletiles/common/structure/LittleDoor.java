@@ -2,6 +2,7 @@ package com.creativemd.littletiles.common.structure;
 
 import java.util.ArrayList;
 
+import com.creativemd.littletiles.common.tile.math.box.LittleBox;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -325,20 +326,19 @@ public class LittleDoor extends LittleStructure {
             // invaxis.addVec(internalOffset);
             ArrayList<LittleTile> tiles = getTiles();
             for (LittleTile tileOfList : tiles) {
-                for (int j = 0; j < tileOfList.boundingBoxes.size(); j++) {
+                for (int j = 0; j < 1 /* @TODO add multiple boxes tileOfList.boundingBoxes.size()*/; j++) {
                     NBTTagCompound nbt = new NBTTagCompound();
                     tileOfList.saveTile(nbt);
-                    LittleTileBox box = tileOfList.boundingBoxes.get(j).copy();
-                    box.addOffset(
-                            new LittleTileVec(
+                    LittleBox box = tileOfList.getBox().copy();
+                    box.add(
                                     tileOfList.te.xCoord * 16,
                                     tileOfList.te.yCoord * 16,
-                                    tileOfList.te.zCoord * 16));
-                    box.addOffset(invaxis);
+                                    tileOfList.te.zCoord * 16);
+                    box.add(invaxis.x, invaxis.y, invaxis.z);
                     // box.addOffset(internalOffset);
                     // box.set(-box.minX, -box.minY, -box.minZ, -box.maxX, -box.maxY, -box.maxZ);
                     // box.addOffset(internalOffset);
-                    PreviewTile preview = new PreviewTile(box, new LittleTilePreview(box, nbt));
+                    PreviewTile preview = new PreviewTile(box.toLittleTileBox(), new LittleTilePreview(box, nbt));
                     previews.add(preview);
                     // tiles.get(i).boundingBoxes.get(j).rotateBox(direction);
                 }

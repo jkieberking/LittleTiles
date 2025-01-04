@@ -1,5 +1,6 @@
 package com.creativemd.littletiles.common.utils.small;
 
+import com.creativemd.littletiles.common.tile.math.box.LittleBox;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -466,4 +467,7 @@ public class LittleTileBox {
                 Math.max(minZ, maxZ));
     }
 
+    public LittleBox toLittleBox() {
+        return new LittleBox(minX,minY, minZ, maxX, maxY, maxZ);
+    }
 }
