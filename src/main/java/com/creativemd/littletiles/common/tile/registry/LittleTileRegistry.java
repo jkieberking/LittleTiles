@@ -5,6 +5,7 @@ import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
 import com.creativemd.littletiles.common.tile.preview.LittlePreview;
 import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.LittleTile;
+import com.creativemd.littletiles.common.utils.LittleTileBlock;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
@@ -126,7 +127,7 @@ public class LittleTileRegistry {
     }
 
     public static void initTiles() {
-        defaultTileType = registerTileType(LittleTile.class, "BlockTileBlock", (x) -> true, false);
+        defaultTileType = registerTileType(LittleTileBlock.class, "BlockTileBlock", (x) -> true, false);
 //        registerTileType(LittleTileColored.class, "BlockTileColored", (x) -> x.hasKey("color"), false);
 
         defaultPreviewType = registerPreviewType("default", LittlePreview.class);

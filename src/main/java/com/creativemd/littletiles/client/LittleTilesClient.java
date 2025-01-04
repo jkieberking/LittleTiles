@@ -55,7 +55,12 @@ public class LittleTilesClient extends LittleTilesServer {
         MinecraftForgeClient.registerItemRenderer(LittleTiles.recipe, renderer);
         MinecraftForgeClient.registerItemRenderer(LittleTiles.multiTiles, renderer);
         BlockTile.mc = Minecraft.getMinecraft();
+        FMLCommonHandler.instance().bus().register(new PreviewRenderer());
         MinecraftForge.EVENT_BUS.register(new PreviewRenderer());
+        FMLCommonHandler.instance().bus().register(new LittleEventHandler());
+        FMLCommonHandler.instance().bus().register(new LittleInteractionHandlerClient());
+        FMLCommonHandler.instance().bus().register(new LittleInteractionHandlerServer());
+        MinecraftForge.EVENT_BUS.register(new LittleEventHandler());
         ClientRegistry.registerKeyBinding(up);
         ClientRegistry.registerKeyBinding(down);
         ClientRegistry.registerKeyBinding(right);

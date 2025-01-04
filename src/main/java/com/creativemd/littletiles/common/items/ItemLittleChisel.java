@@ -176,7 +176,7 @@ public class ItemLittleChisel extends Item implements ILittlePlacer {
             return LittleTileRegistry.loadPreview(stack.getTagCompound().getCompoundTag("preview"));
 
 //        IBlockState state = stack.getTagCompound().hasKey("state") ? Block.getStateById(stack.getTagCompound().getInteger("state")) : Blocks.STONE.getDefaultState();
-        LittleTile tile = new LittleTile(Blocks.stone, 1/*state.getBlock().getMetaFromState(state)*/); /*stack.getTagCompound().hasKey("color") ? new LittleTileColored(state.getBlock(), state.getBlock().getMetaFromState(state), stack.getTagCompound()
+        LittleTile tile = new LittleTile(Blocks.stone, 0/*state.getBlock().getMetaFromState(state)*/); /*stack.getTagCompound().hasKey("color") ? new LittleTileColored(state.getBlock(), state.getBlock().getMetaFromState(state), stack.getTagCompound()
             .getInteger("color")) : new LittleTile(state.getBlock(), state.getBlock().getMetaFromState(state));*/
 
         LittleGridContext context = LittleGridContext.get();

@@ -19,7 +19,6 @@ import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.small.LittleTileVec;
-import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
@@ -51,6 +50,10 @@ public class TileEntityLittleTilesProxy extends TileEntityCreativeProxy implemen
         this.setWorldObj(world);
 
         this.init();
+    }
+
+    public boolean getHasLoaded() {
+        return hasLoaded;
     }
 
     public void setLoaded() {

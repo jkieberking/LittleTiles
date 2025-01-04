@@ -62,9 +62,6 @@ public class RenderingThread extends Thread {
     public void run() {
         while (active) {
             World world = Minecraft.getMinecraft().theWorld;
-            if (!world.isRemote) {
-                return;
-            }
             if (world != null && updateCoords.size() > 0) {
                 ChunkCoordinates coord = updateCoords.get(0);
                 updateCoords.remove(0);

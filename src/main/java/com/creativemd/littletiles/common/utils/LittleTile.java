@@ -1,6 +1,7 @@
 package com.creativemd.littletiles.common.utils;
 
 import com.creativemd.littletiles.LittleTiles;
+import com.creativemd.littletiles.common.tile.math.box.AlignedBox;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.littletiles.client.render.tile.LittleRenderBox;
@@ -66,7 +67,6 @@ public class LittleTile implements ICombinable {
 //    protected IBlockState state = null;
 
     public LittleTile() {
-        boundingBoxes.add(new LittleTileBox(0, 0, 0, 1, 1,1 ));
     }
     public LittleTile(Block block, int meta) {
         setBlock(block, meta);
@@ -502,7 +502,8 @@ public class LittleTile implements ICombinable {
         ArrayList<CubeObject> cubes = new ArrayList<>();
 //        for (LittleTileBox boundingBox : boundingBoxes) {
 //            CubeObject cube = box.getCube();
-            CubeObject cube = new CubeObject((double) .375, (double) 0, (double) .1875, (double) .4375, (double) .0625, (double) .25);
+            AlignedBox alignedBox = box.getCube();
+            CubeObject cube = new CubeObject(alignedBox.minX, alignedBox.minY, alignedBox.minZ, alignedBox.maxX, alignedBox.maxY, alignedBox.maxZ);
             cube.block = block;
             cube.meta = meta;
             cubes.add(cube);
@@ -760,21 +761,8 @@ public class LittleTile implements ICombinable {
 
     public LittleTileVec cornerVec;
 
-    public ArrayList<LittleTileBox> boundingBoxes = new ArrayList();
-
     public AxisAlignedBB getSelectedBox() {
-        if (boundingBoxes.size() > 0) {
-            LittleTileBox box = boundingBoxes.get(0).copy();
-            for (int i = 1; i < boundingBoxes.size(); i++) {
-                box.minX = (byte) Math.min(box.minX, boundingBoxes.get(i).minX);
-                box.minY = (byte) Math.min(box.minY, boundingBoxes.get(i).minY);
-                box.minZ = (byte) Math.min(box.minZ, boundingBoxes.get(i).minZ);
-                box.maxX = (byte) Math.max(box.maxX, boundingBoxes.get(i).maxX);
-                box.maxY = (byte) Math.max(box.maxY, boundingBoxes.get(i).maxY);
-                box.maxZ = (byte) Math.max(box.maxZ, boundingBoxes.get(i).maxZ);
-            }
-            return box.getBox();
-        } else return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
+        return box.boun
     }
 
     public double getPercentVolume() {
@@ -1080,7 +1068,8 @@ public class LittleTile implements ICombinable {
 
 //    @Override
     public boolean canBlockBeThreaded() {
-        if (LittleTiles.isAngelicaLoaded) return false;
-        return block.getRenderType() == 0 && !(block instanceof BlockGrass);
+            if (LittleTiles.isAngelicaLoaded) return false;
+            if (LittleTiles.isGTNHlibLoaded) return false;
+            return block.getRenderType() == 0 && !(block instanceof BlockGrass);
     }
 }

@@ -77,15 +77,11 @@ public class LittleTiles {
     public static Item grabber = new ItemLittleGrabber().setUnlocalizedName("LTGrabber");
 
     public static boolean isAngelicaLoaded;
+    public static boolean isGTNHlibLoaded;
 
     @EventHandler
     public void PreInit(FMLPreInitializationEvent event) {
         LittleTileRegistry.initTiles();
-        FMLCommonHandler.instance().bus().register(new PreviewRenderer());
-        FMLCommonHandler.instance().bus().register(new LittleEventHandler());
-        FMLCommonHandler.instance().bus().register(new LittleInteractionHandlerClient());
-        FMLCommonHandler.instance().bus().register(new LittleInteractionHandlerServer());
-        MinecraftForge.EVENT_BUS.register(new LittleEventHandler());
 
     }
 
@@ -108,8 +104,8 @@ public class LittleTiles {
         GameRegistry.registerItem(grabber, "grabber");
 
 //        GameRegistry.registerBlock(coloredBlock, "LTColoredBlock");
-        GameRegistry.registerBlock(blockTile, ItemBlockColored.class, "LTColoredBlock");
-        GameRegistry.registerBlock(coloredBlock, ItemBlockTiles.class, "BlockLittleTiles");
+        GameRegistry.registerBlock(coloredBlock, ItemBlockColored.class, "LTColoredBlock");
+        GameRegistry.registerBlock(blockTile, ItemBlockTiles.class, "BlockLittleTiles");
 
         GameRegistry.registerItem(multiTiles, "multiTiles");
 
@@ -120,7 +116,7 @@ public class LittleTiles {
         LittleTile.registerLittleTile(LittleTileBlock.class, "BlockTileBlock");
         // LittleTile.registerLittleTile(LittleTileStructureBlock.class, "BlockTileStructure");
         LittleTile.registerLittleTile(LittleTileTileEntity.class, "BlockTileEntity");
-        LittleTile.registerLittleTile(LittleTileColored.class, "BlockTileColored");
+        LittleTile.registerLittleTile(LittleTileBlockColored.class, "BlockTileColored");
 
         CreativeCorePacket.registerPacket(LittlePlacePacket.class, "LittlePlace");
         CreativeCorePacket.registerPacket(LittleActionPlaceStack.class, "LittlePlaceStack");
@@ -160,6 +156,7 @@ public class LittleTiles {
                 new Object[] { "XXX", "XLX", "XXX", 'X', Items.dye, 'L', Items.iron_ingot });
 
         isAngelicaLoaded = Loader.isModLoaded("angelica");
+        isGTNHlibLoaded = Loader.isModLoaded("gtnhlib");
     }
 
     public boolean canBeConvertedToVanilla() {

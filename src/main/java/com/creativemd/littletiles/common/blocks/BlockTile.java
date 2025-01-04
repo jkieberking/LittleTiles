@@ -6,7 +6,10 @@ import java.util.Random;
 
 import com.creativemd.littletiles.LittleTiles;
 import com.creativemd.littletiles.common.parent.IParentTileList;
+import com.creativemd.littletiles.common.type.PairProxy;
 import com.creativemd.littletiles.common.utils.LittleTile;
+import com.creativemd.littletiles.utils.TickUtilsProxy;
+import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -181,14 +184,45 @@ public class BlockTile extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
+        TEResult result = loadTeAndTile(worldIn, pos, mc.player);
         if (loadTileEntity(world, x, y, z) && tempEntity.updateLoadedTile(mc.thePlayer)) {
             try { // Why try? because the number of tiles can change while this method is called
-                return tempEntity.loadedTile.getSelectedBox().getOffsetBoundingBox(x, y, z);
+                return tempEntity.loadedTile.getSelectedBox(new BlockPos(x, y ,z), ).getOffsetBoundingBox(x, y, z);
             } catch (Exception ignored) {
 
             }
         }
         return AxisAlignedBB.getBoundingBox(x, y, z, x, y, z);
+    }
+
+    public static TEResult loadTeAndTile(IBlockAccess world, BlockPos pos, EntityPlayer player) {
+        return loadTeAndTile(world, pos, player, TickUtilsProxy.getPartialTickTime());
+    }
+
+    public static TEResult loadTeAndTile(IBlockAccess world, BlockPos pos, EntityPlayer player, float partialTickTime) {
+        TileEntityLittleTilesProxy te = loadTe(world, pos);
+        if (te != null) {
+            PairProxy<IParentTileList, LittleTile> pair = te.getFocusedTile(player, partialTickTime);
+            if (pair != null)
+                return new TEResult(te, pair.key, pair.value);
+        }
+        return FAILED;
+    }
+
+    public static TileEntityLittleTilesProxy loadTe(IBlockAccess world, BlockPos pos) {
+        if (world == null)
+            return null;
+        loadingTileEntityFromWorld = true;
+        TileEntity tileEntity = null;
+        try {
+            tileEntity = world.getTileEntity(pos.x, pos.y, pos.z);
+        } catch (Exception e) {
+            return null;
+        }
+        loadingTileEntityFromWorld = false;
+        if (tileEntity instanceof TileEntityLittleTilesProxy && ((TileEntityLittleTilesProxy) tileEntity).getHasLoaded())
+            return (TileEntityLittleTilesProxy) tileEntity;
+        return null;
     }
 
     @Override

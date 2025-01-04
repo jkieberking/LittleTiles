@@ -12,8 +12,9 @@ package com.creativemd.littletiles.common.tile.math.vec;
 //import com.creativemd.creativecore.common.utils.math.geo.Ray3f;
 //import net.minecraft.client.renderer.BufferBuilder;
 import com.cleanroommc.modularui.drawable.BufferBuilder;
-import com.gtnewhorizon.gtnhlib.client.renderer.CapturingTessellator;
-import net.minecraft.client.renderer.Tessellator;
+import com.creativemd.creativecore.client.rendering.RenderHelper3D;
+import com.creativemd.creativecore.common.utils.CubeObject;
+import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 //import net.minecraft.client.renderer.block.model.BakedQuad;
 //import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 //import net.minecraft.util.EnumFacing.Axis;
@@ -21,6 +22,7 @@ import net.minecraft.client.renderer.Tessellator;
 //import net.minecraft.util.math.Vec3d;
 //import net.minecraftforge.fml.relauncher.Side;
 //import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.Vec3;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
@@ -212,15 +214,40 @@ public class VectorFan {
 //            Vector3f vec = coords[i];
 //            bufferbuilder.pos(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
 //        }
-//        tessellator.draw();
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
-        tessellator.setColorRGBA(red, green, blue, alpha);
-        for (int i = 0; i < coords.length; i++) {
+      for (int i = 0; i < coords.length; i++) {
             Vector3f vec = coords[i];
-            tessellator.addVertex(vec.x, vec.y, vec.z);
+//            tessellator.addVertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ);
+
+            GL11.glPushMatrix();
+            double cubeX = vec.x;
+            // if(posX < 0 && side != ForgeDirection.WEST && side != ForgeDirection.EAST)
+            // cubeX = x+(1-cube.minX)+size.getPosX()/2D;
+            double cubeY = vec.y;
+            // if(posY < 0 && side != ForgeDirection.DOWN)
+            // cubeY = y-cube.minY+size.getPosY()/2D;
+            double cubeZ = vec.z;
+            // if(posZ < 0 && side != ForgeDirection.NORTH)
+            // cubeZ = z-cube.minZ+size.getPosZ()/2D;
+            /*
+             * double cubeX = x; if(posX < 0) x -= 1; double cubeY = y; double cubeZ = z;
+             */
+//            Vec3 color = previewTile.getPreviewColor();
+            RenderHelper3D.renderBlock(
+                cubeX,
+                cubeY,
+                cubeZ,
+                1,
+                1,
+                1,
+                0,
+                0,
+                0,
+                red,
+                green,
+                blue,
+                alpha);
+            GL11.glPopMatrix();
         }
-        tessellator.draw();
     }
 //
     public void renderPreview(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
@@ -233,15 +260,40 @@ public class VectorFan {
 //            bufferbuilder.pos(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
 //        }
 //        tessellator.draw();
-
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
-        tessellator.setColorRGBA(red, green, blue, alpha);
         for (int i = 0; i < coords.length; i++) {
             Vector3f vec = coords[i];
-            tessellator.addVertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ);
+//            tessellator.addVertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ);
+
+            GL11.glPushMatrix();
+            double cubeX = vec.x * scaleX + offX / 2D;
+            // if(posX < 0 && side != ForgeDirection.WEST && side != ForgeDirection.EAST)
+            // cubeX = x+(1-cube.minX)+size.getPosX()/2D;
+            double cubeY = vec.y * scaleY + offY / 2D;
+            // if(posY < 0 && side != ForgeDirection.DOWN)
+            // cubeY = y-cube.minY+size.getPosY()/2D;
+            double cubeZ = vec.z * scaleZ + offZ / 2D;
+            // if(posZ < 0 && side != ForgeDirection.NORTH)
+            // cubeZ = z-cube.minZ+size.getPosZ()/2D;
+            /*
+             * double cubeX = x; if(posX < 0) x -= 1; double cubeY = y; double cubeZ = z;
+             */
+//            Vec3 color = previewTile.getPreviewColor();
+            RenderHelper3D.renderBlock(
+                cubeX,
+                cubeY,
+                cubeZ,
+                scaleX,
+                scaleY,
+                scaleZ,
+                0,
+                0,
+                0,
+                red,
+                green,
+                blue,
+                alpha);
+            GL11.glPopMatrix();
         }
-        tessellator.draw();
     }
 //
 //    public void renderLines(int red, int green, int blue, int alpha) {

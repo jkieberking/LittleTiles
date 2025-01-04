@@ -449,7 +449,7 @@ public class ItemLittleGrabber extends Item implements /*ICreativeRendered,*/ IL
             // @TODO block state stuff
 //            IBlockState state = /*nbt.hasKey("state") ? Block.getStateById(nbt.getInteger("state")) : */Blocks.stone.getDefaultState();
             LittleTile tile = /*nbt.hasKey("color") ? new LittleTileColored(state.getBlock(), state.getBlock().getMetaFromState(state), nbt
-                .getInteger("color")) : */new LittleTile(Blocks.stone, /*state.getBlock().getMetaFromState(state)*/ 1);
+                .getInteger("color")) : */new LittleTile(Blocks.stone, /*state.getBlock().getMetaFromState(state)*/ 0);
             tile.setBox(new LittleBox(0, 0, 0, 1, 1, 1));
             return tile.getPreviewTile();
         }
@@ -524,7 +524,7 @@ public class ItemLittleGrabber extends Item implements /*ICreativeRendered,*/ IL
 //                        return ItemLittleGrabber.SimpleMode.getPreview(stack);
 
                     Block selected = Minecraft.getMinecraft().theWorld.getBlock(0,0,0);
-                    LittleTile tile = new LittleTile(selected, 1);
+                    LittleTile tile = new LittleTile(selected, 0);
                     tile.setBox(new LittleBox(0, 0, 0, context.size, context.size, context.size));
 
                     return tile.getPreviewTile();
