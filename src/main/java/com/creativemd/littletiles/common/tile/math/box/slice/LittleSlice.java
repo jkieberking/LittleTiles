@@ -1,14 +1,15 @@
 package com.creativemd.littletiles.common.tile.math.box.slice;
 
 
-import com.creativemd.creativecore.common.utils.RotationUtils.Axis;
 import com.creativemd.creativecore.core.CreativeCore;
 import com.creativemd.littletiles.common.tile.math.box.BoxCorner;
 import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
 import com.creativemd.littletiles.common.utils.math.RotationProxy;
 import com.creativemd.littletiles.common.utils.math.RotationUtilProxy;
 import com.creativemd.littletiles.common.utils.math.VectorUtilsProxy;
+import com.creativemd.littletiles.common.utils.math.box.BoxCornerProxy;
 import com.creativemd.littletiles.utils.EnumFacingProxy;
+import com.creativemd.littletiles.utils.EnumFacingProxy.Axis;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.util.EnumFacing;
 import org.joml.Vector3d;
@@ -16,20 +17,20 @@ import org.joml.Vector3i;
 
 public enum LittleSlice {
 
-    X_US_DN_RIGHT(Axis.Xaxis, true, 2, 0, BoxCorner.EUS, BoxCorner.EDN),
-    X_US_DN_LEFT(Axis.Xaxis, false, 0, 2, BoxCorner.EUS, BoxCorner.EDN),
-    X_DS_UN_RIGHT(Axis.Xaxis, true, 0, 2, BoxCorner.EDS, BoxCorner.EUN),
-    X_DS_UN_LEFT(Axis.Xaxis, false, 2, 0, BoxCorner.EDS, BoxCorner.EUN),
+    X_US_DN_RIGHT(Axis.X, true, 2, 0, BoxCorner.EUS, BoxCorner.EDN),
+    X_US_DN_LEFT(Axis.X, false, 0, 2, BoxCorner.EUS, BoxCorner.EDN),
+    X_DS_UN_RIGHT(Axis.X, true, 0, 2, BoxCorner.EDS, BoxCorner.EUN),
+    X_DS_UN_LEFT(Axis.X, false, 2, 0, BoxCorner.EDS, BoxCorner.EUN),
 
-    Y_ES_WN_RIGHT(Axis.Yaxis, true, 1, 0, BoxCorner.EUS, BoxCorner.WUN),
-    Y_ES_WN_LEFT(Axis.Yaxis, false, 0, 1, BoxCorner.EUS, BoxCorner.WUN),
-    Y_WS_EN_RIGHT(Axis.Yaxis, true, 0, 1, BoxCorner.WUS, BoxCorner.EUN),
-    Y_WS_EN_LEFT(Axis.Yaxis, false, 1, 0, BoxCorner.WUS, BoxCorner.EUN),
+    Y_ES_WN_RIGHT(Axis.Y, true, 1, 0, BoxCorner.EUS, BoxCorner.WUN),
+    Y_ES_WN_LEFT(Axis.Y, false, 0, 1, BoxCorner.EUS, BoxCorner.WUN),
+    Y_WS_EN_RIGHT(Axis.Y, true, 0, 1, BoxCorner.WUS, BoxCorner.EUN),
+    Y_WS_EN_LEFT(Axis.Y, false, 1, 0, BoxCorner.WUS, BoxCorner.EUN),
 
-    Z_WU_ED_RIGHT(Axis.Zaxis, true, 2, 0, BoxCorner.WUS, BoxCorner.EDS),
-    Z_WU_ED_LEFT(Axis.Zaxis, false, 0, 2, BoxCorner.WUS, BoxCorner.EDS),
-    Z_WD_EU_RIGHT(Axis.Zaxis, true, 0, 2, BoxCorner.WDS, BoxCorner.EUS),
-    Z_WD_EU_LEFT(Axis.Zaxis, false, 2, 0, BoxCorner.WDS, BoxCorner.EUS);
+    Z_WU_ED_RIGHT(Axis.Z, true, 2, 0, BoxCorner.WUS, BoxCorner.EDS),
+    Z_WU_ED_LEFT(Axis.Z, false, 0, 2, BoxCorner.WUS, BoxCorner.EDS),
+    Z_WD_EU_RIGHT(Axis.Z, true, 0, 2, BoxCorner.WDS, BoxCorner.EUS),
+    Z_WD_EU_LEFT(Axis.Z, false, 2, 0, BoxCorner.WDS, BoxCorner.EUS);
 //
     public final Axis axis;
     public final Vector3i sliceVec;
@@ -112,9 +113,9 @@ public enum LittleSlice {
         this.traingleOrderPositive = traingleOrderPositive;
         this.traingleOrderNegative = traingleOrderNegative;
         this.sliceVec = new Vector3i(
-            getDirectionBetweenFacing(EnumFacingProxy.fromEnumFacing(start.x),EnumFacingProxy.fromEnumFacing(end.x)),
-            getDirectionBetweenFacing(EnumFacingProxy.fromEnumFacing(start.y), EnumFacingProxy.fromEnumFacing(end.y)),
-            getDirectionBetweenFacing(EnumFacingProxy.fromEnumFacing(start.z), EnumFacingProxy.fromEnumFacing(end.z))
+            getDirectionBetweenFacing(start.x, end.x),
+            getDirectionBetweenFacing(start.y, end.y),
+            getDirectionBetweenFacing(start.z, end.z)
         );
         Vector3i temp = RotationUtilProxy.rotate(sliceVec, RotationProxy.getRotation(axis, isRight));
         this.normal = new int[] { temp.x(), temp.y(), temp.z() };
@@ -235,8 +236,8 @@ public enum LittleSlice {
 //
     /** Theoretically there are two corners, but it will always return the one with a
      * positive direction */
-    public BoxCorner getEmptyCorner() {
-        return BoxCorner.getCornerUnsorted(RotationUtilProxy.getFacing(axis), EnumFacingProxy.toEnumFacing(emptySideOne), EnumFacingProxy.toEnumFacing(emptySideTwo));
+    public BoxCornerProxy getEmptyCorner() {
+        return BoxCornerProxy.getCornerUnsorted(RotationUtilProxy.getFacing(axis), emptySideOne, emptySideTwo);
     }
 //
 //    public boolean isCornerAffected(BoxCorner corner) {

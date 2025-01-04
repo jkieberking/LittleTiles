@@ -6,12 +6,15 @@ import com.creativemd.creativecore.common.utils.RotationUtils.Axis;
 import com.creativemd.littletiles.client.render.tile.LittleRenderBox;
 import com.creativemd.littletiles.common.tile.combine.BasicCombiner;
 import com.creativemd.littletiles.common.tile.math.LittleUtils;
+import com.creativemd.littletiles.common.tile.math.box.face.LittleBoxFace;
 import com.creativemd.littletiles.common.tile.math.box.slice.LittleSlice;
 import com.creativemd.littletiles.common.tile.math.vec.LittleVec;
 import com.creativemd.littletiles.common.type.HashMapListProxy;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.math.RangedBitSetProxy;
 import com.creativemd.littletiles.common.utils.math.RotationProxy;
+import com.creativemd.littletiles.common.utils.math.box.BoxCornerProxy;
+import com.creativemd.littletiles.common.utils.math.box.BoxFaceProxy;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.vec.SplitRangeBoxes;
 import com.creativemd.littletiles.common.utils.vec.SplitRangeBoxes.SplitRangeBox;
@@ -210,25 +213,6 @@ public class LittleBox {
         return getVolume() / (context.maxTilesPerBlock);
     }
 
-    public int get(EnumFacing facing) {
-        switch (facing) {
-            case EAST:
-                return maxX;
-            case WEST:
-                return minX;
-            case UP:
-                return maxY;
-            case DOWN:
-                return minY;
-            case SOUTH:
-                return maxZ;
-            case NORTH:
-                return minZ;
-
-        }
-        return 0;
-    }
-
     public int get(EnumFacingProxy facing) {
         switch (facing) {
             case EAST:
@@ -248,27 +232,23 @@ public class LittleBox {
         return 0;
     }
 
-    public LittleVec get(BoxCorner corner) {
+    public LittleVec get(BoxCornerProxy corner) {
         return new LittleVec(getX(corner), getY(corner), getZ(corner));
     }
 
-    public int get(BoxCorner corner, Axis axis) {
+    public int get(BoxCornerProxy corner, EnumFacingProxy.Axis axis) {
         return get(corner.getFacing(axis));
     }
 
-    public int get(BoxCorner corner, EnumFacingProxy.Axis axis) {
-        return get(corner.getFacing(axis));
-    }
-
-    public int getX(BoxCorner corner) {
+    public int getX(BoxCornerProxy corner) {
         return get(corner.x);
     }
 
-    public int getY(BoxCorner corner) {
+    public int getY(BoxCornerProxy corner) {
         return get(corner.y);
     }
 
-    public int getZ(BoxCorner corner) {
+    public int getZ(BoxCornerProxy corner) {
         return get(corner.z);
     }
 
@@ -405,18 +385,18 @@ public class LittleBox {
     }
 
     public LittleVec[] getCorners() {
-        LittleVec[] corners = new LittleVec[BoxCorner.values().length];
+        LittleVec[] corners = new LittleVec[BoxCornerProxy.values().length];
 
         for (int i = 0; i < corners.length; i++) {
-            BoxCorner corner = BoxCorner.values()[i];
+            BoxCornerProxy corner = BoxCornerProxy.values()[i];
             corners[i] = new LittleVec(get(corner.x), get(corner.y), get(corner.z));
         }
 
         return corners;
     }
-//
-//    // ================Block Integration================
-//
+
+    // ================Block Integration================
+
     public boolean isValidBox() {
         return maxX > minX && maxY > minY && maxZ > minZ;
     }
@@ -475,7 +455,7 @@ public class LittleBox {
         return minX == 0 && minY == 0 && minZ == 0 && maxX == context.size && maxY == context.size && maxZ == context.size;
     }
 
-    public LittleBox createOutsideBlockBox(LittleGridContext context, EnumFacing facing) {
+    public LittleBox createOutsideBlockBox(LittleGridContext context, EnumFacingProxy facing) {
         LittleBox box = this.copy();
         switch (facing) {
             case EAST:
@@ -545,45 +525,45 @@ public class LittleBox {
     }
 
     @Nullable
-    public EnumFacing sharedBoxFaceWithoutBounds(LittleBox box) {
+    public EnumFacingProxy sharedBoxFaceWithoutBounds(LittleBox box) {
         boolean x = box.maxX > this.minX && box.minX < this.maxX;
         boolean y = box.maxY > this.minY && box.minY < this.maxY;
         boolean z = box.maxZ > this.minZ && box.minZ < this.maxZ;
         if (this.minZ == box.maxZ)
             if (x && y)
-                return EnumFacing.SOUTH;
+                return EnumFacingProxy.SOUTH;
             else
                 return null;
         else if (this.maxZ == box.minZ)
             if (x && y)
-                return EnumFacing.NORTH;
+                return EnumFacingProxy.NORTH;
             else
                 return null;
         else if (this.minY == box.maxY)
             if (x && z)
-                return EnumFacing.UP;
+                return EnumFacingProxy.UP;
             else
                 return null;
         else if (this.maxY == box.minY)
             if (x && z)
-                return EnumFacing.DOWN;
+                return EnumFacingProxy.DOWN;
             else
                 return null;
         else if (this.minX == box.maxX)
             if (y && z)
-                return EnumFacing.EAST;
+                return EnumFacingProxy.EAST;
             else
                 return null;
         else if (this.maxX == box.minX)
             if (y && z)
-                return EnumFacing.WEST;
+                return EnumFacingProxy.WEST;
             else
                 return null;
         return null;
     }
 
     @Nullable
-    public EnumFacing sharedBoxFace(LittleBox box) {
+    public EnumFacingProxy sharedBoxFace(LittleBox box) {
         boolean x = this.minX == box.minX && this.maxX == box.maxX;
         boolean y = this.minY == box.minY && this.maxY == box.maxY;
         boolean z = this.minZ == box.minZ && this.maxZ == box.maxZ;
@@ -593,21 +573,21 @@ public class LittleBox {
         }
         if (x && y) {
             if (this.minZ == box.maxZ)
-                return EnumFacing.SOUTH;
+                return EnumFacingProxy.SOUTH;
             else if (this.maxZ == box.minZ)
-                return EnumFacing.NORTH;
+                return EnumFacingProxy.NORTH;
         }
         if (x && z) {
             if (this.minY == box.maxY)
-                return EnumFacing.UP;
+                return EnumFacingProxy.UP;
             else if (this.maxY == box.minY)
-                return EnumFacing.DOWN;
+                return EnumFacingProxy.DOWN;
         }
         if (y && z) {
             if (this.minX == box.maxX)
-                return EnumFacing.EAST;
+                return EnumFacingProxy.EAST;
             else if (this.maxX == box.minX)
-                return EnumFacing.WEST;
+                return EnumFacingProxy.WEST;
         }
         return null;
     }
@@ -838,7 +818,7 @@ public class LittleBox {
         return true;
     }
 
-//    // ================Vectors================
+    // ================Vectors================
 
     public void add(int x, int y, int z) {
         minX += x;
@@ -994,10 +974,10 @@ public class LittleBox {
         vecB = vecB.sub(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
 
         Vector3d collision = null;
-        EnumFacing collided = null;
+        EnumFacingProxy collided = null;
 
-        for (EnumFacing facing : EnumFacing.values()) {
-            Vector3d temp = collideWithPlane(context, EnumFacingProxy.fromEnumFacing(facing).getAxis(), (double) get(facing) / context.size, vecA, vecB);
+        for (EnumFacingProxy facing : EnumFacingProxy.values()) {
+            Vector3d temp = collideWithPlane(context, facing.getAxis(), (double) get(facing) / context.size, vecA, vecB);
             if (temp != null && isClosest(vecA, collision, temp)) {
                 collided = facing;
                 collision = temp;
@@ -1016,7 +996,7 @@ public class LittleBox {
         return new Vector3d(vector.x + x, vector.y + y, vector.z + z);
     }
 
-    public Vector3f[] getVecArray(BoxCorner[] corners) {
+    public Vector3f[] getVecArray(BoxCornerProxy[] corners) {
         Vector3f[] result = new Vector3f[corners.length];
         for (int i = 0; i < result.length; i++)
             result[i] = new Vector3f(get(corners[i].x), get(corners[i].y), get(corners[i].z));
@@ -1098,7 +1078,7 @@ public class LittleBox {
      *            coordinates are doubled, meaning in order to get the correct
      *            coordinates they have to be divided by two. This allows to flip
      *            around even axis. */
-    public void flipBox(Axis axis, LittleVec doubledCenter) {
+    public void flipBox(EnumFacingProxy.Axis axis, LittleVec doubledCenter) {
         long tempMin = getMin(axis) * 2 - doubledCenter.get(axis);
         long tempMax = getMax(axis) * 2 - doubledCenter.get(axis);
         int min = (int) ((doubledCenter.get(axis) - tempMin) / 2);
@@ -1128,7 +1108,7 @@ public class LittleBox {
         return "[" + minX + "," + minY + "," + minZ + " -> " + maxX + "," + maxY + "," + maxZ + "]";
     }
 
-//    // ================Special methods================
+    // ================Special methods================
 
     public LittleBox extractBox(int x, int y, int z/*, @Nullable LittleBoxReturnedVolume volume*/) {
         return new LittleBox(x, y, z, x + 1, y + 1, z + 1);
@@ -1224,24 +1204,24 @@ public class LittleBox {
     // ================Faces================
 
     @Nullable
-//    public LittleBoxFace generateFace(LittleGridContext context, EnumFacing facing) {
-//        Axis one = RotationUtils.getOne(facing.getAxis());
-//        Axis two = RotationUtils.getTwo(facing.getAxis());
-//
-//        return new LittleBoxFace(this, null, null, context, facing, getMin(one), getMin(two), getMax(one), getMax(two), facing
-//                .getAxisDirection() == AxisDirection.POSITIVE ? getMax(facing.getAxis()) : getMin(facing.getAxis()));
-//    }
-//
-//    public boolean intersectsWith(LittleBoxFace face) {
-//        return (face.facing.getAxisDirection() == AxisDirection.POSITIVE ? getMin(face.facing.getAxis()) : getMax(face.facing
-//                .getAxis())) == face.origin && face.maxOne > getMin(face.one) && face.minOne < getMax(face.one) && face.maxTwo > getMin(face.two) && face.minTwo < getMax(face.two);
-//    }
+    public LittleBoxFace generateFace(LittleGridContext context, EnumFacingProxy facing) {
+        EnumFacingProxy.Axis one = RotationUtilsProxy.getOne(facing.getAxis());
+        EnumFacingProxy.Axis two = RotationUtilsProxy.getTwo(facing.getAxis());
 
-    public boolean isFaceSolid(EnumFacing facing) {
+        return new LittleBoxFace(this, null, null, context, facing, getMin(one), getMin(two), getMax(one), getMax(two), facing
+                .getAxisDirection() == EnumFacingProxy.AxisDirection.POSITIVE ? getMax(facing.getAxis()) : getMin(facing.getAxis()));
+    }
+
+    public boolean intersectsWith(LittleBoxFace face) {
+        return (face.facing.getAxisDirection() == EnumFacingProxy.AxisDirection.POSITIVE ? getMin(face.facing.getAxis()) : getMax(face.facing
+                .getAxis())) == face.origin && face.maxOne > getMin(face.one) && face.minOne < getMax(face.one) && face.maxTwo > getMin(face.two) && face.minTwo < getMax(face.two);
+    }
+
+    public boolean isFaceSolid(EnumFacingProxy facing) {
         return true;
     }
 
-    public boolean isFacePartiallyFilled(EnumFacing facing) {
+    public boolean isFacePartiallyFilled(EnumFacingProxy facing) {
         return true;
     }
 
@@ -1249,24 +1229,24 @@ public class LittleBox {
         return true;
     }
 
-//    public void fill(LittleBoxFace face) {
-//        if (intersectsWith(face)) {
-//            int minOne = Math.max(getMin(face.one), face.minOne);
-//            int maxOne = Math.min(getMax(face.one), face.maxOne);
-//            int minTwo = Math.max(getMin(face.two), face.minTwo);
-//            int maxTwo = Math.min(getMax(face.two), face.maxTwo);
-//            if (isFaceSolid(face.facing.getOpposite()))
-//                for (int one = minOne; one < maxOne; one++)
-//                    for (int two = minTwo; two < maxTwo; two++)
-//                        face.filled[one - face.minOne][two - face.minTwo] = true;
-//            else
-//                fillAdvanced(face);
-//        }
-//    }
-//
-//    protected void fillAdvanced(LittleBoxFace face) {
-//
-//    }
+    public void fill(LittleBoxFace face) {
+        if (intersectsWith(face)) {
+            int minOne = Math.max(getMin(face.one), face.minOne);
+            int maxOne = Math.min(getMax(face.one), face.maxOne);
+            int minTwo = Math.max(getMin(face.two), face.minTwo);
+            int maxTwo = Math.min(getMax(face.two), face.maxTwo);
+            if (isFaceSolid(face.facing.getOpposite()))
+                for (int one = minOne; one < maxOne; one++)
+                    for (int two = minTwo; two < maxTwo; two++)
+                        face.filled[one - face.minOne][two - face.minTwo] = true;
+            else
+                fillAdvanced(face);
+        }
+    }
+
+    protected void fillAdvanced(LittleBoxFace face) {
+
+    }
 
     // ================Static Helpers================
 

@@ -70,7 +70,7 @@ public class ShapeRegistry {
 
 //        registerShape("connected", new LittleShapeConnected(), ShapeType.SELECTOR);
 //
-//        registerShape("slice", new LittleShapeSlice(), ShapeType.SHAPE);
+        registerShape("slice", new LittleShapeSlice(), ShapeType.SHAPE);
 //        registerShape("inner_corner", new LittleShapeInnerCorner(), ShapeType.SHAPE);
 //        registerShape("outer_corner", new LittleShapeOuterCorner(), ShapeType.SHAPE);
 //

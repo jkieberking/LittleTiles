@@ -5,6 +5,7 @@ import com.creativemd.littletiles.common.tile.math.vec.VectorFan;
 import com.creativemd.littletiles.utils.EnumFacingProxy;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import javax.vecmath.Tuple3d;
@@ -22,6 +23,34 @@ public class VectorUtilsProxy {
                 break;
             case Zaxis:
                 vec.z = value;
+                break;
+        }
+    }
+
+    public static void set(Vector3f vec, double value, EnumFacingProxy.Axis axis) {
+        switch (axis) {
+            case X:
+                vec.x = (float) value;
+                break;
+            case Y:
+                vec.y = (float) value;
+                break;
+            case Z:
+                vec.z = (float) value;
+                break;
+        }
+    }
+
+    public static void set(Vector3f vec, int value, EnumFacingProxy.Axis axis) {
+        switch (axis) {
+            case X:
+                vec.x = (float) value;
+                break;
+            case Y:
+                vec.y = (float) value;
+                break;
+            case Z:
+                vec.z = (float) value;
                 break;
         }
     }
@@ -52,6 +81,18 @@ public class VectorUtilsProxy {
         return null;
     }
 
+    public static Vector3d set(Vector3d vec, float value, EnumFacingProxy.Axis axis) {
+        switch (axis) {
+            case X:
+                return new Vector3d(value, vec.y, vec.z);
+            case Y:
+                return new Vector3d(vec.x, value, vec.z);
+            case Z:
+                return new Vector3d(vec.x, vec.y, value);
+        }
+        return null;
+    }
+
     public static Vector3d set(Vector3d vec, int value, Axis axis) {
         switch (axis) {
             case Xaxis:
@@ -69,6 +110,10 @@ public class VectorUtilsProxy {
     }
 
     public static float get(Axis axis, Tuple3f vec) {
+        return get(axis, vec.x, vec.y, vec.z);
+    }
+
+    public static float get(EnumFacingProxy.Axis axis, Vector3f vec) {
         return get(axis, vec.x, vec.y, vec.z);
     }
 

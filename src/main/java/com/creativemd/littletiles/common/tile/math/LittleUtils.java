@@ -2,6 +2,7 @@ package com.creativemd.littletiles.common.tile.math;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 public class LittleUtils {
@@ -72,4 +73,55 @@ public class LittleUtils {
         return round(value, scale);
     }
 
+    public static void scaleInPlace(Vector3f vector, float s) {
+        vector.x *= s;
+        vector.y *= s;
+        vector.z *= s;
+    }
+
+    public static void scaleInPlace(Vector3f vector, double s) {
+        vector.x *= s;
+        vector.y *= s;
+        vector.z *= s;
+    }
+
+    public static void scaleInPlace(Vector3d vector, double s) {
+        vector.x *= s;
+        vector.y *= s;
+        vector.z *= s;
+    }
+
+    public static Vector3d scaleNotInPlace(Vector3d vector, double s) {
+        return new Vector3d(
+        vector.x * s,
+        vector.y * s,
+        vector.z * s
+        );
+    }
+    }
+
+
+    public static double squareDistanceTo(Vector3d from, Vector3d to)
+    {
+        double d0 = to.x - from.x;
+        double d1 = to.y - from.y;
+        double d2 = to.z - from.z;
+        return d0 * d0 + d1 * d1 + d2 * d2;
+    }
+
+    public static boolean epsilonEquals(Vector3f vector, Vector3f secondVector, double epsilonAmount) {
+        double d = vector.x - secondVector.x;
+        if ((d < 0.0D ? -d : d) > epsilonAmount) {
+            return false;
+        }
+        d = vector.y - secondVector.y;
+        if ((d < 0.0D ? -d : d) > epsilonAmount) {
+            return false;
+        }
+        d = vector.z - secondVector.z;
+        if ((d < 0.0D ? -d : d) > epsilonAmount) {
+            return false;
+        }
+        return true;
+    }
 }

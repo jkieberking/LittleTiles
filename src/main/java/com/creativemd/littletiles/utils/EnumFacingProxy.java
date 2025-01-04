@@ -1,6 +1,9 @@
 // @TODO figure out a better way than just mostly copy/pasting 1.12's EntityFacing
 package com.creativemd.littletiles.utils;
 
+import com.creativemd.creativecore.common.utils.RotationUtils;
+import com.creativemd.littletiles.common.utils.math.RotationProxy;
+import com.creativemd.littletiles.common.utils.math.RotationUtilProxy;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
@@ -501,6 +504,54 @@ public enum EnumFacingProxy {
 
         public String getName() {
             return this.name;
+        }
+
+        public static Axis getOne(RotationUtils.Axis axis) {
+            switch (axis) {
+                case Xaxis:
+                    return Y;
+                case Yaxis:
+                    return Z;
+                case Zaxis:
+                    return X;
+            }
+            throw new RuntimeException("cant convert axis");
+        }
+
+        public static Axis getOne(Axis axis) {
+            switch (axis) {
+                case X:
+                    return Y;
+                case Y:
+                    return Z;
+                case Z:
+                    return X;
+            }
+            throw new RuntimeException("cant convert axis");
+        }
+
+        public static Axis getTwo(RotationUtils.Axis axis) {
+            switch (axis) {
+                case Xaxis:
+                    return Z;
+                case Yaxis:
+                    return X;
+                case Zaxis:
+                    return Y;
+            }
+            throw new RuntimeException("cant convert axis");
+        }
+
+        public static Axis getTwo(Axis axis) {
+            switch (axis) {
+                case X:
+                    return Z;
+                case Y:
+                    return X;
+                case Z:
+                    return Y;
+            }
+            throw new RuntimeException("cant convert axis");
         }
 
         static {

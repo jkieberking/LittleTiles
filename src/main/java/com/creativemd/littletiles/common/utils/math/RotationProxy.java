@@ -1,7 +1,8 @@
 package com.creativemd.littletiles.common.utils.math;
 
-import com.creativemd.creativecore.common.utils.RotationUtils.Axis;
 import com.creativemd.creativecore.lib.Tuple3d;
+import com.creativemd.littletiles.utils.EnumFacingProxy;
+import com.creativemd.littletiles.utils.EnumFacingProxy.Axis;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
@@ -11,40 +12,40 @@ import javax.vecmath.Tuple3f;
 
 public enum RotationProxy {
 
-    X_CLOCKWISE(Axis.Xaxis, new RotationMatrix(1, 0, 0, 0, 0, -1, 0, 1, 0), true) {
+    X_CLOCKWISE(Axis.X, new RotationMatrix(1, 0, 0, 0, 0, -1, 0, 1, 0), true) {
         @Override
         public RotationProxy getOpposite() {
             return X_COUNTER_CLOCKWISE;
         }
     },
 
-    X_COUNTER_CLOCKWISE(Axis.Xaxis, new RotationMatrix(1, 0, 0, 0, 0, 1, 0, -1, 0), false) {
+    X_COUNTER_CLOCKWISE(EnumFacingProxy.Axis.X, new RotationMatrix(1, 0, 0, 0, 0, 1, 0, -1, 0), false) {
         @Override
         public RotationProxy getOpposite() {
             return X_CLOCKWISE;
         }
     },
 
-    Y_CLOCKWISE(Axis.Yaxis, new RotationMatrix(0, 0, 1, 0, 1, 0, -1, 0, 0), true) {
+    Y_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, 1, 0, 1, 0, -1, 0, 0), true) {
         @Override
         public RotationProxy getOpposite() {
             return RotationProxy.Y_COUNTER_CLOCKWISE;
         }
     },
-    Y_COUNTER_CLOCKWISE(Axis.Yaxis, new RotationMatrix(0, 0, -1, 0, 1, 0, 1, 0, 0), false) {
+    Y_COUNTER_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, -1, 0, 1, 0, 1, 0, 0), false) {
         @Override
         public RotationProxy getOpposite() {
             return RotationProxy.Y_CLOCKWISE;
         }
     },
 
-    Z_CLOCKWISE(Axis.Zaxis, new RotationMatrix(0, -1, 0, 1, 0, 0, 0, 0, 1), true) {
+    Z_CLOCKWISE(Axis.Z, new RotationMatrix(0, -1, 0, 1, 0, 0, 0, 0, 1), true) {
         @Override
         public RotationProxy getOpposite() {
             return RotationProxy.Z_COUNTER_CLOCKWISE;
         }
     },
-    Z_COUNTER_CLOCKWISE(Axis.Zaxis, new RotationMatrix(0, 1, 0, -1, 0, 0, 0, 0, 1), false) {
+    Z_COUNTER_CLOCKWISE(Axis.Z, new RotationMatrix(0, 1, 0, -1, 0, 0, 0, 0, 1), false) {
         @Override
         public RotationProxy getOpposite() {
             return Z_CLOCKWISE;
@@ -53,17 +54,33 @@ public enum RotationProxy {
 
     public static RotationProxy getRotation(Axis axis, boolean clockwise) {
         switch (axis) {
-        case Xaxis:
+            case X:
             return clockwise ? X_CLOCKWISE : X_COUNTER_CLOCKWISE;
-        case Yaxis:
+        case Y:
             return clockwise ? Y_CLOCKWISE : Y_COUNTER_CLOCKWISE;
-        case Zaxis:
+        case Z:
             return clockwise ? Z_CLOCKWISE : Z_COUNTER_CLOCKWISE;
         }
         return null;
     }
 
     public static RotationProxy getRotation(Vector3d vec) {
+        if (vec.x > 0)
+            return RotationProxy.X_CLOCKWISE;
+        if (vec.x < 0)
+            return RotationProxy.X_COUNTER_CLOCKWISE;
+        if (vec.y > 0)
+            return RotationProxy.Y_CLOCKWISE;
+        if (vec.y < 0)
+            return RotationProxy.Y_COUNTER_CLOCKWISE;
+        if (vec.z > 0)
+            return RotationProxy.Z_CLOCKWISE;
+        if (vec.z < 0)
+            return RotationProxy.Z_COUNTER_CLOCKWISE;
+        return null;
+    }
+
+    public static RotationProxy getRotation(Vector3i vec) {
         if (vec.x > 0)
             return RotationProxy.X_CLOCKWISE;
         if (vec.x < 0)
@@ -96,21 +113,21 @@ public enum RotationProxy {
 
     public boolean getRotatedComponentPositive(Axis axis) {
         switch (axis) {
-        case Xaxis:
+            case X:
             if (rotationMatrix.m00 != 0)
                 return rotationMatrix.m00 > 0;
             else if (rotationMatrix.m10 != 0)
                 return rotationMatrix.m10 > 0;
             else
                 return rotationMatrix.m20 > 0;
-        case Yaxis:
+        case Y:
             if (rotationMatrix.m01 != 0)
                 return rotationMatrix.m01 > 0;
             else if (rotationMatrix.m11 != 0)
                 return rotationMatrix.m11 > 0;
             else
                 return rotationMatrix.m21 > 0;
-        case Zaxis:
+        case Z:
             if (rotationMatrix.m02 != 0)
                 return rotationMatrix.m02 > 0;
             else if (rotationMatrix.m12 != 0)
@@ -123,27 +140,27 @@ public enum RotationProxy {
 
     public Axis getRotatedComponent(Axis axis) {
         switch (axis) {
-        case Xaxis:
+        case X:
             if (rotationMatrix.m00 != 0)
-                return Axis.Xaxis;
+                return Axis.X;
             else if (rotationMatrix.m10 != 0)
-                return Axis.Yaxis;
+                return Axis.Y;
             else
-                return Axis.Zaxis;
-        case Yaxis:
+                return Axis.Z;
+        case Y:
             if (rotationMatrix.m01 != 0)
-                return Axis.Xaxis;
+                return Axis.X;
             else if (rotationMatrix.m11 != 0)
-                return Axis.Yaxis;
+                return Axis.Y;
             else
-                return Axis.Zaxis;
-        case Zaxis:
+                return Axis.Z;
+        case Z:
             if (rotationMatrix.m02 != 0)
-                return Axis.Xaxis;
+                return Axis.X;
             else if (rotationMatrix.m12 != 0)
-                return Axis.Yaxis;
+                return Axis.Y;
             else
-                return Axis.Zaxis;
+                return Axis.Z;
         }
         return axis;
     }
@@ -283,6 +300,16 @@ public enum RotationProxy {
             int z = vec.x() * m20 + vec.y() * m21 + vec.z() * m22;
             return new Vector3i(x, y, z);
         }
+
+
+        public Vector3i transform(Vector3d vec) {
+            // TODO can we round here??? not sure
+            int x = (int) Math.round(vec.x() * m00 + vec.y() * m01 + vec.z() * m02);
+            int y = (int) Math.round(vec.x() * m10 + vec.y() * m11 + vec.z() * m12);
+            int z = (int) Math.round(vec.x() * m20 + vec.y() * m21 + vec.z() * m22);
+            return new Vector3i(x, y, z);
+        }
+
 
         public void transform(Tuple3f triple) {
             float x = triple.x * m00 + triple.y * m01 + triple.z * m02;

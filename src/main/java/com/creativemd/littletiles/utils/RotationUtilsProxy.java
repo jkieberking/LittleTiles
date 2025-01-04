@@ -1,9 +1,10 @@
 package com.creativemd.littletiles.utils;
 
 import com.creativemd.littletiles.common.utils.math.RotationProxy;
-
-import javax.vecmath.Vector3d;
-import javax.vecmath.Vector3f;
+import com.creativemd.littletiles.utils.EnumFacingProxy;
+import com.creativemd.littletiles.utils.EnumFacingProxy.Axis;
+import org.joml.Vector3d;
+import org.joml.Vector3i;
 
 
 // this is from creativecore common
@@ -86,66 +87,69 @@ public class RotationUtilsProxy {
         return axis;
     }
 
-//    public static EnumFacingProxy.Axis rotate(EnumFacingProxy.Axis axis, RotationProxy rotation) {
-//        if (axis == rotation.axis)
-//            return axis;
+    public static EnumFacingProxy.Axis rotate(EnumFacingProxy.Axis axis, RotationProxy rotation) {
+        if (axis == rotation.axis)
+            return axis;
+
+        switch (axis) {
+        case X:
+            if (rotation.axis == Axis.Y)
+                return Axis.Z;
+            return Axis.Y;
+        case Y:
+            if (rotation.axis == Axis.Z)
+                return Axis.X;
+            return Axis.Y;
+        case Z:
+            if (rotation.axis == Axis.X)
+                return Axis.Y;
+            return Axis.X;
+        }
+        return axis;
+    }
+
+    public static RotationProxy rotate(RotationProxy rotation, RotationProxy by) {
+        Vector3d vec = rotation.getVec();
+        by.getMatrix().transform(vec);
+        return RotationProxy.getRotation(vec);
+    }
+
+    public static RotationProxy rotate(EnumFacingProxy rotation, RotationProxy by) {
+        Vector3i vec = rotation.getDirectionVec();
+        by.getMatrix().transform(vec);
+        return RotationProxy.getRotation(vec);
+    }
+
+
+    public static EnumFacingProxy flip(EnumFacingProxy facing, Axis axis) {
+        if (facing.getAxis() == axis)
+            return facing.getOpposite();
+        return facing;
+    }
 //
-//        switch (axis) {
-//        case X:
-//            if (rotation.axis == Axis.Y)
-//                return Axis.Z;
-//            return Axis.Y;
-//        case Y:
-//            if (rotation.axis == Axis.Z)
-//                return Axis.X;
-//            return Axis.Y;
-//        case Z:
-//            if (rotation.axis == Axis.X)
-//                return Axis.Y;
-//            return Axis.X;
-//        }
-//        return axis;
-//    }
-//
-//    public static Rotation rotate(Rotation rotation, Rotation by) {
-//        Vector3d vec = rotation.getVec();
-//        by.getMatrix().transform(vec);
-//        return Rotation.getRotation(vec);
-//    }
-//
-//    public static Rotation flip(Rotation rotation, Axis axis) {
-//        return rotation.axis == axis ? rotation.getOpposite() : rotation;
-//    }
-//
-//    public static EnumFacing flip(EnumFacing facing, Axis axis) {
-//        if (facing.getAxis() == axis)
-//            return facing.getOpposite();
-//        return facing;
-//    }
-//
-//    public static EnumFacing rotate(EnumFacing facing, Rotation rotation) {
+//    public static EnumFacingProxy rotate(EnumFacingProxy facing, RotationProxy rotation) {
 //        Vec3i rotatedNormal = new Vec3i(rotation.getMatrix().getX(facing.getDirectionVec()), rotation.getMatrix().getY(facing.getDirectionVec()), rotation.getMatrix()
 //            .getZ(facing.getDirectionVec()));
-//        for (EnumFacing rotated : EnumFacing.VALUES) {
+//        for (EnumFacingProxy rotated : EnumFacing.VALUES) {
 //            if (rotated.getDirectionVec().equals(rotatedNormal))
 //                return rotated;
 //        }
 //        return facing;
 //    }
 //
-//    public static Vec3i rotate(Vec3i vec, Rotation rotation) {
+//    public static Vec3i rotate(Vec3i vec, RotationProxy rotation) {
 //        return rotation.getMatrix().transform(vec);
 //    }
 //
-//    public static BlockPos rotate(BlockPos vec, Rotation rotation) {
+//    public static BlockPos rotate(BlockPos vec, RotationProxy rotation) {
 //        return rotation.getMatrix().transform(vec);
 //    }
 //
-//    public static void rotate(Vector3f vector, Rotation rotation) {
+//    public static void rotate(Vector3f vector, RotationProxy rotation) {
 //        rotation.getMatrix().transform(vector);
 //    }
 //
-//    public static void rotate(Vector3d vector, Rotation rotation) {
+//    public static void rotate(Vector3d vector, RotationProxy rotation) {
 //        rotation.getMatrix().transform(vector);
 //    }
 //
@@ -205,7 +209,7 @@ public class RotationUtilsProxy {
 //        return index == 1 || index == 3 || index == 5;
 //    }
 //
-//    public static Axis getUAxisFromFacing(EnumFacing facing) {
+//    public static Axis getUAxisFromFacing(EnumFacingProxy facing) {
 //        switch (facing.getAxis()) {
 //        case X:
 //            return Axis.Z;
@@ -217,7 +221,7 @@ public class RotationUtilsProxy {
 //        return null;
 //    }
 //
-//    public static Axis getVAxisFromFacing(EnumFacing facing) {
+//    public static Axis getVAxisFromFacing(EnumFacingProxy facing) {
 //        switch (facing.getAxis()) {
 //        case X:
 //            return Axis.Y;
@@ -229,7 +233,7 @@ public class RotationUtilsProxy {
 //        return null;
 //    }
 //
-//    public static float getUFromFacing(EnumFacing facing, float x, float y, float z) {
+//    public static float getUFromFacing(EnumFacingProxy facing, float x, float y, float z) {
 //        switch (facing.getAxis()) {
 //        case X:
 //            return z;
@@ -241,7 +245,7 @@ public class RotationUtilsProxy {
 //        return 0;
 //    }
 //
-//    public static float getVFromFacing(EnumFacing facing, float x, float y, float z) {
+//    public static float getVFromFacing(EnumFacingProxy facing, float x, float y, float z) {
 //        switch (facing.getAxis()) {
 //        case X:
 //            return y;
@@ -255,7 +259,7 @@ public class RotationUtilsProxy {
 //
 //    static BooleanRotation[][] rotations = new BooleanRotation[3][4];
 //
-//    public static enum BooleanRotation {
+//    public static enum BooleanRotationProxy {
 //
 //        // one: y, two: z
 //        X_PP(Axis.X, 0, true, true),
@@ -311,27 +315,27 @@ public class RotationUtilsProxy {
 //            }
 //        }
 //
-//        public BooleanRotation clockwise() {
+//        public BooleanRotationProxy clockwise() {
 //            if (index == 3)
 //                return rotations[axis.ordinal()][0];
 //            return rotations[axis.ordinal()][index + 1];
 //        }
 //
-//        public BooleanRotation counterClockwise() {
+//        public BooleanRotationProxy counterClockwise() {
 //            if (index == 0)
 //                return rotations[axis.ordinal()][3];
 //            return rotations[axis.ordinal()][index - 1];
 //        }
 //
-//        public EnumFacing clockwiseMaxFacing() {
+//        public EnumFacingProxy clockwiseMaxFacing() {
 //            return getFacingInBetween(clockwise());
 //        }
 //
-//        public EnumFacing counterMaxClockwiseFacing() {
+//        public EnumFacingProxy counterMaxClockwiseFacing() {
 //            return getFacingInBetween(counterClockwise());
 //        }
 //
-//        private EnumFacing getFacingInBetween(BooleanRotation other) {
+//        private EnumFacingProxy getFacingInBetween(BooleanRotationProxy other) {
 //            if (positiveOne != other.positiveOne)
 //                return EnumFacing.getFacingFromAxis(positiveTwo ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, getTwo(axis));
 //            else if (positiveTwo != other.positiveTwo)
@@ -344,12 +348,12 @@ public class RotationUtilsProxy {
 //            return positiveOne == (VectorUtils.get(BooleanRotation.getOne(axis), vec) >= 0) && positiveTwo == (VectorUtils.get(BooleanRotation.getTwo(axis), vec) >= 0);
 //        }
 //
-//        public static BooleanRotation getRotationState(Axis axis, Vector3d vec) {
+//        public static BooleanRotationProxy getRotationState(Axis axis, Vector3d vec) {
 //            boolean positiveOne = VectorUtils.get(BooleanRotation.getOne(axis), vec) >= 0;
 //            boolean positiveTwo = VectorUtils.get(BooleanRotation.getTwo(axis), vec) >= 0;
 //
 //            for (int i = 0; i < rotations[axis.ordinal()].length; i++) {
-//                BooleanRotation rotation = rotations[axis.ordinal()][i];
+//                BooleanRotationProxy RotationProxy = rotations[axis.ordinal()][i];
 //                if (rotation.positiveOne == positiveOne && rotation.positiveTwo == positiveTwo)
 //                    return rotation;
 //            }
@@ -369,7 +373,7 @@ public class RotationUtilsProxy {
 //        }
 //    }
 //
-//    public static Rotation getRotation(net.minecraft.util.Rotation rotationIn) {
+//    public static RotationProxy getRotation(net.minecraft.util.RotationProxy rotationIn) {
 //        switch (rotationIn) {
 //            try {
 //                case CLOCKWISE_90:
@@ -386,7 +390,7 @@ public class RotationUtilsProxy {
 //        }
 //    }
 //
-//    public static int getRotationCount(net.minecraft.util.Rotation rotationIn) {
+//    public static int getRotationCount(net.minecraft.util.RotationProxy rotationIn) {
 //        if (rotationIn == net.minecraft.util.Rotation.CLOCKWISE_180)
 //            return 2;
 //        return 1;

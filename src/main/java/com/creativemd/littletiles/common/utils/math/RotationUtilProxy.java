@@ -31,26 +31,26 @@ public class RotationUtilProxy {
 //        return facingNames;
 //    }
 //
-    public static EnumFacing getFacing(Axis axis) {
+    public static EnumFacingProxy getFacing(Axis axis) {
         switch (axis) {
             case Xaxis:
-                return EnumFacing.EAST;
+                return EnumFacingProxy.EAST;
             case Yaxis:
-                return EnumFacing.UP;
+                return EnumFacingProxy.UP;
             case Zaxis:
-                return EnumFacing.NORTH;
+                return EnumFacingProxy.NORTH;
         }
         return null;
     }
 
-    public static EnumFacing getFacing(EnumFacingProxy.Axis axis) {
+    public static EnumFacingProxy getFacing(EnumFacingProxy.Axis axis) {
         switch (axis) {
             case X:
-                return EnumFacing.EAST;
+                return EnumFacingProxy.EAST;
             case Y:
-                return EnumFacing.UP;
+                return EnumFacingProxy.UP;
             case Z:
-                return EnumFacing.NORTH;
+                return EnumFacingProxy.NORTH;
         }
         return null;
     }
@@ -85,6 +85,30 @@ public class RotationUtilProxy {
         return axis;
     }
 
+    public static EnumFacingProxy.Axis getOneEnumFacingProxy(Axis axis) {
+        switch (axis) {
+            case Xaxis:
+            case Yaxis:
+                return EnumFacingProxy.Axis.Y;
+            case Zaxis:
+                return EnumFacingProxy.Axis.X;
+        }
+
+        throw new RuntimeException("No axis found");
+    }
+
+    public static EnumFacingProxy.Axis getOne(EnumFacingProxy.Axis axis) {
+        switch (axis) {
+            case X:
+                return EnumFacingProxy.Axis.Y;
+            case Y:
+                return EnumFacingProxy.Axis.Y;
+            case Z:
+                return EnumFacingProxy.Axis.X;
+        }
+        return axis;
+    }
+
     public static EnumFacingProxy.Axis getOneEnumFacing(Axis axis) {
         switch (axis) {
             case Xaxis:
@@ -107,6 +131,19 @@ public class RotationUtilProxy {
                 return Axis.Yaxis;
         }
         return axis;
+    }
+
+    public static EnumFacingProxy.Axis getTwoEnumFacingProxy(Axis axis) {
+        switch (axis) {
+            case Xaxis:
+                return EnumFacingProxy.Axis.Z;
+            case Yaxis:
+                return EnumFacingProxy.Axis.X;
+            case Zaxis:
+                return EnumFacingProxy.Axis.Y;
+        }
+
+        throw new RuntimeException("no enumfacing proxy axis found from rotationtutils axis");
     }
 
     public static EnumFacingProxy.Axis getTwoEnumFacing(Axis axis) {

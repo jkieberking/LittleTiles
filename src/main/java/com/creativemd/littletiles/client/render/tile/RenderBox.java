@@ -2,12 +2,17 @@ package com.creativemd.littletiles.client.render.tile;
 
 import com.cleanroommc.modularui.utils.Color;
 import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.littletiles.client.render.block.BakedQuadProxy;
 import com.creativemd.littletiles.client.render.face.FaceRenderType;
 import com.creativemd.littletiles.client.render.face.IFaceRenderType;
 import com.creativemd.littletiles.common.tile.math.box.AlignedBox;
 import com.creativemd.littletiles.common.tile.math.vec.VectorFan;
+import com.creativemd.littletiles.common.utils.math.Ray2dProxy;
+import com.creativemd.littletiles.common.utils.math.geo.NormalPlaneProxy;
+import com.creativemd.littletiles.utils.EnumFacingProxy;
+import com.creativemd.littletiles.utils.EnumFacingProxy.Axis;
+import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import net.minecraft.block.Block;
-import net.minecraft.util.EnumFacing;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
@@ -89,7 +94,7 @@ public class RenderBox extends AlignedBox {
 //        return this;
 //    }
 //
-//    public void setQuad(EnumFacing facing, List<BakedQuad> quads) {
+//    public void setQuad(EnumFacingProxy facing, List<BakedQuad> quads) {
 //        Object quad = quads == null || quads.isEmpty() ? null : quads.size() == 1 ? quads.get(0) : quads;
 //        switch (facing) {
 //        case DOWN:
@@ -113,7 +118,7 @@ public class RenderBox extends AlignedBox {
 //        }
 //    }
 //
-//    public Object getQuad(EnumFacing facing) {
+//    public Object getQuad(EnumFacingProxy facing) {
 //        switch (facing) {
 //        case DOWN:
 //            return quadDown;
@@ -166,7 +171,7 @@ public class RenderBox extends AlignedBox {
 //            return block.getDefaultState();
 //    }
 //
-//    public void setType(EnumFacing facing, IFaceRenderType renderer) {
+//    public void setType(EnumFacingProxy facing, IFaceRenderType renderer) {
 //        switch (facing) {
 //        case DOWN:
 //            renderDown = renderer;
@@ -189,7 +194,7 @@ public class RenderBox extends AlignedBox {
 //        }
 //    }
 //
-    public IFaceRenderType getType(EnumFacing facing) {
+    public IFaceRenderType getType(EnumFacingProxy facing) {
         switch (facing) {
         case DOWN:
             return renderDown;
@@ -207,7 +212,7 @@ public class RenderBox extends AlignedBox {
         return FaceRenderType.INSIDE_RENDERED;
     }
 
-    public boolean renderSide(EnumFacing facing) {
+    public boolean renderSide(EnumFacingProxy facing) {
         switch (facing) {
         case DOWN:
             return renderDown.shouldRender();
@@ -224,8 +229,8 @@ public class RenderBox extends AlignedBox {
         }
         return true;
     }
-//
-//    public boolean intersectsWithFace(EnumFacing facing, RenderInformationHolder holder, BlockPos offset) {
+
+//    public boolean intersectsWithFace(EnumFacingProxy facing, RenderInformationHolder holder, BlockPos offset) {
 //        switch (facing.getAxis()) {
 //        case X:
 //            return holder.maxY > this.minY - offset.getY() && holder.minY < this.maxY - offset.getY() && holder.maxZ > this.minZ - offset.getZ() && holder.minZ < this.maxZ - offset.getZ();
@@ -236,10 +241,10 @@ public class RenderBox extends AlignedBox {
 //        }
 //        return false;
 //    }
-//
-    protected Object getRenderQuads(EnumFacing facing) {
-//        if (getType(facing).hasCachedFans())
-//            return getType(facing).getCachedFans();
+
+    protected Object getRenderQuads(EnumFacingProxy facing) {
+        if (getType(facing).hasCachedFans())
+            return getType(facing).getCachedFans();
         switch (facing) {
         case DOWN:
             return DOWN;
@@ -256,24 +261,24 @@ public class RenderBox extends AlignedBox {
         }
         return null;
     }
-//
-//    protected List<BakedQuad> getBakedQuad(IBlockAccess world, IBakedModel blockModel, IBlockState state, EnumFacing facing, BlockPos pos, BlockRenderLayer layer, long rand) {
+
+//    protected List<BakedQuad> getBakedQuad(IBlockAccess world, IBakedModel blockModel, IBlockState state, EnumFacingProxy facing, BlockPos pos, BlockRenderLayer layer, long rand) {
 //        return OptifineHelper.getRenderQuads(blockModel.getQuads(state, facing, rand), world, state, pos, facing, layer, rand);
 //    }
-//
-//    protected float getOffsetX() {
-//        return minX;
-//    }
-//
-//    protected float getOffsetY() {
-//        return minY;
-//    }
-//
-//    protected float getOffsetZ() {
-//        return minZ;
-//    }
-//
-    protected float getOverallScale(EnumFacing facing) {
+
+    protected float getOffsetX() {
+        return minX;
+    }
+
+    protected float getOffsetY() {
+        return minY;
+    }
+
+    protected float getOffsetZ() {
+        return minZ;
+    }
+
+    protected float getOverallScale(EnumFacingProxy facing) {
         return getType(facing).getScale();
     }
 
@@ -289,15 +294,15 @@ public class RenderBox extends AlignedBox {
         return maxZ - minZ;
     }
 
-    protected boolean scaleAndOffsetQuads(EnumFacing facing) {
+    protected boolean scaleAndOffsetQuads(EnumFacingProxy facing) {
         return true;
     }
 
-    protected boolean onlyScaleOnceNoOffset(EnumFacing facing) {
+    protected boolean onlyScaleOnceNoOffset(EnumFacingProxy facing) {
         return getType(facing).hasCachedFans();
     }
 //
-//    public List<BakedQuad> getBakedQuad(IBlockAccess world, @Nullable BlockPos pos, BlockPos offset, IBlockState state, IBakedModel blockModel, EnumFacing facing, BlockRenderLayer layer, long rand, boolean overrideTint, int defaultColor) {
+//    public List<BakedQuad> getBakedQuad(IBlockAccess world, @Nullable BlockPos pos, BlockPos offset, IBlockState state, IBakedModel blockModel, EnumFacingProxy facing, BlockRenderLayer layer, long rand, boolean overrideTint, int defaultColor) {
 //        List<BakedQuad> blockQuads = getBakedQuad(world, blockModel, state, facing, pos, layer, rand);
 //
 //        if (blockQuads.isEmpty())
@@ -430,8 +435,8 @@ public class RenderBox extends AlignedBox {
         GL11.glTranslated(x, y, z);
 
         if (previewScalingAndOffset()) {
-            for (int i = 0; i < EnumFacing.values().length; i++) {
-                Object renderQuads = getRenderQuads(EnumFacing.values()[i]);
+            for (int i = 0; i < EnumFacingProxy.values().length; i++) {
+                Object renderQuads = getRenderQuads(EnumFacingProxy.values()[i]);
                 if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
                         ((List<VectorFan>) renderQuads).get(j)
@@ -441,8 +446,8 @@ public class RenderBox extends AlignedBox {
                         .renderPreview(getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
             }
         } else {
-            for (int i = 0; i < EnumFacing.values().length; i++) {
-                Object renderQuads = getRenderQuads(EnumFacing.values()[i]);
+            for (int i = 0; i < EnumFacingProxy.values().length; i++) {
+                Object renderQuads = getRenderQuads(EnumFacingProxy.values()[i]);
                 if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
                         ((List<VectorFan>) renderQuads).get(j).renderPreview(red, green, blue, alpha);
@@ -466,8 +471,8 @@ public class RenderBox extends AlignedBox {
 //        GlStateManager.translate(x, y, z);
 //
 //        if (previewScalingAndOffset()) {
-//            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
-//                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+//            for (int i = 0; i < EnumFacingProxy.VALUES.length; i++) {
+//                Object renderQuads = getRenderQuads(EnumFacingProxy.VALUES[i]);
 //                if (renderQuads instanceof List)
 //                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
 //                        ((List<VectorFan>) renderQuads).get(j)
@@ -477,8 +482,8 @@ public class RenderBox extends AlignedBox {
 //                        .renderLines(getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
 //            }
 //        } else {
-//            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
-//                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+//            for (int i = 0; i < EnumFacingProxy.VALUES.length; i++) {
+//                Object renderQuads = getRenderQuads(EnumFacingProxy.VALUES[i]);
 //                if (renderQuads instanceof List)
 //                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
 //                        ((List<VectorFan>) renderQuads).get(j).renderLines(red, green, blue, alpha);
@@ -501,8 +506,8 @@ public class RenderBox extends AlignedBox {
 //        GlStateManager.translate(x, y, z);
 //
 //        if (previewScalingAndOffset()) {
-//            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
-//                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+//            for (int i = 0; i < EnumFacingProxy.VALUES.length; i++) {
+//                Object renderQuads = getRenderQuads(EnumFacingProxy.VALUES[i]);
 //                if (renderQuads instanceof List)
 //                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
 //                        ((List<VectorFan>) renderQuads).get(j)
@@ -512,8 +517,8 @@ public class RenderBox extends AlignedBox {
 //                        .renderLines(getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
 //            }
 //        } else {
-//            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
-//                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+//            for (int i = 0; i < EnumFacingProxy.VALUES.length; i++) {
+//                Object renderQuads = getRenderQuads(EnumFacingProxy.VALUES[i]);
 //                if (renderQuads instanceof List)
 //                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
 //                        ((List<VectorFan>) renderQuads).get(j).renderLines(red, green, blue, alpha, center, grow);
@@ -530,102 +535,102 @@ public class RenderBox extends AlignedBox {
 //        return !getBlockState().getMaterial().blocksLight() || !getBlockState().getMaterial().isSolid() || !getBlockState().isOpaqueCube();
 //    }
 //
-//    public class RenderInformationHolder {
-//
-//        public final EnumFacing facing;
-//        public final int color;
-//        public BlockPos offset;
-//        public boolean shouldOverrideColor;
-//
-//        public BakedQuad quad;
-//
-//        public NormalPlane normal;
-//        public Ray2d ray = new Ray2d(Axis.X, Axis.Y, 0, 0, 0, 0);
-//
-//        public final boolean scaleAndOffset;
-//
-//        public final float offsetX;
-//        public final float offsetY;
-//        public final float offsetZ;
-//
-//        public final float scaleX;
-//        public final float scaleY;
-//        public final float scaleZ;
-//
-//        public float minX;
-//        public float minY;
-//        public float minZ;
-//        public float maxX;
-//        public float maxY;
-//        public float maxZ;
-//
-//        public float sizeX;
-//        public float sizeY;
-//        public float sizeZ;
-//
-//        public boolean uvInverted;
-//        public float sizeU;
-//        public float sizeV;
-//
-//        public RenderInformationHolder(EnumFacing facing, int color) {
-//            this.color = color;
-//            this.facing = facing;
-//            RenderBox box = getBox();
-//            scaleAndOffset = box.scaleAndOffsetQuads(facing);
-//            if (scaleAndOffset) {
-//                if (box.onlyScaleOnceNoOffset(facing)) {
-//                    this.offsetX = this.offsetY = this.offsetZ = 0;
-//                    this.scaleX = this.scaleY = this.scaleZ = box.getOverallScale(facing);
-//                } else {
-//                    this.offsetX = box.getOffsetX();
-//                    this.offsetY = box.getOffsetY();
-//                    this.offsetZ = box.getOffsetZ();
-//                    this.scaleX = box.getScaleX();
-//                    this.scaleY = box.getScaleY();
-//                    this.scaleZ = box.getScaleZ();
-//                }
-//
-//            } else {
-//                this.offsetX = this.offsetY = this.offsetZ = 0;
-//                this.scaleX = this.scaleY = this.scaleZ = 0;
-//            }
-//        }
-//
-//        public void setQuad(BakedQuad quad, boolean overrideTint, int defaultColor) {
-//            this.quad = quad;
-//            this.shouldOverrideColor = overrideTint && (defaultColor == -1 || quad.hasTintIndex()) && color != -1;
-//        }
-//
-//        public void setBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
-//            this.minX = Math.min(minX, maxX);
-//            this.minY = Math.min(minY, maxY);
-//            this.minZ = Math.min(minZ, maxZ);
-//            this.maxX = Math.max(minX, maxX);
-//            this.maxY = Math.max(minY, maxY);
-//            this.maxZ = Math.max(minZ, maxZ);
-//
-//            this.sizeX = this.maxX - this.minX;
-//            this.sizeY = this.maxY - this.minY;
-//            this.sizeZ = this.maxZ - this.minZ;
-//        }
-//
-//        public RenderBox getBox() {
-//            return RenderBox.this;
-//        }
-//
-//        public boolean hasBounds() {
-//            switch (facing.getAxis()) {
-//            case X:
-//                return minY != 0 || maxY != 1 || minZ != 0 || maxZ != 1;
-//            case Y:
-//                return minX != 0 || maxX != 1 || minZ != 0 || maxZ != 1;
-//            case Z:
-//                return minX != 0 || maxX != 1 || minY != 0 || maxY != 1;
-//            }
-//            return false;
-//        }
-//    }
-//
+    public class RenderInformationHolder {
+
+        public final EnumFacingProxy facing;
+        public final int color;
+        public BlockPos offset;
+        public boolean shouldOverrideColor;
+
+        public BakedQuadProxy quad;
+
+        public NormalPlaneProxy normal;
+        public Ray2dProxy ray = new Ray2dProxy(EnumFacingProxy.Axis.X, Axis.Y, 0, 0, 0, 0);
+
+        public final boolean scaleAndOffset;
+
+        public final float offsetX;
+        public final float offsetY;
+        public final float offsetZ;
+
+        public final float scaleX;
+        public final float scaleY;
+        public final float scaleZ;
+
+        public float minX;
+        public float minY;
+        public float minZ;
+        public float maxX;
+        public float maxY;
+        public float maxZ;
+
+        public float sizeX;
+        public float sizeY;
+        public float sizeZ;
+
+        public boolean uvInverted;
+        public float sizeU;
+        public float sizeV;
+
+        public RenderInformationHolder(EnumFacingProxy facing, int color) {
+            this.color = color;
+            this.facing = facing;
+            RenderBox box = getBox();
+            scaleAndOffset = box.scaleAndOffsetQuads(facing);
+            if (scaleAndOffset) {
+                if (box.onlyScaleOnceNoOffset(facing)) {
+                    this.offsetX = this.offsetY = this.offsetZ = 0;
+                    this.scaleX = this.scaleY = this.scaleZ = box.getOverallScale(facing);
+                } else {
+                    this.offsetX = box.getOffsetX();
+                    this.offsetY = box.getOffsetY();
+                    this.offsetZ = box.getOffsetZ();
+                    this.scaleX = box.getScaleX();
+                    this.scaleY = box.getScaleY();
+                    this.scaleZ = box.getScaleZ();
+                }
+
+            } else {
+                this.offsetX = this.offsetY = this.offsetZ = 0;
+                this.scaleX = this.scaleY = this.scaleZ = 0;
+            }
+        }
+
+        public void setQuad(BakedQuadProxy quad, boolean overrideTint, int defaultColor) {
+            this.quad = quad;
+            this.shouldOverrideColor = overrideTint && (defaultColor == -1 || quad.hasTintIndex()) && color != -1;
+        }
+
+        public void setBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            this.minX = Math.min(minX, maxX);
+            this.minY = Math.min(minY, maxY);
+            this.minZ = Math.min(minZ, maxZ);
+            this.maxX = Math.max(minX, maxX);
+            this.maxY = Math.max(minY, maxY);
+            this.maxZ = Math.max(minZ, maxZ);
+
+            this.sizeX = this.maxX - this.minX;
+            this.sizeY = this.maxY - this.minY;
+            this.sizeZ = this.maxZ - this.minZ;
+        }
+
+        public RenderBox getBox() {
+            return RenderBox.this;
+        }
+
+        public boolean hasBounds() {
+            switch (facing.getAxis()) {
+            case X:
+                return minY != 0 || maxY != 1 || minZ != 0 || maxZ != 1;
+            case Y:
+                return minX != 0 || maxX != 1 || minZ != 0 || maxZ != 1;
+            case Z:
+                return minX != 0 || maxX != 1 || minY != 0 || maxY != 1;
+            }
+            return false;
+        }
+    }
+
     private static class VectorFanSimple extends VectorFan {
 
         public VectorFanSimple(Vector3f[] coords) {

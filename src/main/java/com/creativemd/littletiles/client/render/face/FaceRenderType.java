@@ -1,5 +1,9 @@
 package com.creativemd.littletiles.client.render.face;
 
+import com.creativemd.littletiles.common.tile.math.vec.VectorFan;
+
+import java.util.List;
+
 public enum FaceRenderType implements IFaceRenderType {
 
     INSIDE_RENDERED(true, false),
@@ -30,10 +34,10 @@ public enum FaceRenderType implements IFaceRenderType {
         return false;
     }
 
-//    @Override
-//    public List<VectorFan> getCachedFans() {
-//        return null;
-//    }
+    @Override
+    public List<VectorFan> getCachedFans() {
+        return null;
+    }
 
     @Override
     public float getScale() {

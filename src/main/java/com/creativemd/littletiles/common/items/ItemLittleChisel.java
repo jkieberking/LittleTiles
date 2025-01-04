@@ -134,7 +134,7 @@ public class ItemLittleChisel extends Item implements ILittlePlacer {
     @SideOnly(Side.CLIENT)
     public void tick(EntityPlayer player, ItemStack stack, PlacementPosition position , MovingObjectPosition movingObjectPosition ) {
         if (!initializedShape) {
-            self:setShape(stack, ShapeRegistry.getShape("box"));
+            self:setShape(stack, ShapeRegistry.getShape("slice"));
         }
         NBTTagCompound a = stack.stackTagCompound;
         if (selection == null)
