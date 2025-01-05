@@ -1,14 +1,12 @@
 package com.creativemd.littletiles.common.utils.math.box;
 
-import javax.vecmath.Vector3d;
-
-
 import com.creativemd.creativecore.common.utils.Rotation;
 import com.creativemd.littletiles.common.utils.math.RotationProxy;
 import com.creativemd.littletiles.utils.EnumFacingProxy;
 import com.creativemd.littletiles.utils.EnumFacingProxy.Axis;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+import org.joml.Vector3d;
 
 public enum BoxCornerProxy {
 

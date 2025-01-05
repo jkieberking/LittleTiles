@@ -8,13 +8,16 @@ import com.creativemd.littletiles.common.tile.math.box.LittleTransformableBox.Ve
 
 import com.creativemd.littletiles.common.tile.math.vec.VectorFan;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+import com.creativemd.littletiles.common.utils.math.VectorUtilsProxy;
 import com.creativemd.littletiles.common.utils.math.box.CreativeAxisAlignedBBProxy;
 import com.creativemd.littletiles.common.utils.math.geo.NormalPlaneProxy;
+import com.creativemd.littletiles.common.utils.math.vec.Vec3dProxy;
 import com.creativemd.littletiles.utils.EnumFacingProxy;
 import com.creativemd.littletiles.utils.EnumFacingProxy.Axis;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+import paulscode.sound.Vector3D;
 
 public class TransformableAxisBox extends CreativeAxisAlignedBBProxy {
 
@@ -186,7 +189,7 @@ public class TransformableAxisBox extends CreativeAxisAlignedBBProxy {
                         .getFacingFromAxis(EnumFacingProxy.AxisDirection.NEGATIVE, two)), new NormalPlaneProxy(one, (float) maxOne, EnumFacingProxy
                                 .getFacingFromAxis(EnumFacingProxy.AxisDirection.POSITIVE, one)), new NormalPlaneProxy(two, (float) maxTwo, EnumFacingProxy.getFacingFromAxis(EnumFacingProxy.AxisDirection.POSITIVE, two)) };
 
-        VectorFan tempFan = new VectorFan(null);
+        VectorFan tempFan = new VectorFan(/* @TODO can we pass null here? */(org.joml.Vector3f[]) null);
         VectorFanFaceCache front = getFaceCache(direction.getOpposite());
         if (front.hasAxisStrip()) {
             for (VectorFan vectorFan : front.axisStrips) {
@@ -227,8 +230,8 @@ public class TransformableAxisBox extends CreativeAxisAlignedBBProxy {
                     continue;
 
                 for (int j = 0; j < tempFan.count(); j++) {
-                    Vector3f vec = tempFan.get(j);
-                    double tempDistance = positive ? VectorUtils.get(axis, vec) - otherAxis : otherAxis - VectorUtils.get(axis, vec);
+                    org.joml.Vector3f vec = tempFan.get(j);
+                    double tempDistance = positive ? VectorUtilsProxy.get(axis, vec) - otherAxis : otherAxis - VectorUtilsProxy.get(axis, vec);
 
                     if (tempDistance < 0 && !OrientatedBoundingBox.equals(tempDistance, 0))
                         return offset;
@@ -282,20 +285,20 @@ public class TransformableAxisBox extends CreativeAxisAlignedBBProxy {
     }
 
     @Nullable
-    protected Vec3d collideWithPlane(Axis axis, double value, Vec3d vecA, Vec3d vecB) {
-        Vec3d vec3d = axis != Axis.X ? axis != Axis.Y ? vecA.getIntermediateWithZValue(vecB, value) : vecA.getIntermediateWithYValue(vecB, value) : vecA
+    protected Vec3dProxy collideWithPlane(Axis axis, double value, Vec3dProxy vecA, Vec3dProxy vecB) {
+        Vec3dProxy vec3dProxy = axis != Axis.X ? axis != Axis.Y ? vecA.getIntermediateWithZValue(vecB, value) : vecA.getIntermediateWithYValue(vecB, value) : vecA
                 .getIntermediateWithXValue(vecB, value);
-        return vec3d != null && intersectsWithAxis(axis, vec3d) ? vec3d : null;
+        return vec3dProxy != null && intersectsWithAxis(axis, vec3dProxy) ? vec3dProxy : null;
     }
 
-    public boolean intersectsWithAxis(Axis axis, Vec3d vec) {
+    public boolean intersectsWithAxis(Axis axis, Vec3dProxy vec) {
         switch (axis) {
         case X:
-            return intersectsWithYZ(vec);
+            return box.intersectsWithYZ(context, vec);
         case Y:
-            return intersectsWithXZ(vec);
+            return box.intersectsWithXZ(context, vec);
         case Z:
-            return intersectsWithXY(vec);
+            return box.intersectsWithXY(context, vec);
         }
         return false;
     }

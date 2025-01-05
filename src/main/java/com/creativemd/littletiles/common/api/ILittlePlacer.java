@@ -1,5 +1,6 @@
 package com.creativemd.littletiles.common.api;
 
+import com.creativemd.littletiles.common.utils.shape.LittleShape;
 import cpw.mods.fml.relauncher.SideOnly;
 
 //import com.creativemd.creativecore.common.utils.math.Rotation;
@@ -26,6 +27,10 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 
 public interface ILittlePlacer extends ILittleTool {
+
+    public boolean getIsShapeInitialized();
+    public void setShapeInitialized();
+    public void setShape(ItemStack stack, LittleShape shape);
 
     public boolean hasLittlePreview(ItemStack stack);
 

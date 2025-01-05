@@ -20,6 +20,7 @@ import com.creativemd.littletiles.common.utils.math.geo.NormalPlaneProxy;
 import com.creativemd.littletiles.common.utils.math.geo.Ray3fProxy;
 import com.creativemd.littletiles.utils.EnumFacingProxy.Axis;
 import com.creativemd.littletiles.utils.RotationUtilsProxy;
+import net.minecraft.client.renderer.Tessellator;
 import org.apache.commons.lang3.BooleanUtils;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -273,40 +274,15 @@ public class VectorFan {
 //            bufferbuilder.pos(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
 //        }
 //        tessellator.draw();
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
+        tessellator.setColorRGBA(red, green, blue, alpha);
         for (int i = 0; i < coords.length; i++) {
             Vector3f vec = coords[i];
-//            tessellator.addVertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ);
-
-            GL11.glPushMatrix();
-            double cubeX = vec.x * scaleX + offX / 2D;
-            // if(posX < 0 && side != ForgeDirection.WEST && side != ForgeDirection.EAST)
-            // cubeX = x+(1-cube.minX)+size.getPosX()/2D;
-            double cubeY = vec.y * scaleY + offY / 2D;
-            // if(posY < 0 && side != ForgeDirection.DOWN)
-            // cubeY = y-cube.minY+size.getPosY()/2D;
-            double cubeZ = vec.z * scaleZ + offZ / 2D;
-            // if(posZ < 0 && side != ForgeDirection.NORTH)
-            // cubeZ = z-cube.minZ+size.getPosZ()/2D;
-            /*
-             * double cubeX = x; if(posX < 0) x -= 1; double cubeY = y; double cubeZ = z;
-             */
-//            Vec3 color = previewTile.getPreviewColor();
-            RenderHelper3D.renderBlock(
-                cubeX,
-                cubeY,
-                cubeZ,
-                scaleX,
-                scaleY,
-                scaleZ,
-                0,
-                0,
-                0,
-                red,
-                green,
-                blue,
-                alpha);
-            GL11.glPopMatrix();
+            tessellator.addVertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ);
         }
+        tessellator.draw();
+
     }
 //
 //    public void renderLines(int red, int green, int blue, int alpha) {
@@ -707,7 +683,7 @@ public class VectorFan {
         double a, f, u, v;
         edge1.sub(triangle1, triangle0);
         edge2.sub(triangle2, triangle0);
-        h.cross(ray.direction, edge2);
+        edge2.cross(ray.direction, h);
         a = edge1.dot(h);
         if (a > -EPSILON && a < EPSILON)
             throw new ParallelException(); // This ray is parallel to this triangle.
@@ -718,7 +694,7 @@ public class VectorFan {
         if (u < 0.0 || u > 1.0)
             return null;
 
-        q.cross(s, edge1);
+        edge1.cross(s, q);
         v = f * ray.direction.dot(q);
         if (v < 0.0 || u + v > 1.0)
             return null;
@@ -751,7 +727,7 @@ public class VectorFan {
         b.sub(coords[0]);
 
         Vector3f normal = new Vector3f();
-        normal.cross(a, b);
+        a.cross(b, normal);
         return new NormalPlaneProxy(coords[0], normal);
     }
 
@@ -773,7 +749,7 @@ public class VectorFan {
         }
 
         Vector3f normal = new Vector3f();
-        normal.cross(a, b);
+        a.cross(b, normal);
 
         Vector3f origin = new Vector3f();
         if (holder.scaleAndOffset) {

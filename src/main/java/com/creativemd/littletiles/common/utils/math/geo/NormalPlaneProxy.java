@@ -87,24 +87,24 @@ public class NormalPlaneProxy {
 
         float t = (normal.dot(origin) - normal.dot(ray.origin)) / normal.dot(ray.direction);
         Vector3f point = new Vector3f(ray.direction);
-        point.scale(t);
+        LittleUtils.scaleInPlace(point, t);
         point.add(ray.origin);
         return point;
     }
 
     public Float project(Axis one, Axis two, Axis axis, float valueOne, float valueTwo) {
         Vector3f lineOrigin = new Vector3f();
-        VectorUtils.set(lineOrigin, valueOne, one);
-        VectorUtils.set(lineOrigin, valueTwo, two);
+        VectorUtilsProxy.set(lineOrigin, valueOne, one);
+        VectorUtilsProxy.set(lineOrigin, valueTwo, two);
 
         Vector3f lineDirection = new Vector3f();
-        VectorUtils.set(lineDirection, 1, axis);
+        VectorUtilsProxy.set(lineDirection, 1, axis);
 
         if (normal.dot(lineDirection) == 0)
             return null;
 
         float t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
-        return VectorUtils.get(axis, lineOrigin) + VectorUtils.get(axis, lineDirection) * t;
+        return VectorUtilsProxy.get(axis, lineOrigin) + VectorUtilsProxy.get(axis, lineDirection) * t;
     }
 
     @Override

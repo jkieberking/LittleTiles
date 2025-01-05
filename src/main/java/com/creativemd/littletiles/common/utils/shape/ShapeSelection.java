@@ -5,6 +5,7 @@ package com.creativemd.littletiles.common.utils.shape;
 //import com.creativemd.creativecore.common.utils.math.VectorUtils;
 //import com.creativemd.creativecore.common.utils.mc.TickUtils;
 //import com.creativemd.littletiles.client.gui.SubGuiMarkShapeSelection;
+import com.creativemd.littletiles.common.api.ILittlePlacer;
 import com.creativemd.littletiles.common.api.ILittleTool;
 //import com.creativemd.littletiles.common.block.BlockTile;
 //import com.creativemd.littletiles.common.tile.math.box.LittleBox;
@@ -90,6 +91,14 @@ public class ShapeSelection implements Iterable<ShapeSelection.ShapeSelectPos>, 
     public NBTTagCompound getNBT() {
         if (!stack.hasTagCompound())
             stack.setTagCompound(new NBTTagCompound());
+
+        if (stack.getItem() instanceof ILittlePlacer) {
+            ILittlePlacer placer = (ILittlePlacer) stack.getItem();
+            if (!placer.getIsShapeInitialized()) {
+                placer.setShape(stack, ShapeRegistry.getShape("slice"));
+                placer.setShapeInitialized();
+            }
+        }
         return stack.stackTagCompound;
     }
 
@@ -359,7 +368,7 @@ public class ShapeSelection implements Iterable<ShapeSelection.ShapeSelectPos>, 
             this.context = context;
             NBTTagCompound nbt = getNBT();
             String shapeKeyTmp = nbt.getString("shape");
-            shapeKey = shapeKeyTmp;
+            shapeKey = "slice"; //@TODO unhardcode
             Collection<LittleShape> shapes = ShapeRegistry.shapes();
             shape = ShapeRegistry.getShape(shapeKey);
 

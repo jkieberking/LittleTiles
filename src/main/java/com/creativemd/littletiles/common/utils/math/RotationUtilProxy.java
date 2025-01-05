@@ -1,7 +1,7 @@
 package com.creativemd.littletiles.common.utils.math;
 
-import com.creativemd.creativecore.common.utils.RotationUtils.Axis;
 import com.creativemd.littletiles.utils.EnumFacingProxy;
+import com.creativemd.littletiles.utils.EnumFacingProxy.Axis;
 import net.minecraft.util.EnumFacing;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
@@ -31,17 +31,6 @@ public class RotationUtilProxy {
 //        return facingNames;
 //    }
 //
-    public static EnumFacingProxy getFacing(Axis axis) {
-        switch (axis) {
-            case Xaxis:
-                return EnumFacingProxy.EAST;
-            case Yaxis:
-                return EnumFacingProxy.UP;
-            case Zaxis:
-                return EnumFacingProxy.NORTH;
-        }
-        return null;
-    }
 
     public static EnumFacingProxy getFacing(EnumFacingProxy.Axis axis) {
         switch (axis) {
@@ -73,24 +62,14 @@ public class RotationUtilProxy {
 //        return null;
 //    }
 //
-    public static Axis getOne(Axis axis) {
-        switch (axis) {
-            case Xaxis:
-                return Axis.Yaxis;
-            case Yaxis:
-                return Axis.Yaxis;
-            case Zaxis:
-                return Axis.Xaxis;
-        }
-        return axis;
-    }
+
 
     public static EnumFacingProxy.Axis getOneEnumFacingProxy(Axis axis) {
         switch (axis) {
-            case Xaxis:
-            case Yaxis:
+            case X:
+            case Y:
                 return EnumFacingProxy.Axis.Y;
-            case Zaxis:
+            case Z:
                 return EnumFacingProxy.Axis.X;
         }
 
@@ -111,10 +90,10 @@ public class RotationUtilProxy {
 
     public static EnumFacingProxy.Axis getOneEnumFacing(Axis axis) {
         switch (axis) {
-            case Xaxis:
+            case X:
                 return EnumFacingProxy.Axis.Y;
-            case Yaxis:
-            case Zaxis:
+            case Y:
+            case Z:
                 return EnumFacingProxy.Axis.X;
             default:
                 return null;
@@ -123,23 +102,23 @@ public class RotationUtilProxy {
 
     public static Axis getTwo(Axis axis) {
         switch (axis) {
-            case Xaxis:
-                return Axis.Zaxis;
-            case Yaxis:
-                return Axis.Xaxis;
-            case Zaxis:
-                return Axis.Yaxis;
+            case X:
+                return Axis.Z;
+            case Y:
+                return Axis.X;
+            case Z:
+                return Axis.Y;
         }
         return axis;
     }
 
     public static EnumFacingProxy.Axis getTwoEnumFacingProxy(Axis axis) {
         switch (axis) {
-            case Xaxis:
+            case X:
                 return EnumFacingProxy.Axis.Z;
-            case Yaxis:
+            case Y:
                 return EnumFacingProxy.Axis.X;
-            case Zaxis:
+            case Z:
                 return EnumFacingProxy.Axis.Y;
         }
 
@@ -148,10 +127,10 @@ public class RotationUtilProxy {
 
     public static EnumFacingProxy.Axis getTwoEnumFacing(Axis axis) {
         switch (axis) {
-            case Xaxis:
-            case Yaxis:
+            case X:
+            case Y:
                 return EnumFacingProxy.Axis.Z;
-            case Zaxis:
+            case Z:
                 return EnumFacingProxy.Axis.Y;
             default:
                 return null;
@@ -163,18 +142,18 @@ public class RotationUtilProxy {
             return axis;
 
         switch (axis) {
-            case Xaxis:
-                if (rotation.axis == Axis.Yaxis)
-                    return Axis.Zaxis;
-                return Axis.Yaxis;
-            case Yaxis:
-                if (rotation.axis == Axis.Zaxis)
-                    return Axis.Xaxis;
-                return Axis.Yaxis;
-            case Zaxis:
-                if (rotation.axis == Axis.Xaxis)
-                    return Axis.Yaxis;
-                return Axis.Xaxis;
+            case X:
+                if (rotation.axis == Axis.Y)
+                    return Axis.Z;
+                return Axis.Y;
+            case Y:
+                if (rotation.axis == Axis.Z)
+                    return Axis.X;
+                return Axis.Y;
+            case Z:
+                if (rotation.axis == Axis.X)
+                    return Axis.Y;
+                return Axis.X;
         }
         return axis;
     }
@@ -330,20 +309,20 @@ public class RotationUtilProxy {
     public static enum BooleanRotation {
 
         // one: y, two: z
-        X_PP(Axis.Xaxis, 0, true, true),
-        X_NP(Axis.Xaxis, 1, false, true),
-        X_NN(Axis.Xaxis, 2, false, false),
-        X_PN(Axis.Xaxis, 3, true, false),
+        X_PP(Axis.X, 0, true, true),
+        X_NP(Axis.X, 1, false, true),
+        X_NN(Axis.X, 2, false, false),
+        X_PN(Axis.X, 3, true, false),
         // one: x, two: z
-        Y_PP(Axis.Yaxis, 0, true, true),
-        Y_PN(Axis.Yaxis, 1, true, false),
-        Y_NN(Axis.Yaxis, 2, false, false),
-        Y_NP(Axis.Yaxis, 3, false, true),
+        Y_PP(Axis.Y, 0, true, true),
+        Y_PN(Axis.Y, 1, true, false),
+        Y_NN(Axis.Y, 2, false, false),
+        Y_NP(Axis.Y, 3, false, true),
         // one: x, two: y
-        Z_PP(Axis.Zaxis, 0, true, true),
-        Z_NP(Axis.Zaxis, 1, false, true),
-        Z_NN(Axis.Zaxis, 2, false, false),
-        Z_PN(Axis.Zaxis, 3, true, false);
+        Z_PP(Axis.Z, 0, true, true),
+        Z_NP(Axis.Z, 1, false, true),
+        Z_NN(Axis.Z, 2, false, false),
+        Z_PN(Axis.Z, 3, true, false);
 
         public final Axis axis;
         private final int index;
@@ -361,11 +340,11 @@ public class RotationUtilProxy {
 
         private static Axis getOne(Axis axis) {
             switch (axis) {
-                case Xaxis:
-                    return Axis.Yaxis;
-                case Yaxis:
-                case Zaxis:
-                    return Axis.Xaxis;
+                case X:
+                    return Axis.Y;
+                case Y:
+                case Z:
+                    return Axis.X;
                 default:
                     return null;
             }
@@ -373,10 +352,10 @@ public class RotationUtilProxy {
 
         private static EnumFacingProxy.Axis getOneEnumFacing(Axis axis) {
             switch (axis) {
-                case Xaxis:
+                case X:
                     return EnumFacingProxy.Axis.Y;
-                case Yaxis:
-                case Zaxis:
+                case Y:
+                case Z:
                     return EnumFacingProxy.Axis.X;
                 default:
                     return null;
@@ -385,11 +364,11 @@ public class RotationUtilProxy {
 
         private static Axis getTwo(Axis axis) {
             switch (axis) {
-                case Xaxis:
-                case Yaxis:
-                    return Axis.Zaxis;
-                case Zaxis:
-                    return Axis.Yaxis;
+                case X:
+                case Y:
+                    return Axis.Z;
+                case Z:
+                    return Axis.Y;
                 default:
                     return null;
             }
@@ -397,10 +376,10 @@ public class RotationUtilProxy {
 
         private static EnumFacingProxy.Axis getTwoEnumFacing(Axis axis) {
             switch (axis) {
-                case Xaxis:
-                case Yaxis:
+                case X:
+                case Y:
                     return EnumFacingProxy.Axis.Z;
-                case Zaxis:
+                case Z:
                     return EnumFacingProxy.Axis.Y;
                 default:
                     return null;
@@ -419,13 +398,13 @@ public class RotationUtilProxy {
             return rotations[axis.ordinal()][index - 1];
         }
 
-//        public EnumFacingProxy clockwiseMaxFacing() {
-//            return getFacingInBetween(clockwise());
-//        }
-//
-//        public EnumFacingProxy counterMaxClockwiseFacing() {
-//            return getFacingInBetween(counterClockwise());
-//        }
+        public EnumFacingProxy clockwiseMaxFacing() {
+            return getFacingInBetween(clockwise());
+        }
+
+        public EnumFacingProxy counterMaxClockwiseFacing() {
+            return getFacingInBetween(counterClockwise());
+        }
 
         private EnumFacingProxy getFacingInBetween(BooleanRotation other) {
             if (positiveOne != other.positiveOne)

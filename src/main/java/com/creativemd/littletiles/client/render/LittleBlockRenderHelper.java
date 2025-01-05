@@ -44,8 +44,8 @@ public class LittleBlockRenderHelper {
         if (needThread) {
             if (te.needFullRenderUpdate || lightValue != te.lightValue || te.lastRendered == null) {
                 te.lightValue = lightValue;
-                RenderingThread.renderer = renderer;
-                RenderingThread.addCoordToUpdate(te.getWorldObj(), new ChunkCoordinates(x, y, z));
+//                RenderingThread.renderer = renderer;
+//                RenderingThread.addCoordToUpdate(te.getWorldObj(), new ChunkCoordinates(x, y, z));
                 // System.out.println("Marked!");
                 te.needFullRenderUpdate = false;
             }

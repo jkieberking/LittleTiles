@@ -1,10 +1,13 @@
 package com.creativemd.littletiles.client.render.tile;
 
+import com.creativemd.littletiles.client.render.face.IFaceRenderType;
 import com.creativemd.littletiles.common.tile.math.box.AlignedBox;
 import com.creativemd.littletiles.common.tile.math.box.LittleTransformableBox;
 import com.creativemd.littletiles.common.tile.math.box.LittleTransformableBox.VectorFanCache;
 import com.creativemd.littletiles.common.tile.math.box.LittleTransformableBox.VectorFanFaceCache;
+import com.creativemd.littletiles.common.tile.math.vec.VectorFan;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
+import com.creativemd.littletiles.utils.EnumFacingProxy;
 import net.minecraft.block.Block;
 import net.minecraft.util.EnumFacing;
 
@@ -42,14 +45,14 @@ public class LittleRenderBoxTransformable extends LittleRenderBox {
         cache.scale(scale);
     }
 
-    public VectorFanFaceCache getFaceCache(EnumFacing facing) {
+    public VectorFanFaceCache getFaceCache(EnumFacingProxy facing) {
         if (cache != null)
             return cache.get(facing);
         return null;
     }
 
     @Override
-    public boolean renderSide(EnumFacing facing) {
+    public boolean renderSide(EnumFacingProxy facing) {
         VectorFanFaceCache cache = getFaceCache(facing);
         if (cache == null)
             return false;
@@ -59,7 +62,7 @@ public class LittleRenderBoxTransformable extends LittleRenderBox {
     }
 
     @Override
-    protected Object getRenderQuads(EnumFacing facing) {
+    protected Object getRenderQuads(EnumFacingProxy facing) {
         if (getType(facing).hasCachedFans())
             return getType(facing).getCachedFans();
         VectorFanFaceCache cache = getFaceCache(facing);
@@ -115,17 +118,17 @@ public class LittleRenderBoxTransformable extends LittleRenderBox {
     }
 
     @Override
-    protected boolean scaleAndOffsetQuads(EnumFacing facing) {
+    protected boolean scaleAndOffsetQuads(EnumFacingProxy facing) {
         return true;
     }
 
     @Override
-    protected boolean onlyScaleOnceNoOffset(EnumFacing facing) {
+    protected boolean onlyScaleOnceNoOffset(EnumFacingProxy facing) {
         return true;
     }
 
     @Override
-    protected float getOverallScale(EnumFacing facing) {
+    protected float getOverallScale(EnumFacingProxy facing) {
         IFaceRenderType type = getType(facing);
         if (type.hasCachedFans())
             return type.getScale();

@@ -46,7 +46,15 @@ public class ItemLittleChisel extends Item implements ILittlePlacer {
 
     public static ShapeSelection selection;
     public static PlacementMode currentMode = PlacementMode.fill;
-    public static boolean initializedShape = false;
+    private boolean initializedShape = false;
+
+    public boolean getIsShapeInitialized() {
+        return this.initializedShape;
+    }
+
+    public void setShapeInitialized() {
+        this.initializedShape = true;
+    }
 
     public ItemLittleChisel() {
         setCreativeTab(CreativeTabs.tabTools);
@@ -54,8 +62,7 @@ public class ItemLittleChisel extends Item implements ILittlePlacer {
         setMaxStackSize(1);
     }
 
-    public static void setShape(ItemStack stack, LittleShape shape) {
-        self:initializedShape = true;
+    public void setShape(ItemStack stack, LittleShape shape) {
         if (!stack.hasTagCompound())
             stack.setTagCompound(new NBTTagCompound());
 
@@ -134,7 +141,8 @@ public class ItemLittleChisel extends Item implements ILittlePlacer {
     @SideOnly(Side.CLIENT)
     public void tick(EntityPlayer player, ItemStack stack, PlacementPosition position , MovingObjectPosition movingObjectPosition ) {
         if (!initializedShape) {
-            self:setShape(stack, ShapeRegistry.getShape("slice"));
+            this.setShape(stack, ShapeRegistry.getShape("slice"));
+            this.initializedShape = true;
         }
         NBTTagCompound a = stack.stackTagCompound;
         if (selection == null)
@@ -152,7 +160,7 @@ public class ItemLittleChisel extends Item implements ILittlePlacer {
         if (mode.placeInside)
             facing = facing.getOpposite();
         if (facing.getAxisDirection() == EnumFacingProxy.AxisDirection.NEGATIVE)
-            position.getVec().add(position.getVec());
+            position.getVec().add(facing);
 
 
         return position;

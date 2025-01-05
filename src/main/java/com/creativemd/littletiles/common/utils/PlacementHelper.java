@@ -543,31 +543,31 @@ public class PlacementHelper {
 
         BlockPos pos = new BlockPos(x, y, z);
 
-        EnumFacing facing;
+        EnumFacingProxy facing;
         switch (sideHit) {
             case EAST:
-                facing = EnumFacing.EAST;
+                facing = EnumFacingProxy.EAST;
                 break;
             case WEST:
-                facing = EnumFacing.WEST;
+                facing = EnumFacingProxy.WEST;
                 break;
             case UP:
-                facing = EnumFacing.UP;
+                facing = EnumFacingProxy.UP;
                 break;
             case DOWN:
-                facing = EnumFacing.DOWN;
+                facing = EnumFacingProxy.DOWN;
                 break;
             case SOUTH:
-                facing = EnumFacing.SOUTH;
+                facing = EnumFacingProxy.SOUTH;
                 break;
             case NORTH:
-                facing = EnumFacing.NORTH;
+                facing = EnumFacingProxy.NORTH;
                 break;
             default:
                 throw new RuntimeException("no detected side hit");
         }
 
-        PlacementPosition result = new PlacementPosition(pos, getHitVec(moving, context, false).getVecContext(), facing);
+        PlacementPosition result = new PlacementPosition(pos, getHitVec(moving, context, false, facing).getVecContext(), EnumFacingProxy.toEnumFacing(facing));
 
         // @TODO implement this, not sure what it does right now
 //        if (tool instanceof ILittlePlacer && stack != null && (LittleAction.isUsingSecondMode(player) != ((ILittlePlacer) tool).snapToGridByDefault(stack))) {
@@ -663,11 +663,11 @@ public class PlacementHelper {
         return null;
     }
 
-    public static LittleAbsoluteVec getHitVec(MovingObjectPosition movingObjectPosition, LittleGridContext context, boolean isInsideOfBlock) {
+    public static LittleAbsoluteVec getHitVec(MovingObjectPosition movingObjectPosition, LittleGridContext context, boolean isInsideOfBlock, EnumFacingProxy faceHit) {
         LittleAbsoluteVec pos = new LittleAbsoluteVec(movingObjectPosition, context);
 
         if (!isInsideOfBlock)
-            pos.getVec().set(EnumFacingProxy.fromSideHitInt(movingObjectPosition.sideHit).getAxis(), EnumFacingProxy.fromSideHitInt(movingObjectPosition.sideHit).getAxisDirection() == EnumFacingProxy.AxisDirection.POSITIVE ? 0 : context.size);
+            pos.getVec().set(faceHit.getAxis(), faceHit.getAxisDirection() == EnumFacingProxy.AxisDirection.POSITIVE ? 0 : context.size);
 
         return pos;
     }

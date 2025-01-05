@@ -15,14 +15,6 @@ public class CreativeAxisAlignedBBProxy extends AxisAlignedBB {
         super(x1, y1, z1, x2, y2, z2);
     }
 
-    public CreativeAxisAlignedBBProxy(BlockPos pos) {
-        super(pos);
-    }
-
-    public CreativeAxisAlignedBBProxy(BlockPos pos1, BlockPos pos2) {
-        super(pos1, pos2);
-    }
-
     public boolean contains(Vector3d vec) {
         if (vec.x > this.minX && vec.x < this.maxX) {
             if (vec.y > this.minY && vec.y < this.maxY) {
@@ -82,8 +74,8 @@ public class CreativeAxisAlignedBBProxy extends AxisAlignedBB {
         return getValueOfFacing(corner.z);
     }
 
-    public Vec3d getSize() {
-        return new Vec3d(maxX - minX, maxY - minY, maxZ - minZ);
+    public Vector3d getSize() {
+        return new Vector3d(maxX - minX, maxY - minY, maxZ - minZ);
     }
 
     public Vector3d getSize3d() {

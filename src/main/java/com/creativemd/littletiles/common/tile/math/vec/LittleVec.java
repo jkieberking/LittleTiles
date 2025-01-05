@@ -166,6 +166,11 @@ public class LittleVec /* implements IVecInt */ {
         set(enumFacingProxy.getAxis(), get(enumFacingProxy.getAxis()) + enumFacingProxy.getAxisDirection().getOffset());
     }
 
+    public void add(EnumFacingProxy facing) {
+        EnumFacingProxy enumFacingProxy = facing;
+        set(enumFacingProxy.getAxis(), get(enumFacingProxy.getAxis()) + enumFacingProxy.getAxisDirection().getOffset());
+    }
+
     public void add(LittleVec vec) {
         this.x += vec.x;
         this.y += vec.y;

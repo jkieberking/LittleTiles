@@ -436,8 +436,8 @@ public class LittleTransformableBox extends LittleBox {
                 continue;
 
             //BoxFace.ensureSameLength(firstNormal, secondNormal);
-            firstNormal.normalize();
-            secondNormal.normalize();
+            LittleUtils.normalize(firstNormal);
+            LittleUtils.normalize(secondNormal);
 
             boolean parallel = LittleUtils.epsilonEquals(firstNormal, secondNormal, VectorFan.EPSILON);
             if (parallel) {
@@ -1666,7 +1666,7 @@ public class LittleTransformableBox extends LittleBox {
             b.sub(fan.get(0));
 
             Vector3f normal = new Vector3f();
-            normal.cross(a, b);
+            a.cross(b, normal);
             return normal;
         }
 
@@ -1932,7 +1932,8 @@ public class LittleTransformableBox extends LittleBox {
         public Vector3f getCenter() {
             float multiplier = 1F / (count);
             Vector3f result = new Vector3f();
-            result.scale(multiplier, vec);
+            LittleUtils.scaleInPlace(result, multiplier);
+            LittleUtils.scaleInPlace(result, vec);
             return result;
         }
 

@@ -2,6 +2,8 @@ package com.creativemd.littletiles.client.render;
 
 import com.creativemd.littletiles.client.render.block.BakedQuadProxy;
 import com.creativemd.littletiles.client.render.block.IVertexConsumer;
+import com.creativemd.littletiles.client.render.entity.LittleRenderChunkProxy;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -132,4 +134,10 @@ public class LittleRenderUtils {
             }
         }
     }
+
+//    public static LittleRenderChunkProxy getRenderChunk(IOrientatedWorld world, BlockPos pos) {
+//        if (world && ((CreativeWorld) world).renderChunkSupplier != null)
+//            return (LittleRenderChunkProxy) ((CreativeWorld) world).renderChunkSupplier.getRenderChunk((World) world, pos);
+//        return null;
+//    }
 }

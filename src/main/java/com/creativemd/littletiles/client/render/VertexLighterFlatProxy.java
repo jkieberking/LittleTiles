@@ -22,6 +22,7 @@ package com.creativemd.littletiles.client.render;
 import javax.vecmath.Vector3f;
 
 import com.cleanroommc.modularui.utils.fakeworld.BlockInfo;
+import com.creativemd.littletiles.client.render.block.BlockColorsProxy;
 import com.creativemd.littletiles.client.render.block.IVertexConsumer;
 import com.gtnewhorizon.gtnhlib.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -33,9 +34,9 @@ import java.util.Objects;
 
 public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
 {
-    protected static final VertexFormatElement NORMAL_4F = new VertexFormatElement(0, VertexFormatElement.EnumType.FLOAT, VertexFormatElement.EnumUsage.NORMAL, 4);
+    protected static final VertexFormatElementProxy NORMAL_4F = new VertexFormatElementProxy(0, VertexFormatElementProxy.EnumType.FLOAT, VertexFormatElementProxy.EnumUsage.NORMAL, 4);
 
-    protected final BlockInfo blockInfo;
+//    protected final BlockInfo blockInfo;
     private int tint = -1;
     private boolean diffuse = true;
 
@@ -46,16 +47,17 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
 
     protected VertexFormatProxy baseFormat;
 
-    public VertexLighterFlatProxy(BlockColors colors)
+    public VertexLighterFlatProxy(BlockColorsProxy colors)
     {
-        this.blockInfo = new BlockInfo(colors);
+        // @TODO add info maybe
+//        this.blockInfo = new BlockInfo(colors);
     }
 
     @Override
     public void setParent(IVertexConsumer parent)
     {
         super.setParent(parent);
-        setVertexFormat(parent.getVertexFormat());
+        setVertexFormatProxy(parent.getVertexFormat());
     }
 
     private void updateIndices()
@@ -96,8 +98,8 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
         }
     }
 
-    @Override
-    public void setVertexFormat(VertexFormatProxy format)
+//    @Override
+    public void setVertexFormatProxy(VertexFormatProxy format)
     {
         if (Objects.equals(format, baseFormat)) return;
         baseFormat = format;
@@ -105,11 +107,11 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
         updateIndices();
     }
 
-    private static final VertexFormatProxy BLOCK_WITH_NORMAL = withNormalUncached(DefaultVertexFormats.BLOCK);
+    private static final VertexFormatProxy BLOCK_WITH_NORMAL = withNormalUncached(DefaultVertexFormatsProxy.BLOCK);
     static VertexFormatProxy withNormal(VertexFormatProxy format)
     {
         //This is the case in 99.99%. Cache the value, so we don't have to redo it every time, and the speed up the equals check in LightUtil
-        if (format == DefaultVertexFormats.BLOCK)
+        if (format == DefaultVertexFormatsProxy.BLOCK)
             return BLOCK_WITH_NORMAL;
         return withNormalUncached(format);
     }
@@ -117,7 +119,7 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
     private static VertexFormatProxy withNormalUncached(VertexFormatProxy format)
     {
         if (format == null || format.hasNormal()) return format;
-        return new VertexFormat(format).addElement(NORMAL_4F);
+        return new VertexFormatProxy(format).addElement(NORMAL_4F);
     }
 
     @Override
@@ -158,7 +160,8 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
         int multiplier = -1;
         if(tint != -1)
         {
-            multiplier = blockInfo.getColorMultiplier(tint);
+            // @TODO block info
+//            multiplier = blockInfo.getColorMultiplier(tint);
         }
 
         VertexFormatProxy format = parent.getVertexFormat();
@@ -166,9 +169,10 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
 
         for(int v = 0; v < 4; v++)
         {
-            position[v][0] += blockInfo.getShx();
-            position[v][1] += blockInfo.getShy();
-            position[v][2] += blockInfo.getShz();
+            // @TODO block info
+//            position[v][0] += blockInfo.getShx();
+//            position[v][1] += blockInfo.getShy();
+//            position[v][2] += blockInfo.getShz();
 
             float x = position[v][0] - .5f;
             float y = position[v][1] - .5f;
@@ -191,11 +195,12 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
             updateColor(normal[v], color[v], x, y, z, tint, multiplier);
             if(diffuse)
             {
-                float d = LightUtil.diffuseLight(normal[v][0], normal[v][1], normal[v][2]);
-                for(int i = 0; i < 3; i++)
-                {
-                    color[v][i] *= d;
-                }
+                // @TODO light util
+//                float d = LightUtil.diffuseLight(normal[v][0], normal[v][1], normal[v][2]);
+//                for(int i = 0; i < 3; i++)
+//                {
+//                    color[v][i] *= d;
+//                }
             }
             if(EntityRenderer.anaglyphEnable)
             {
@@ -205,7 +210,7 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
             // no need for remapping cause all we could've done is add 1 element to the end
             for(int e = 0; e < count; e++)
             {
-                VertexFormatElement element = format.getElement(e);
+                VertexFormatElementProxy element = format.getElement(e);
                 switch(element.getUsage())
                 {
                     case POSITION:
@@ -248,24 +253,28 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
 
     protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z)
     {
-        final float e1 = 1f - 1e-2f;
-        final float e2 = 0.95f;
-
-        boolean full = blockInfo.isFullCube();
-        EnumFacing side = null;
-
-             if((full || y < -e1) && normal[1] < -e2) side = EnumFacing.DOWN;
-        else if((full || y >  e1) && normal[1] >  e2) side = EnumFacing.UP;
-        else if((full || z < -e1) && normal[2] < -e2) side = EnumFacing.NORTH;
-        else if((full || z >  e1) && normal[2] >  e2) side = EnumFacing.SOUTH;
-        else if((full || x < -e1) && normal[0] < -e2) side = EnumFacing.WEST;
-        else if((full || x >  e1) && normal[0] >  e2) side = EnumFacing.EAST;
-
-        int i = side == null ? 0 : side.ordinal() + 1;
-        int brightness = blockInfo.getPackedLight()[i];
-
-        lightmap[0] = ((float)((brightness >> 0x04) & 0xF) * 0x20) / 0xFFFF;
-        lightmap[1] = ((float)((brightness >> 0x14) & 0xF) * 0x20) / 0xFFFF;
+        // @TODO block info
+//        final float e1 = 1f - 1e-2f;
+//        final float e2 = 0.95f;
+//
+//        // @TODO block info
+////        boolean full = blockInfo.isFullCube();
+//        EnumFacing side = null;
+//
+//        // @TODO block info?
+//             if((/*full ||*/ y < -e1) && normal[1] < -e2) side = EnumFacing.DOWN;
+//        else if((/*full ||*/ y >  e1) && normal[1] >  e2) side = EnumFacing.UP;
+//        else if((/*full ||*/ z < -e1) && normal[2] < -e2) side = EnumFacing.NORTH;
+//        else if((/*full ||*/ z >  e1) && normal[2] >  e2) side = EnumFacing.SOUTH;
+//        else if((/*full ||*/ x < -e1) && normal[0] < -e2) side = EnumFacing.WEST;
+//        else if((/*full ||*/ x >  e1) && normal[0] >  e2) side = EnumFacing.EAST;
+//
+//        int i = side == null ? 0 : side.ordinal() + 1;
+//        // @TODO block info
+////        int brightness = blockInfo.getPackedLight()[i];
+//
+//        lightmap[0] = ((float)((brightness >> 0x04) & 0xF) * 0x20) / 0xFFFF;
+//        lightmap[1] = ((float)((brightness >> 0x14) & 0xF) * 0x20) / 0xFFFF;
     }
 
     protected void updateColor(float[] normal, float[] color, float x, float y, float z, float tint, int multiplier)
@@ -294,29 +303,31 @@ public class VertexLighterFlatProxy extends QuadGatheringTransformerProxy
         this.diffuse = diffuse;
     }
 
-    public void setWorld(IBlockAccess world)
-    {
-        blockInfo.setWorld(world);
-    }
-
-    public void setState(IBlockState state)
-    {
-        blockInfo.setState(state);
-    }
-
-    public void setBlockPos(BlockPos blockPos)
-    {
-        blockInfo.setBlockPos(blockPos);
-    }
-
-    public void resetBlockInfo()
-    {
-        blockInfo.reset();
-    }
+    // @TODO block info/state
+//    public void setWorld(IBlockAccess world)
+//    {
+//        blockInfo.setWorld(world);
+//    }
+//
+//    public void setState(IBlockState state)
+//    {
+//        blockInfo.setState(state);
+//    }
+//
+//    public void setBlockPos(BlockPos blockPos)
+//    {
+//        blockInfo.setBlockPos(blockPos);
+//    }
+//
+//    public void resetBlockInfo()
+//    {
+//        blockInfo.reset();
+//    }
 
     public void updateBlockInfo()
     {
-        blockInfo.updateShift();
-        blockInfo.updateFlatLighting();
+        // @TODO block info
+//        blockInfo.updateShift();
+//        blockInfo.updateFlatLighting();
     }
 }

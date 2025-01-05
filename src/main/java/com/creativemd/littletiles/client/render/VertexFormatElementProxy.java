@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class VertexFormatElementProxy
@@ -167,8 +168,8 @@ public class VertexFormatElementProxy
         PADDING("Padding"),
         GENERIC("Generic");
 
-        public void preDraw(VertexFormat format, int element, int stride, java.nio.ByteBuffer buffer) { net.minecraftforge.client.ForgeHooksClient.preDraw(this, format, element, stride, buffer); }
-        public void postDraw(VertexFormat format, int element, int stride, java.nio.ByteBuffer buffer) { net.minecraftforge.client.ForgeHooksClient.postDraw(this, format, element, stride, buffer); }
+        public void preDraw(VertexFormatProxy format, int element, int stride, java.nio.ByteBuffer buffer) { ForgeHooksClientProxy.preDraw(this, format, element, stride, buffer); }
+        public void postDraw(VertexFormatProxy format, int element, int stride, java.nio.ByteBuffer buffer) { ForgeHooksClientProxy.postDraw(this, format, element, stride, buffer); }
 
         private final String displayName;
 

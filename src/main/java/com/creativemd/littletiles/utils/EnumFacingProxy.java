@@ -68,26 +68,6 @@ public enum EnumFacingProxy {
         this.directionVec = directionVecIn;
     }
 
-    // this takes in the MovingObjectPosition.sideHit int and returns a EnumFacingProxy
-    //    sideHit's int is: -1 then it went the full length of the ray trace. Bottom = 0, Top = 1, East = 2, West
-    //     * = 3, North = 4, South = 5.
-    public static EnumFacingProxy fromSideHitInt(int sideHit) {
-        switch (sideHit) {
-            case 0:
-                return DOWN;
-            case 1:
-                return UP;
-            case 2:
-                return EAST;
-            case 3:
-                return WEST;
-            case 4:
-                return NORTH;
-            case 5:
-                return SOUTH;
-        }
-        throw new RuntimeException("no enum facing found for sideHit");
-    }
     public static EnumFacingProxy fromEnumFacing(EnumFacing facing) {
         switch (facing) {
             case UP:

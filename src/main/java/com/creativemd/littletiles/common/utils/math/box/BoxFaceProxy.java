@@ -160,7 +160,7 @@ public enum BoxFaceProxy {
         b.sub(corners[triangle[0].ordinal()]);
 
         Vector3f normal = new Vector3f();
-        normal.cross(a, b);
+        a.cross(b, normal);
         return normal;
     }
 

@@ -15,6 +15,7 @@ import com.creativemd.littletiles.common.utils.math.RangedBitSetProxy;
 import com.creativemd.littletiles.common.utils.math.RotationProxy;
 import com.creativemd.littletiles.common.utils.math.box.BoxCornerProxy;
 import com.creativemd.littletiles.common.utils.math.box.BoxFaceProxy;
+import com.creativemd.littletiles.common.utils.math.vec.Vec3dProxy;
 import com.creativemd.littletiles.common.utils.small.LittleTileBox;
 import com.creativemd.littletiles.common.utils.vec.SplitRangeBoxes;
 import com.creativemd.littletiles.common.utils.vec.SplitRangeBoxes.SplitRangeBox;
@@ -943,15 +944,31 @@ public class LittleBox {
                 .toVanillaGrid(this.maxZ);
     }
 
+    public boolean intersectsWithYZ(LittleGridContext context, Vec3dProxy vec) {
+        return vec.y >= context.toVanillaGrid(this.minY) && vec.y < context.toVanillaGrid(this.maxY) && vec.z >= context.toVanillaGrid(this.minZ) && vec.z < context
+            .toVanillaGrid(this.maxZ);
+    }
+
     public boolean intersectsWithXZ(LittleGridContext context, Vector3d vec) {
         return vec.x >= context.toVanillaGrid(this.minX) && vec.x < context.toVanillaGrid(this.maxX) && vec.z >= context.toVanillaGrid(this.minZ) && vec.z < context
                 .toVanillaGrid(this.maxZ);
+    }
+
+    public boolean intersectsWithXZ(LittleGridContext context, Vec3dProxy vec) {
+        return vec.x >= context.toVanillaGrid(this.minX) && vec.x < context.toVanillaGrid(this.maxX) && vec.z >= context.toVanillaGrid(this.minZ) && vec.z < context
+            .toVanillaGrid(this.maxZ);
     }
 
     public boolean intersectsWithXY(LittleGridContext context, Vector3d vec) {
         return vec.x >= context.toVanillaGrid(this.minX) && vec.x < context.toVanillaGrid(this.maxX) && vec.y >= context.toVanillaGrid(this.minY) && vec.y < context
                 .toVanillaGrid(this.maxY);
     }
+
+    public boolean intersectsWithXY(LittleGridContext context, Vec3dProxy vec) {
+        return vec.x >= context.toVanillaGrid(this.minX) && vec.x < context.toVanillaGrid(this.maxX) && vec.y >= context.toVanillaGrid(this.minY) && vec.y < context
+            .toVanillaGrid(this.maxY);
+    }
+
 
     public boolean isVecInside(Vector3f vec) {
         return vec.x > this.minX && vec.x < this.maxX && vec.y > this.minY && vec.y < this.maxY && vec.z > this.minZ && vec.z < this.maxZ;

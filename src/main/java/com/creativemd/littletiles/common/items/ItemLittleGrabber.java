@@ -17,6 +17,7 @@ import com.creativemd.littletiles.common.utils.LittleTile;
 import com.creativemd.littletiles.common.utils.grid.LittleGridContext;
 import com.creativemd.littletiles.common.utils.place.PlacementMode;
 import com.creativemd.littletiles.common.utils.place.PlacementPosition;
+import com.creativemd.littletiles.common.utils.shape.LittleShape;
 import com.creativemd.littletiles.common.utils.small.LittleTileSize;
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import cpw.mods.fml.relauncher.Side;
@@ -175,6 +176,21 @@ public class ItemLittleGrabber extends Item implements /*ICreativeRendered,*/ IL
 //        GlStateManager.popMatrix();
 //
 //    }
+
+    @Override
+    public boolean getIsShapeInitialized() {
+        return false;
+    }
+
+    @Override
+    public void setShapeInitialized() {
+
+    }
+
+    @Override
+    public void setShape(ItemStack stack, LittleShape shape) {
+
+    }
 
     @Override
     public boolean hasLittlePreview(ItemStack stack) {

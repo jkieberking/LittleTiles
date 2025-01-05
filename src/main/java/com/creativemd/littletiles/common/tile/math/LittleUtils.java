@@ -32,28 +32,23 @@ public class LittleUtils {
         return Math.round(interestedInZeroDPs) / multipicationFactor;
     }
 
-    public static BlockPos subtractVectors(Vector3i vec1, Vector3i vec2)
-    {
+    public static BlockPos subtractVectors(Vector3i vec1, Vector3i vec2) {
         return LittleUtils.addVectors(vec1, -vec2.x(), -vec2.y(), -vec2.z());
     }
 
-    public static BlockPos subtractVectors(Vector3i vec1, int x, int y, int z)
-    {
+    public static BlockPos subtractVectors(Vector3i vec1, int x, int y, int z) {
         return LittleUtils.addVectors(vec1, -x, -y, -z);
     }
 
-    public static BlockPos subtractVectors(Vector3d vec1, int x, int y, int z)
-    {
+    public static BlockPos subtractVectors(Vector3d vec1, int x, int y, int z) {
         return LittleUtils.addVectors(vec1, -x, -y, -z);
     }
 
-    public static BlockPos addVectors(Vector3i vec1, int x, int y, int z)
-    {
+    public static BlockPos addVectors(Vector3i vec1, int x, int y, int z) {
         return x == 0 && y == 0 && z == 0 ? new BlockPos(vec1.x, vec1.y, vec1.z) : new BlockPos(vec1.x() + x, vec1.y() + y, vec1.z() + z);
     }
 
-    public static BlockPos addVectors(Vector3d vec1, int x, int y, int z)
-    {
+    public static BlockPos addVectors(Vector3d vec1, int x, int y, int z) {
         // @TODO rounding here might be wrong
         return x == 0 && y == 0 && z == 0 ? new BlockPos((int) Math.round(vec1.x()), (int) Math.round(vec1.y()), (int) Math.round(vec1.z())) :
             new BlockPos((int) Math.round(vec1.x() + x), (int) Math.round(vec1.y() + y), (int) Math.round(vec1.z() + z));
@@ -85,6 +80,12 @@ public class LittleUtils {
         vector.z *= s;
     }
 
+    public static void scaleInPlace(Vector3f vector, Vector3f by) {
+        vector.x *= by.x;
+        vector.y *= by.y;
+        vector.z *= by.z;
+    }
+
     public static void scaleInPlace(Vector3d vector, double s) {
         vector.x *= s;
         vector.y *= s;
@@ -93,16 +94,14 @@ public class LittleUtils {
 
     public static Vector3d scaleNotInPlace(Vector3d vector, double s) {
         return new Vector3d(
-        vector.x * s,
-        vector.y * s,
-        vector.z * s
+            vector.x * s,
+            vector.y * s,
+            vector.z * s
         );
     }
-    }
 
 
-    public static double squareDistanceTo(Vector3d from, Vector3d to)
-    {
+    public static double squareDistanceTo(Vector3d from, Vector3d to) {
         double d0 = to.x - from.x;
         double d1 = to.y - from.y;
         double d2 = to.z - from.z;
@@ -110,18 +109,17 @@ public class LittleUtils {
     }
 
     public static boolean epsilonEquals(Vector3f vector, Vector3f secondVector, double epsilonAmount) {
-        double d = vector.x - secondVector.x;
-        if ((d < 0.0D ? -d : d) > epsilonAmount) {
-            return false;
-        }
-        d = vector.y - secondVector.y;
-        if ((d < 0.0D ? -d : d) > epsilonAmount) {
-            return false;
-        }
-        d = vector.z - secondVector.z;
-        if ((d < 0.0D ? -d : d) > epsilonAmount) {
-            return false;
-        }
-        return true;
+        javax.vecmath.Vector3f vector1 = new javax.vecmath.Vector3f(vector.x, vector.y, vector.z);
+        javax.vecmath.Vector3f vector2 = new javax.vecmath.Vector3f(secondVector.x, secondVector.y, secondVector.z);
+
+        return vector1.epsilonEquals(vector2, (float) epsilonAmount);
+    }
+
+    // @TODO rewrite this to manually normalize to remove vecmath dependency (joml vector normalizing function isn't working)
+    public static Vector3f normalize(Vector3f vector) {
+        javax.vecmath.Vector3f newVector = new javax.vecmath.Vector3f(vector.x, vector.y, vector.z);
+        newVector.normalize();
+
+        return new Vector3f(newVector.x, newVector.y, newVector.z);
     }
 }

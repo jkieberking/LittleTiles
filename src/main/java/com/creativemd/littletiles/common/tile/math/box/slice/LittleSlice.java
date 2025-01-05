@@ -78,7 +78,7 @@ public enum LittleSlice {
     public static LittleSlice getOldSlice(int id) {
         checkVersion();
         LittleSlice wrongSlice = LittleSlice.values()[id];
-        if (wrongSlice.axis == Axis.Yaxis) {
+        if (wrongSlice.axis == Axis.Y) {
             for (LittleSlice slice : LittleSlice.values()) {
                 if (slice.axis == wrongSlice.axis && slice.start.equals(wrongSlice.start) && slice.end.equals(wrongSlice.end) && slice.isRight != wrongSlice.isRight)
                     return slice;
@@ -93,7 +93,7 @@ public enum LittleSlice {
     public static LittleSlice getOlderSlice(int id) {
         checkVersion();
         LittleSlice wrongSlice = LittleSlice.values()[id];
-        if (wrongSlice.axis == Axis.Xaxis) {
+        if (wrongSlice.axis == Axis.X) {
             for (LittleSlice slice : LittleSlice.values()) {
                 if (slice.axis == wrongSlice.axis && slice.start.equals(wrongSlice.start) && slice.end.equals(wrongSlice.end) && slice.isRight != wrongSlice.isRight)
                     return slice;

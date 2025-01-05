@@ -166,7 +166,7 @@ public class PreviewRenderer {
                 double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.partialTicks;
                 double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.partialTicks;
 
-                ((ILittleTool) stack.getItem()).tick(player, stack, position, mc.objectMouseOver);
+                ((ILittleTool) stack.getItem()).tick(player, stack, position,  mc.objectMouseOver);
 
                 if (PlacementHelper.isLittlePlacer(stack)) {
                     ILittlePlacer iPlacer = PlacementHelper.getLittlePlacerInterface(stack);
